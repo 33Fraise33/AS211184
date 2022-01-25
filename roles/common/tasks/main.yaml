@@ -1,0 +1,43 @@
+- name: set hostname to host
+  hostname:
+    name: '{{ inventory_hostname | replace("_", "-") }}'
+
+- name: update apt packages
+  apt:
+    upgrade: dist
+    update_cache: yes
+
+- name: install default packages
+  apt:
+    name: 
+      - ntp
+      - vim
+      - curl
+      - git
+      - htop
+      - net-tools
+      - fail2ban
+      - traceroute
+      - tcpdump
+      - ncdu
+      - mtr
+      - python3-pip
+      - nmap
+    state: latest
+
+- import_tasks: node_exporter.yaml
+
+- name: set timezone to UTC
+  timezone:
+    name: Etc/UTC
+
+- name: copy sysctl file to enable ipv6 forwarding
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+  loop:
+    - "net.ipv6.conf.default.forwarding"
+    - "net.ipv6.conf.all.forwarding"
+
+- import_tasks: ssh.yaml

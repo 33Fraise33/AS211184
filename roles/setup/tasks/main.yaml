@@ -1,0 +1,53 @@
+- name: SETUP - install sudo package
+  apt:
+    name:
+      - sudo
+    state: latest
+  become_method: su
+
+- name: SETUP - Allow sudo user group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL:ALL) NOPASSWD:ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+  become_method: su
+
+- name: SETUP - temporarily add debian to the sudo group
+  user:
+    name: debian
+    groups: sudo
+    append: yes
+  become_method: su
+
+- name: SETUP - reset connection so sudo permission is recognized
+  meta: reset_connection
+
+- name: SETUP - Generate random root password
+  set_fact:
+    new_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits,.,_,! length=15' ) }}"
+
+- name: SETUP - Add password to file
+  lineinfile:
+    path: "/tmp/root_password"
+    line: "{{ lookup('pipe', 'date -u +%FT%TZ')}};{{ inventory_hostname }};{{new_password}}"
+    create: yes
+  delegate_to: localhost
+
+- name: SETUP - change root user password
+  user:
+    name: "root"
+    password: "{{ new_password | password_hash('sha512', 'mysecretsalt') }}"
+
+- name: SETUP - Set ssh port to 1830
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^(# *)?Port '
+    line: 'Port 1830'
+
+- name: SETUP - reload sshd
+  systemd:
+    name: sshd
+    state: reloaded
+    enabled: yes

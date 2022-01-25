@@ -1,0 +1,6 @@
+all:
+  children:
+    frr:
+      hosts:
+        kingpin:
+          ansible_host: TBD

@@ -1,0 +1,31 @@
+- name: SSH - Create user "{{ user.name}}"
+  user:
+    name: "{{ user.name }}"
+    groups: sudo
+    append: yes
+    shell: /bin/bash
+
+- name: SSH - Set authorized keyfile for default_user user
+  authorized_key:
+    user: "{{ default_user }}"
+    state: present
+    key: "{{ user.pubkey }}"
+
+- name: SSH - Change daemon settings
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no'}
+    - { regexp: '^UsePAM ', line: 'UsePAM no'}
+    - { regexp: '^PasswordAuthentication ', line: 'PasswordAuthentication no'}
+    - { regexp: '^(# *)?Port ', line: 'Port 1830'}
+  notify:
+    - restart sshd
+
+- name: SSH - Remove debian user
+  user:
+    name: "debian"
+    state: absent
+  when: ansible_user != "debian"
