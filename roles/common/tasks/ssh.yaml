@@ -1,15 +1,15 @@
-- name: SSH - Create user "{{ user.name}}"
+- name: SSH - Create user "{{ user.name }}"
   user:
     name: "{{ user.name }}"
     groups: sudo
     append: yes
     shell: /bin/bash
 
-- name: SSH - Set authorized keyfile for default_user user
+- name: SSH - Set authorized keyfile for "{{ user.name }}"
   authorized_key:
-    user: "{{ default_user }}"
+    user: "{{ user.name }}"
     state: present
-    key: "{{ user.pubkey }}"
+    key: "{{ user.pub_key }}"
 
 - name: SSH - Change daemon settings
   lineinfile:
@@ -17,9 +17,11 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
-    - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no'}
-    - { regexp: '^UsePAM ', line: 'UsePAM no'}
-    - { regexp: '^PasswordAuthentication ', line: 'PasswordAuthentication no'}
+    - { regexp: '^(# *)?PermitRootLogin', line: 'PermitRootLogin no'}
+    - { regexp: '^(# *)?UsePAM ', line: 'UsePAM yes'}
+    - { regexp: '^(# *)?PasswordAuthentication ', line: 'PasswordAuthentication no'}
+    - { regexp: '^(# *)?PermitEmptyPasswords ', line: 'PermitEmptyPasswords no'}
+    - { regexp: '^(# *)?ChallengeResponseAuthentication ', line: 'ChallengeResponseAuthentication no'}
     - { regexp: '^(# *)?Port ', line: 'Port 1830'}
   notify:
     - restart sshd
