@@ -1,6 +1,6 @@
 # [AS211184](https://bgp.he.net/AS211184) Playbooks
 
-This is my ansible project to manage my own infrastructure for my personal AS for labbing and selfhost requirements. These exist because I like this. 
+This is my ansible project to manage my own infrastructure for my personal AS for labbing and selfhost requirements. These exist because I like this.
 
 ## Structure
 
@@ -24,5 +24,7 @@ Next enter your variable to encrypt and press ctrl+d twice.
 - Updates packages to latest version
 - Set default user and removes the setup one (debian or similar)
 - Installs packages needed for daily operation and network debugging
+
 ## Todo
-- Everything
+- frr
+- iptables
