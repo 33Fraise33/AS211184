@@ -1,0 +1,9 @@
+- hosts: frr
+  gather_facts: true
+  roles:
+    - interfaces
+# 
+# - hosts: frr
+#   gather_facts: true
+#   roles:
+#     - routing

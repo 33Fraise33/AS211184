@@ -3,5 +3,5 @@ all:
     frr:
       hosts:
         kingpin:
-          ansible_host: fd00::eca:17ff:fe5e:0
+          ansible_host: 169.254.33.197
           ansible_port: 1830

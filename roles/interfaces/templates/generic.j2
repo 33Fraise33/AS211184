@@ -1,0 +1,39 @@
+{% if intf.id is not defined %}
+{% set intf_name = intf.name %}
+{% else %}
+{% set intf_name = ('vlan' + intf.id) %}
+{% endif %}
+auto {{ intf_name }}
+{% if intf.auto|default(false) %}
+iface {{ intf_name }} inet dhcp
+iface {{ intf_name }} inet6 auto
+{% else %}
+iface {{ intf_name }}
+{% endif %}
+{% if vrf_key != "default" %}
+    vrf {{ vrf_key }}
+{% endif %}
+{% if intf.description is defined %}
+    alias "{{ intf.description }}"
+{% endif %}
+{% if not intf.enabled|default(true) %}
+    link-down yes
+{% endif %}
+{% if intf.mtu is defined %}
+    mtu {{ intf.mtu }}
+{% endif %}
+{% if intf.vids is defined and intf.vids.tagged is defined%}
+    bridge-vids {% for vid in intf.vids.tagged %}{{ vid }} {% endfor %} #
+{% endif %}
+{% for v4_addr in intf.ipv4.addresses|default() %}
+    address {{ v4_addr }}
+{% endfor %}
+{% for v6_addr in intf.ipv6.addresses|default() %}
+    address {{ v6_addr }}
+{% endfor %}
+{% if intf.ipv4 is defined and intf.ipv4.gateway is defined %}
+    gateway {{ intf.ipv4.gateway  }}
+{% endif %}
+{% if intf.ipv6 is defined and intf.ipv6.gateway is defined %}
+    gateway {{ intf.ipv6.gateway  }}
+{% endif %}

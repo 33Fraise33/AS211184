@@ -1,0 +1,12 @@
+{%  if VRF.interfaces.physicals is defined %}
+{%    for intf in VRF.interfaces.physicals %}
+{%      include 'generic.j2' %}
+{%      if intf.speed is defined %}
+    link-speed {{ intf.speed }}
+{%      endif %}
+{%      if intf.vids is defined and intf.vids.untagged is defined %}
+    {% if intf.vids.tagged is defined %}bridge-pvid {% else %}bridge-access {% endif %}{{ intf.vids.untagged }}
+{%      endif %}
+{%    endfor %}
+
+{%  endif %}

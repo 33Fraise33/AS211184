@@ -1,0 +1,17 @@
+{% if vrf_key != "default" %}
+auto {{ vrf_key }}
+iface {{ vrf_key }}
+    vrf-table auto
+{% else %}
+auto lo
+iface lo inet loopback
+{% endif %}
+{% if VRF.interfaces.loopback is defined and VRF.interfaces.loopback.enabled|default(true) %}
+{%    for v4_addr in VRF.interfaces.loopback.ipv4.addresses|default() %}
+    address {{ v4_addr }}
+{%    endfor %}
+{%    for v6_addr in VRF.interfaces.loopback.ipv6.addresses|default() %}
+    address {{ v6_addr }}
+{%    endfor %}
+
+{% endif %}

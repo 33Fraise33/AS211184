@@ -1,0 +1,8 @@
+- name: Configure interfaces
+  template:
+    src: "interfaces.j2"
+    dest: /etc/network/interfaces
+    mode: 0644
+    validate: ifup -a -s -i %s
+  become: true
+  notify: ifreload

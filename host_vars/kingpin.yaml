@@ -1,0 +1,105 @@
+VRFS:
+  default:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a0e:b107:1165:1000::1/64
+        ipv4:
+          addresses:
+            - 127.0.0.1/16
+      physicals:
+        - name: "ens18"
+          description: "IFOG PEERING"
+          mtu: 1500
+          ipv4:
+            addresses:
+              - 193.148.249.106/24
+            gateway: 193.148.249.1
+          ipv6:
+            addresses:
+              - 2a0c:9a40:1::916/48
+    # routing:
+    #   bgp:
+    #     as: 211184
+    #     router_id: 2a0c:9a40:1::916
+    #     redistribute:
+    #       - connected
+    #     neighbor_groups:
+    #       - name: IFOG
+    #         soft_reconfiguration_inbound: true
+    #         timers:
+    #           keepalive: 20
+    #           hold: 60
+    #         route_maps:
+    #           - direction: in
+    #             name: DEFAULT_ONLY
+    #           - direction: out
+    #             name: AS211184_OUT
+    #     neighbors:
+    #       - neighbor_group: IFOG
+    #         address: 2a0c:9a40:1::1
+    #         as: AS34927
+    #         description: "IFOG PEERING"
+  kleyrex:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a0e:b107:1165:1001::1/64
+      physicals:
+        - name: "ens19"
+          enabled: false
+          description: "KleyReX Peering"
+          mtu: 1500
+  locix:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a0e:b107:1165:1002::1/64
+      physicals:
+        - name: "ens20"
+          enabled: false
+          description: "LocIX Peering"
+          mtu: 1500
+  evix:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a0e:b107:1165:1003::1/64
+      physicals:
+        - name: "ens21"
+          enabled: false
+          description: "EVIX Peering"
+          mtu: 1500
+
+# route_filtering:
+#   prefix_lists:
+#     ipv4:
+#       - name: pl-default
+#         lists:
+#           - prefix: 0.0.0.0/0
+#             policy: permit
+#             seq: 10
+#     ipv6:
+#       - name: pl-AS211184
+#         lists:
+#           - prefix: 2a0e:b107:1165::/48
+#             policy: permit
+#             seq: 10
+#
+#   route_maps:
+#     - name: DEFAULT_ONLY
+#       maps:
+#         - seq: 10
+#           match:
+#             prefix_list: pl-default
+#           policy: permit
+#     - name: AS211184_OUT
+#       maps:
+#         - seq: 10
+#           match:
+#             prefix_list: pl-AS211184
+#           policy: permit

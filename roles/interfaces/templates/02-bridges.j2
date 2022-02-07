@@ -1,0 +1,11 @@
+{% if VRF.interfaces.bridges is defined %}
+{%    for intf in VRF.interfaces.bridges %}
+{%      include 'generic.j2' %}
+    bridge-ports {% for port in intf.ports %}{{ port }} {% endfor %} #
+    bridge-allow-untagged {{ "yes" if intf.vids.allow_untagged|default(true) else "no" }} #
+{%      if intf.name == "bridge" %}
+    bridge-vlan-aware yes
+{%      endif %}
+{%    endfor %}
+
+{% endif %}

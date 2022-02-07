@@ -1,0 +1,10 @@
+{% for vrf_key, VRF in VRFS.items() %}
+##############################
+#### VRF: {{ vrf_key }} #####
+##############################
+
+{% include '01-vrfs.j2' %}
+{% include '02-bridges.j2' %}
+{% include '03-physicals.j2' %}
+{# include '04-vlans.j2' #}
+{% endfor %}
