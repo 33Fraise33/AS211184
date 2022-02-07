@@ -1,6 +1,19 @@
-- name: set hostname to host
+- name: HOSTNAME - Set to device
   hostname:
     name: '{{ inventory_hostname | replace("_", "-") }}'
+
+- name: HOSTNAME - Set in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^(# *)?127.0.1.1	', line: '127.0.1.1	{{ inventory_hostname | replace("_", "-") }}'}
+    - { regexp: '^(# *)?::1     ', line: '::1     localhost ip6-localhost ip6-loopback {{ inventory_hostname | replace("_", "-") }}'}
+
+- name: set timezone to UTC
+  timezone:
+    name: Etc/UTC
 
 - name: update apt packages
   apt:
@@ -9,8 +22,8 @@
 
 - name: install default packages
   apt:
-    name: 
-      - ntp
+    name:
+      - systemd-timesyncd
       - vim
       - curl
       - git
@@ -25,11 +38,11 @@
       - nmap
     state: latest
 
-- import_tasks: node_exporter.yaml
-
-- name: set timezone to UTC
-  timezone:
-    name: Etc/UTC
+- name: Restart ntp daemon
+  systemd:
+    name: systemd-timesyncd
+    state: restarted
+    enabled: true
 
 - name: copy sysctl file to enable ipv6 forwarding
   sysctl:
@@ -41,3 +54,10 @@
     - "net.ipv6.conf.all.forwarding"
 
 - import_tasks: ssh.yaml
+  tags: ssh
+
+- import_tasks: ifupdown2.yaml
+  tags: ifupdown2
+
+- import_tasks: node_exporter.yaml
+  tags: node_exporter

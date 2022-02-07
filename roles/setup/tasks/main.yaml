@@ -30,7 +30,7 @@
 
 - name: SETUP - Add password to file
   lineinfile:
-    path: "/tmp/root_password"
+    path: "~/root_password"
     line: "{{ lookup('pipe', 'date -u +%FT%TZ')}};{{ inventory_hostname }};{{new_password}}"
     create: yes
   delegate_to: localhost

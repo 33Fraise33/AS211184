@@ -3,4 +3,5 @@ all:
     frr:
       hosts:
         kingpin:
-          ansible_host: TBD
+          ansible_host: 193.148.249.106
+          ansible_port: 1830
