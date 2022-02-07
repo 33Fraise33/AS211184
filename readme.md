@@ -25,6 +25,11 @@ Next enter your variable to encrypt and press ctrl+d twice.
 - Set default user and removes the setup one (debian or similar)
 - Installs packages needed for daily operation and network debugging
 
+### Networking
+- tag: `interfaces`
+  - sets interfaces with ifupdown2 
+
 ## Todo
 - frr
+- frr_exporter
 - iptables

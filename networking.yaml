@@ -2,7 +2,8 @@
   gather_facts: true
   roles:
     - interfaces
-# 
+  tags: interfaces
+#
 # - hosts: frr
 #   gather_facts: true
 #   roles:
