@@ -15,7 +15,6 @@ VRFS:
           ipv4:
             addresses:
               - 193.148.249.106/24
-            gateway: 193.148.249.1
           ipv6:
             addresses:
               - 2a0c:9a40:1::916/48
@@ -51,29 +50,32 @@ VRFS:
           ipv6:
             addresses:
               - 2a0e:b107:1165:1034::1/64
-
-    # routing:
-    #   bgp:
-    #     as: 211184
-    #     router_id: 2a0c:9a40:1::916
-    #     redistribute:
-    #       - connected
-    #     neighbor_groups:
-    #       - name: IFOG
-    #         soft_reconfiguration_inbound: true
-    #         timers:
-    #           keepalive: 20
-    #           hold: 60
-    #         route_maps:
-    #           - direction: in
-    #             name: DEFAULT_ONLY
-    #           - direction: out
-    #             name: AS211184_OUT
-    #     neighbors:
-    #       - neighbor_group: IFOG
-    #         address: 2a0c:9a40:1::1
-    #         as: AS34927
-    #         description: "IFOG PEERING"
+    routing:
+      # bgp:
+      #   as: 211184
+      #   router_id: 2a0c:9a40:1::916
+      #   redistribute:
+      #     - connected
+      #   neighbor_groups:
+      #     - name: IFOG
+      #       soft_reconfiguration_inbound: true
+      #       timers:
+      #         keepalive: 20
+      #         hold: 60
+      #       route_maps:
+      #         - direction: in
+      #           name: DEFAULT_ONLY
+      #         - direction: out
+      #           name: AS211184_OUT
+      #   neighbors:
+      #     - neighbor_group: IFOG
+      #       address: 2a0c:9a40:1::1
+      #       as: AS34927
+      #       description: "IFOG PEERING"
+      static:
+        - destination: 0.0.0.0/0
+          gateway: 193.148.249.1
+          metric: 5
   kleyrex:
     interfaces:
       loopback:

@@ -1,0 +1,6 @@
+{% if VRF.routing.static is defined %}
+{%  for route in VRF.routing.static %}
+ip route {{ route.destination }} {{ route.gateway }} {{ route.metric|default(10) }} {% if vrf_key != "default" %} vrf {{ vrf_key }} {% endif %}
+
+{%  endfor %}
+{% endif %}

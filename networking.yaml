@@ -3,8 +3,9 @@
   roles:
     - interfaces
   tags: interfaces
-#
-# - hosts: frr
-#   gather_facts: true
-#   roles:
-#     - routing
+
+- hosts: frr
+  gather_facts: true
+  roles:
+    - frr
+  tags: frr

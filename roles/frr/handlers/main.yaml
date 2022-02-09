@@ -1,0 +1,6 @@
+- name: reload frr
+  systemd:
+    name: frr
+    state: reloaded
+    enabled: true
+  become: true

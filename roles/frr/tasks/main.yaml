@@ -1,0 +1,19 @@
+- name: FRR - Change enabled daemons
+  lineinfile:
+    path: /etc/frr/daemons
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^bgpd=', line: 'bgpd=yes'}
+  notify: reload frr
+  become: true
+
+- name: FRR - Set configuration in file
+  template:
+    src: "frr.conf.j2"
+    dest: /etc/frr/frr.conf
+    mode: 0640
+    owner: frr
+    group: frr
+  notify: reload frr
+  become: true
