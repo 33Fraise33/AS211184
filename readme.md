@@ -27,7 +27,10 @@ Next enter your variable to encrypt and press ctrl+d twice.
 
 ### Networking
 - tag: `interfaces`
-  - sets interfaces with ifupdown2 
+  - sets interfaces with ifupdown2
+  - includes wireguard
+- tag: `frr`
+  - sets routing with frr
 
 ## Todo
 - frr
