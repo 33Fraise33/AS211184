@@ -59,5 +59,8 @@
 - import_tasks: ifupdown2.yaml
   tags: ifupdown2
 
+- import_tasks: wireguard.yaml
+  tags: wireguard
+
 - import_tasks: node_exporter.yaml
   tags: node_exporter

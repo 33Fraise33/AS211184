@@ -1,8 +1,19 @@
-- name: Configure interfaces
+- name: INTERFACES - Set wireguard config
+  include_tasks:
+    file: wireguard.yaml
+    apply:
+      tags: wireguard
+  loop: "{{ VRFS | dict2items }}"
+  loop_control:
+    loop_var: VRF
+    label: "{{ VRF.key }}"
+  tags: always
+
+- name: INTERFACES - Set configuration in file
   template:
     src: "interfaces.j2"
     dest: /etc/network/interfaces
     mode: 0644
-    validate: ifup -a -s -i %s
+    # validate: ifup -a -s -i %s # validate fails with link-type wireguard
   become: true
   notify: ifreload

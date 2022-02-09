@@ -1,0 +1,8 @@
+{%  if VRF.interfaces.wireguards is defined %}
+{%    for intf in VRF.interfaces.wireguards %}
+{%      include 'generic.j2' %}
+    link-type wireguard
+    pre-up wg setconf $IFACE /etc/wireguard/$IFACE.conf
+{%    endfor %}
+
+{%  endif %}

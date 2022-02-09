@@ -30,4 +30,4 @@
   user:
     name: "debian"
     state: absent
-  when: ansible_user != "debian"
+  when: ansible_user|default() != "debian"

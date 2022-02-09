@@ -1,0 +1,9 @@
+- name: WIREGUARD - Set config
+  template:
+    src: wg.conf.j2
+    dest: /etc/wireguard/{{ item.name }}.conf
+  loop: "{{ VRF.value.interfaces.wireguards }}"
+  loop_control:
+    label: "VRF:{{ VRF.key }} Interface:{{ item.name }}"
+  when: VRF.value.interfaces.wireguards is defined
+  become: true

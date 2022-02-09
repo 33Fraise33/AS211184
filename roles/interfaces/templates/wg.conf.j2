@@ -1,0 +1,12 @@
+[Interface]
+ListenPort = {{ item.wg.port }}
+PrivateKey = {{ item.wg.private_key }}
+
+{% for wg_peer in item.wg.peers %}
+[Peer]
+# Name = {{ wg_peer.name }}
+PublicKey = {{ wg_peer.public_key }}
+AllowedIPs = 0.0.0.0/0, ::/0
+PersistentKeepalive = {{ item.wg.keepalive }}
+
+{% endfor %}
