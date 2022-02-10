@@ -11,6 +11,10 @@ service integrated-vtysh-config
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 {% include '01-static.j2' %}
 {% endfor %}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!! ROUTE FILTERING
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+{% include '04-route_filtering.j2' %}
 !
 line vty
 !
