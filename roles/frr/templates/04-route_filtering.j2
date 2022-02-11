@@ -1,10 +1,22 @@
 {% if route_filtering is defined %}
+! PREFIX LISTS
 {%  for pl in route_filtering.prefix_lists|default() %}
 !!!!! {{ pl.name }}
 {%    for entry in pl.lists %}
 ip prefix-list {{ pl.name }} {{ entry.policy }} {{ entry.prefix }}
 {%- if entry.le is defined %} le {{ entry.le }}{% endif %}
 {%- if entry.ge is defined %} ge {{ entry.ge }}{% endif %}
+
+{%    endfor %}
+{%  endfor %}
+!
+! ROUTE MAPS
+{%  for rm in route_filtering.route_maps|default() %}
+!!!!! {{ rm.name }}
+{%    for entry in rm.maps %}{%- if entry.match.prefix_list is defined %} match ip address prefix-list {{ entry.match.v4_prefix_list }}{% endif %}
+route-map {{ rm.name }} {{ entry.policy }} {{ (loop.index * 10) }}
+{% if entry.match.v4_prefix_list is defined %} match ip address prefix-list {{ entry.match.v4_prefix_list }}{% endif %}
+{% if entry.match.v6_prefix_list is defined %} match ipv6 address prefix-list {{ entry.match.v6_prefix_list }}{% endif %}
 
 {%    endfor %}
 {%  endfor %}

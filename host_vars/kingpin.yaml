@@ -140,13 +140,16 @@ route_filtering:
           policy: permit
           ge: 16
   route_maps:
-    - name: DEFAULT_ONLY
+    - name: rm-DEFAULT_ONLY
       maps:
         - match:
-            prefix_list: pl-default
+            v4_prefix_list: pl-default
           policy: permit
-    - name: AS211184_OUT
+        - match:
+            v6_prefix_list: pl-default
+          policy: permit
+    - name: rm-AS211184
       maps:
         - match:
-            prefix_list: pl-AS211184
+            v6_prefix_list: pl-AS211184
           policy: permit
