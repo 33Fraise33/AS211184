@@ -56,20 +56,22 @@ VRFS:
       bgp:
         as: 211184
         router_id: 193.148.249.106
-        # redistribute:
-        #   - connected
         neighbor_groups:
-          # - peer: default
-          #   disabled: true
-          #   soft_reconfiguration_inbound: true
-          #   timers:
-          #     keepalive: 20
-          #     hold: 60
-          #   route_maps:
-          #     - direction: in
-          #       name: DEFAULT_ONLY
-          #     - direction: out
-          #       name: AS211184_OUT
+          - peer: default
+            soft_reconfiguration_inbound: true
+            activate: 
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184
+            aggregates:
+              v6:
+                - 2a0e:b107:1940::/44
           - peer: remote-sites
             soft_reconfiguration_inbound: true
             activate: 
@@ -87,10 +89,10 @@ VRFS:
               v6:
                 - 2a0e:b107:1940::/44
         neighbors:
-          # - neighbor_group: default
-          #   peer: 2a0c:9a40:1::1
-          #   as: 34927
-          #   description: "IFOG PEERING" 
+          - neighbor_group: default
+            peer: 2a0c:9a40:1::1
+            as: 34927
+            description: "IFOG PEERING" 
           - neighbor_group: remote-sites
             peer: 2a0e:b107:1941:34::2
             as: 65501
@@ -135,7 +137,7 @@ VRFS:
 
 route_filtering:
   prefix_lists:
-    - name: pl-default
+    - name: pl-default-public
       lists:
         - prefix: 0.0.0.0/0
           policy: permit
@@ -162,13 +164,13 @@ route_filtering:
           policy: permit
           ge: 16
   route_maps:
-    - name: rm-DEFAULT_ONLY
+    - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
         - match:
-            v4_prefix_list: pl-default
+            v4_prefix_list: pl-default-public
           policy: permit
         - match:
-            v6_prefix_list: pl-default
+            v6_prefix_list: pl-default-public
           policy: permit
     - name: rm-AS211184
       maps:
