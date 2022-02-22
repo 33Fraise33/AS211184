@@ -4,7 +4,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1165:1000::1/64
+            - 2a0e:b107:1941::1/64
         ipv4:
           addresses:
             - 127.0.0.1/16
@@ -25,7 +25,7 @@ VRFS:
           mtu: 1420
           wg:
             port: 51820
-            prefix: "2a0e:b107:1165:1034::"
+            prefix: "2a0e:b107:1941:34::"
             keepalive: 25
             private_key: !vault |
               $ANSIBLE_VAULT;1.1;AES256
@@ -50,29 +50,51 @@ VRFS:
                   6666373664323166393935666330663130356330333064646534
           ipv6:
             addresses:
-              - 2a0e:b107:1165:1034::1/64
+              - 2a0e:b107:1941:34::1/64
+              - fe80::5054:ff:fe99:96e8/64
     routing:
-      # bgp:
-      #   as: 211184
-      #   router_id: 2a0c:9a40:1::916
-      #   redistribute:
-      #     - connected
-      #   neighbor_groups:
-      #     - name: IFOG
-      #       soft_reconfiguration_inbound: true
-      #       timers:
-      #         keepalive: 20
-      #         hold: 60
-      #       route_maps:
-      #         - direction: in
-      #           name: DEFAULT_ONLY
-      #         - direction: out
-      #           name: AS211184_OUT
-      #   neighbors:
-      #     - neighbor_group: IFOG
-      #       address: 2a0c:9a40:1::1
-      #       as: AS34927
-      #       description: "IFOG PEERING"
+      bgp:
+        as: 211184
+        router_id: 193.148.249.106
+        # redistribute:
+        #   - connected
+        neighbor_groups:
+          # - peer: default
+          #   disabled: true
+          #   soft_reconfiguration_inbound: true
+          #   timers:
+          #     keepalive: 20
+          #     hold: 60
+          #   route_maps:
+          #     - direction: in
+          #       name: DEFAULT_ONLY
+          #     - direction: out
+          #       name: AS211184_OUT
+          - peer: remote-sites
+            soft_reconfiguration_inbound: true
+            activate: 
+              - v6
+              - v4
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES
+              - direction: out
+                name: rm-REMOTE_SITES
+            aggregates:
+              v6:
+                - 2a0e:b107:1940::/44
+        neighbors:
+          # - neighbor_group: default
+          #   peer: 2a0c:9a40:1::1
+          #   as: 34927
+          #   description: "IFOG PEERING" 
+          - neighbor_group: remote-sites
+            peer: 2a0e:b107:1941:34::2
+            as: 65501
+            description: "ASGARD" 
       static:
         - destination: 0.0.0.0/0
           gateway: 193.148.249.1
@@ -82,7 +104,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1165:1001::1/64
+            - 2a0e:b107:1941:1::1/64
       physicals:
         - name: "ens19"
           enabled: false
@@ -93,7 +115,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1165:1002::1/64
+            - 2a0e:b107:1941:2::1/64
       physicals:
         - name: "ens20"
           enabled: false
@@ -104,7 +126,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1165:1003::1/64
+            - 2a0e:b107:1941:3::1/64
       physicals:
         - name: "ens21"
           enabled: false
@@ -125,9 +147,9 @@ route_filtering:
           ge: 0
     - name: pl-AS211184
       lists:
-        - prefix: 2a0e:b107:1165::/48
+        - prefix: 2a0e:b107:1940::/44
           policy: permit
-          ge: 48
+          ge: 44
     - name: pl-RFC1918
       lists:
         - prefix: 10.0.0.0/8
@@ -152,4 +174,12 @@ route_filtering:
       maps:
         - match:
             v6_prefix_list: pl-AS211184
+          policy: permit
+    - name: rm-REMOTE_SITES
+      maps: 
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match: 
+            v4_prefix_list: pl-RFC1918
           policy: permit

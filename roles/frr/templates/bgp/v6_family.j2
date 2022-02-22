@@ -1,0 +1,7 @@
+{% include 'bgp/address_family.j2' %}
+{% for aggregate in bgp_item.aggregates.v6|default() %}
+  aggregate-address {{ aggregate }} summary-only
+{% endfor %}
+{% if bgp_item.activate is defined and 'v6' in bgp_item.activate %}
+  neighbor {{ bgp_item.peer }} activate
+{% endif %}

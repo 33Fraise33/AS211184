@@ -1,0 +1,15 @@
+{% if bgp_item.neighbor_group is defined %}
+ neighbor {{ bgp_item.peer }} peer-group {{ bgp_item.neighbor_group }}
+{% endif %}
+{% if bgp_item.description is defined %}
+ neighbor {{ bgp_item.peer }} description {{ bgp_item.description }}
+{% endif %}
+{% if bgp_item.disabled|default(false) %}
+ neighbor {{ bgp_item.peer }} shutdown
+{% endif %}
+{% if bgp_item.as is defined %}
+ neighbor {{ bgp_item.peer }} remote-as {{ bgp_item.as }} 
+{% endif %}
+{% if bgp_item.timers is defined %}
+ neighbor {{ bgp_item.peer }} timers {{ bgp_item.timers.keepalive }} {{ bgp_item.timers.hold }}
+{% endif %}

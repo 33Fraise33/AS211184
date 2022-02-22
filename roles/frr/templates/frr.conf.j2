@@ -10,6 +10,7 @@ service integrated-vtysh-config
 !!!!!!! VRF: {{ vrf_key }}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 {% include '01-static.j2' %}
+{% include '02-bgp.j2' %}
 {% endfor %}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!! ROUTE FILTERING

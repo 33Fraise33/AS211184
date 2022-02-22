@@ -1,0 +1,9 @@
+{% for rm in bgp_item.route_maps|default() %}
+  neighbor {{ bgp_item.peer }} route-map {{ rm.name }} {{ rm.direction }}
+{% endfor %}
+{% if bgp_item.soft_reconfiguration_inbound|default(false) %}
+  neighbor {{ bgp_item.peer }} soft-reconfiguration inbound
+{% endif %}
+{% if bgp_item.redistribute is defined %}
+  redistribute{% for rdst in bgp_item.redistribute %} {{ rdst }}{% endfor %}
+{% endif %}

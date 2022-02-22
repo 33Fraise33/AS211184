@@ -1,0 +1,31 @@
+{% if VRF.routing.bgp is defined %}
+router bgp {{ VRF.routing.bgp.as }}{% if vrf_key != "default" %} vrf {{ vrf_key }}{% endif %}
+ 
+ bgp router-id {{ VRF.routing.bgp.router_id }}
+ bgp graceful-restart
+ no bgp client-to-client reflection
+ no bgp default ipv4-unicast
+{%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
+ neighbor {{ bgp_item.peer }} peer-group
+{% include 'bgp/peer.j2' %}
+{%  endfor %}
+{%  for bgp_item in VRF.routing.bgp.neighbors|default() %}
+{% include 'bgp/peer.j2' %}
+{%  endfor %}
+ address-family ipv4 unicast
+{%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
+{% include 'bgp/v4_family.j2' %}
+{%  endfor %}
+{%  for bgp_item in VRF.routing.bgp.neighbors|default() %}
+{% include 'bgp/v4_family.j2' %}
+{%  endfor %}
+ exit-address-family
+ address-family ipv6 unicast
+{%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
+{% include 'bgp/v6_family.j2' %}
+{%  endfor %}
+{%  for bgp_item in VRF.routing.bgp.neighbors|default() %}
+{% include 'bgp/v6_family.j2' %}
+{%  endfor %}
+ exit-address-family
+{% endif %}
