@@ -17,3 +17,6 @@
     group: frr
   notify: reload frr
   become: true
+
+- import_tasks: frr_exporter.yaml
+  tags: frr_exporter

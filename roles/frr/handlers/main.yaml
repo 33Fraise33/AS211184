@@ -4,3 +4,11 @@
     state: reloaded
     enabled: true
   become: true
+
+- name: restart frr_exporter
+  systemd:
+    daemon_reload: true
+    name: frr_exporter
+    state: restarted
+    enabled: yes
+  become: true
