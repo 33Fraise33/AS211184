@@ -82,12 +82,13 @@ VRFS:
               hold: 60
             route_maps:
               - direction: in
-                name: rm-REMOTE_SITES
+                name: rm-REMOTE_SITES-in
               - direction: out
-                name: rm-REMOTE_SITES
+                name: rm-REMOTE_SITES-out
             aggregates:
               v6:
                 - 2a0e:b107:1940::/44
+                - ::/0
         neighbors:
           - neighbor_group: default
             peer: 2a0c:9a40:1::1
@@ -147,6 +148,12 @@ route_filtering:
           policy: permit
           le: 48
           ge: 0
+    - name: pl-default
+      lists:
+        - prefix: 0.0.0.0/0
+          policy: permit
+        - prefix: ::/0
+          policy: permit
     - name: pl-AS211184
       lists:
         - prefix: 2a0e:b107:1940::/44
@@ -177,11 +184,25 @@ route_filtering:
         - match:
             v6_prefix_list: pl-AS211184
           policy: permit
-    - name: rm-REMOTE_SITES
+    - name: rm-REMOTE_SITES-in
       maps: 
         - match:
             v6_prefix_list: pl-AS211184
           policy: permit
         - match: 
             v4_prefix_list: pl-RFC1918
+          policy: permit
+    - name: rm-REMOTE_SITES-out
+      maps: 
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match: 
+            v4_prefix_list: pl-RFC1918
+          policy: permit
+        - match:
+            v4_prefix_list: pl-default
+          policy: permit
+        - match:
+            v6_prefix_list: pl-default
           policy: permit
