@@ -4,7 +4,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1941::1/64
+            - 2a12:4946:4001::1/64
         ipv4:
           addresses:
             - 127.0.0.1/16
@@ -25,7 +25,7 @@ VRFS:
           mtu: 1420
           wg:
             port: 51820
-            prefix: "2a0e:b107:1941:34::"
+            prefix: "2a12:4946:4001:34::"
             keepalive: 25
             private_key: !vault |
               $ANSIBLE_VAULT;1.1;AES256
@@ -50,7 +50,9 @@ VRFS:
                   6666373664323166393935666330663130356330333064646534
           ipv6:
             addresses:
-              - 2a0e:b107:1941:34::1/64
+              - 2a12:4946:4001:34::1/64
+              # - 2a12:4946:4001:34::2/64
+              # - 2a12:4946:4001:34::3/64
               - fe80::5054:ff:fe99:96e8/64
     routing:
       bgp:
@@ -71,7 +73,7 @@ VRFS:
                 name: rm-AS211184
             aggregates:
               v6:
-                - 2a0e:b107:1940::/44
+                - 2a12:4946:4000::/44
           - peer: remote-sites
             soft_reconfiguration_inbound: true
             activate: 
@@ -87,7 +89,7 @@ VRFS:
                 name: rm-REMOTE_SITES-out
             aggregates:
               v6:
-                - 2a0e:b107:1940::/44
+                - 2a12:4946:4000::/44
                 - ::/0
         neighbors:
           - neighbor_group: default
@@ -95,19 +97,15 @@ VRFS:
             as: 34927
             description: "IFOG PEERING" 
           - neighbor_group: remote-sites
-            peer: 2a0e:b107:1941:34::2
+            peer: 2a12:4946:4001:34::10
             as: 65501
             description: "ASGARD" 
-      static:
-        - destination: 0.0.0.0/0
-          gateway: 193.148.249.1
-          metric: 5
   kleyrex:
     interfaces:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1941:1::1/64
+            - 2a12:4946:4001:1::1/64
       physicals:
         - name: "ens19"
           enabled: false
@@ -118,7 +116,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1941:2::1/64
+            - 2a12:4946:4001:2::1/64
       physicals:
         - name: "ens20"
           enabled: false
@@ -129,7 +127,7 @@ VRFS:
       loopback:
         ipv6:
           addresses:
-            - 2a0e:b107:1941:3::1/64
+            - 2a12:4946:4001:3::1/64
       physicals:
         - name: "ens21"
           enabled: false
@@ -156,7 +154,7 @@ route_filtering:
           policy: permit
     - name: pl-AS211184
       lists:
-        - prefix: 2a0e:b107:1940::/44
+        - prefix: 2a12:4946:4000::/44
           policy: permit
           ge: 44
     - name: pl-RFC1918
