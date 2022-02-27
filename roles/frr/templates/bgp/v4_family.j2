@@ -1,8 +1,3 @@
-{% include 'bgp/address_family.j2' %}
-{% if bgp_item.activate is defined and 'v4' in bgp_item.activate %}
-  neighbor {{ bgp_item.peer }} activate
-{% endif %}
-
 {% for aggregate in VRF.routing.bgp.aggregates.v4|default() %}
   aggregate-address {{ aggregate.address }}
   {%- if aggregate.summary_only|default(false) %} summary-only{% endif %}
@@ -11,9 +6,12 @@
 {% for network in VRF.routing.bgp.networks.v4|default() %}
   network {{ network }}
 {% endfor %}
-{% for imp in VRF.routing.bgp.imports.v4|default() %}
+{% for imp in VRF.routing.bgp.imports.v4.vrfs|default() %}
   import vrf {{ imp }}
 {% endfor %}
+{% if VRF.routing.bgp.imports.v4.route_map is defined or false %}
+  import vrf route-map {{ VRF.routing.bgp.imports.v4.route_map }}
+{% endif %}
 {%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
 {% include 'bgp/address_family.j2' %}
 {% if bgp_item.activate is defined and 'v4' in bgp_item.activate %}

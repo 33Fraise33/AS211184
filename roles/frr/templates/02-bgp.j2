@@ -2,7 +2,9 @@
 router bgp {{ VRF.routing.bgp.as }}{% if vrf_key != "default" %} vrf {{ vrf_key }}{% endif %}
 
  bgp router-id {{ VRF.routing.bgp.router_id }}
+{% if VRF.routing.bgp.graceful_restart|default(true) %}
  bgp graceful-restart
+{% endif %}
  no bgp client-to-client reflection
  no bgp default ipv4-unicast
  no bgp network import-check

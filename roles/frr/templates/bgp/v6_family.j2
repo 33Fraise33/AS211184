@@ -6,9 +6,12 @@
 {% for network in VRF.routing.bgp.networks.v6|default() %}
   network {{ network }}
 {% endfor %}
-{% for imp in VRF.routing.bgp.imports.v6|default() %}
+{% for imp in VRF.routing.bgp.imports.v6.vrfs|default() %}
   import vrf {{ imp }}
 {% endfor %}
+{% if VRF.routing.bgp.imports.v6.route_map is defined or false %}
+  import vrf route-map {{ VRF.routing.bgp.imports.v6.route_map }}
+{% endif %}
 {%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
 {% include 'bgp/address_family.j2' %}
 {% if bgp_item.activate is defined and 'v6' in bgp_item.activate %}

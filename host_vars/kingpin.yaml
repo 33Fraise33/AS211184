@@ -16,48 +16,18 @@ VRFS:
           ipv6:
             addresses:
               - 2a0c:9a40:1::916/48
-      wireguards:
-        - name: wgRemote
-          description: "WG Transit to remote sites"
-          mtu: 1420
-          wg:
-            port: 51820
-            prefix: "2a12:4946:4001:34::"
-            keepalive: 25
-            private_key: !vault |
-              $ANSIBLE_VAULT;1.1;AES256
-              37393265653834313137636263613566613734663730666236363437663865386535316638343436
-              3938383464376465313962663735653234356434643535620a333562333261306433313266326164
-              39333633633763656634646635366430376262306664333536393130373930646330353965303235
-              3838376330323832330a646535653735616438343036363962653735383663643133613430326366
-              61343665323665616533383866346362373534393338633931383066373366326337393364633063
-              3537303362626231336566303866393565393366313630353139
-            public_key: AT8EI+D8hCr6pn5jY7FeEeDTLRbr7vEPSPWYpE7fT0U=
-            peers:
-              - name: ASGARD
-                id: 2
-                public_key: FEXcWIEspuTBFii/gPT1vfJk3LYllBIklyHFgW4tim8=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  61353564613932613931346366346466643366663965363232383939393731383533323234386234
-                  3033643461636661343936383032623537666631383239350a343265306661363933633330666261
-                  33393231633032323433323333643436393135353161303566303437346430316637346661313465
-                  6330623330656161300a653964346233366531336132353634366533623064393934356533656639
-                  63306437363733383063653861333736386432346165386131643261653633643835353837626334
-                  6666373664323166393935666330663130356330333064646534
-          ipv6:
-            addresses:
-              - 2a12:4946:4001:34::1/64
-              # - 2a12:4946:4001:34::2/64
-              # - 2a12:4946:4001:34::3/64
-              - fe80::5054:ff:fe99:96e8/64
     routing:
       bgp:
         as: 211184
         router_id: 193.148.249.106
         imports:
           v6:
-            - locix
+            vrfs: 
+              - locix
+              - remote-sites
+          v4: 
+            vrfs: 
+              - remote-sites
         networks:
           v6:
             - ::/0
@@ -77,29 +47,12 @@ VRFS:
               - direction: in
                 name: rm-DEFAULT_ONLY_PUBLIC
               - direction: out
-                name: rm-AS211184-exact
-          - peer: remote-sites
-            soft_reconfiguration_inbound: true
-            activate: 
-              - v6
-              - v4
-            timers:
-              keepalive: 20
-              hold: 60
-            route_maps:
-              - direction: in
-                name: rm-REMOTE_SITES-in
-              - direction: out
-                name: rm-REMOTE_SITES-out                
+                name: rm-AS211184-exact             
         neighbors:
           - neighbor_group: default
             peer: 2a0c:9a40:1::1
             as: 34927
             description: "IFOG PEERING" 
-          - neighbor_group: remote-sites
-            peer: 2a12:4946:4001:34::10
-            as: 65501
-            description: "ASGARD" 
   kleyrex:
     interfaces:
       loopback:
@@ -133,7 +86,9 @@ VRFS:
         router_id: 185.1.167.89
         imports: 
           v6:
-            - default
+            route_map: rm-AS211184
+            vrfs:
+              - default
         networks:
           v6:
             - 2a12:4946:4000::/44
@@ -174,6 +129,89 @@ VRFS:
           enabled: false
           description: "EVIX Peering"
           mtu: 1500
+  remote-sites:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4001:10::1/64
+        ipv4: 
+          addresses: 
+            - 10.10.33.1/32
+      wireguards:
+        - name: wgRemote
+          description: "WG Transit to remote sites"
+          mtu: 1420
+          wg:
+            port: 51820
+            prefix: "2a12:4946:4001:34::"
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              37393265653834313137636263613566613734663730666236363437663865386535316638343436
+              3938383464376465313962663735653234356434643535620a333562333261306433313266326164
+              39333633633763656634646635366430376262306664333536393130373930646330353965303235
+              3838376330323832330a646535653735616438343036363962653735383663643133613430326366
+              61343665323665616533383866346362373534393338633931383066373366326337393364633063
+              3537303362626231336566303866393565393366313630353139
+            public_key: AT8EI+D8hCr6pn5jY7FeEeDTLRbr7vEPSPWYpE7fT0U=
+            peers:
+              - name: ASGARD
+                id: 2
+                public_key: FEXcWIEspuTBFii/gPT1vfJk3LYllBIklyHFgW4tim8=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  61353564613932613931346366346466643366663965363232383939393731383533323234386234
+                  3033643461636661343936383032623537666631383239350a343265306661363933633330666261
+                  33393231633032323433323333643436393135353161303566303437346430316637346661313465
+                  6330623330656161300a653964346233366531336132353634366533623064393934356533656639
+                  63306437363733383063653861333736386432346165386131643261653633643835353837626334
+                  6666373664323166393935666330663130356330333064646534
+          ipv6:
+            addresses:
+              - 2a12:4946:4001:34::1/64
+              # - 2a12:4946:4001:34::2/64
+              # - 2a12:4946:4001:34::3/64
+              - fe80::5054:ff:fe99:96e8/64
+    routing:
+      bgp:
+        graceful_restart: false
+        as: 65500
+        router_id: 10.10.33.1
+        imports: 
+          v6: 
+            route_map: rm-default
+            vrfs: 
+              - default
+          v4: 
+            vrfs: 
+              - default
+        # networks: # not needed, already forwarded from route_leak from default vrf
+        #   v6:
+        #     - ::/0
+        aggregates: 
+          v6: 
+            - address: 2a12:4946:4000::/44
+              summary_only: false
+        neighbor_groups:
+          - peer: remote-sites
+            soft_reconfiguration_inbound: true
+            activate: 
+              - v6
+              - v4
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-REMOTE_SITES-out                
+        neighbors:
+          - neighbor_group: remote-sites
+            peer: 2a12:4946:4001:34::10
+            as: 65501
+            description: "ASGARD" 
 
 route_filtering:
   prefix_lists:
@@ -213,6 +251,14 @@ route_filtering:
         - prefix: 192.168.0.0/16
           policy: permit
           ge: 16
+    - name: pl-LocalIpv4s
+      lists:
+        - prefix: 10.10.33.1/32
+          policy: permit
+        - prefix: 193.148.249.0/24
+          policy: permit
+        - prefix: 185.1.166.0/23
+          policy: permit
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
@@ -226,6 +272,11 @@ route_filtering:
       maps:
         - match:
             v6_prefix_list: pl-AS211184-exact
+          policy: permit
+    - name: rm-AS211184
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
           policy: permit
     - name: rm-REMOTE_SITES-in
       maps: 
@@ -248,4 +299,17 @@ route_filtering:
           policy: permit
         - match:
             v6_prefix_list: pl-default
+          policy: permit
+    - name: rm-LocalIpv4s
+      maps: 
+        - match: 
+            v4_prefix_list: pl-LocalIpv4s
+          policy: permit
+    - name: rm-default
+      maps: 
+        - match:
+            v6_prefix_list: pl-default
+          policy: permit
+        - match:
+            v4_prefix_list: pl-default
           policy: permit
