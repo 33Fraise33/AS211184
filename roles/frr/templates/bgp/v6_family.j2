@@ -1,7 +1,24 @@
-{% include 'bgp/address_family.j2' %}
-{% for aggregate in bgp_item.aggregates.v6|default() %}
-  aggregate-address {{ aggregate }} summary-only
+{% for aggregate in VRF.routing.bgp.aggregates.v6|default() %}
+  aggregate-address {{ aggregate.address }}
+  {%- if aggregate.summary_only|default(false) %} summary-only{% endif %}
+
 {% endfor %}
+{% for network in VRF.routing.bgp.networks.v6|default() %}
+  network {{ network }}
+{% endfor %}
+{% for imp in VRF.routing.bgp.imports.v6|default() %}
+  import vrf {{ imp }}
+{% endfor %}
+{%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
+{% include 'bgp/address_family.j2' %}
 {% if bgp_item.activate is defined and 'v6' in bgp_item.activate %}
   neighbor {{ bgp_item.peer }} activate
 {% endif %}
+{%  endfor %}
+{%  for bgp_item in VRF.routing.bgp.neighbors|default() %}
+{% include 'bgp/address_family.j2' %}
+{% if bgp_item.activate is defined and 'v6' in bgp_item.activate %}
+  neighbor {{ bgp_item.peer }} activate
+{% endif %}
+{%  endfor %}
+

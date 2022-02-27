@@ -30,8 +30,10 @@ iface {{ intf_name }}
 {% endfor %}
 {% for v6_addr in intf.ipv6.addresses|default() %}
     address {{ v6_addr }}
-    ipv6-addrgen yes
 {% endfor %}
+{% if intf.ipv6 is defined %}
+    ipv6-addrgen yes
+{% endif %}
 {% if intf.ipv4 is defined and intf.ipv4.gateway is defined %}
     gateway {{ intf.ipv4.gateway  }}
 {% endif %}
