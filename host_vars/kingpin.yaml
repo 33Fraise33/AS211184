@@ -24,6 +24,7 @@ VRFS:
           v6:
             vrfs: 
               - locix
+              - kleyrex
               - remote-sites
           v4: 
             vrfs: 
@@ -61,9 +62,50 @@ VRFS:
             - 2a12:4946:4001:1::1/64
       physicals:
         - name: "ens19"
-          enabled: false
+          ipv6: 
+            addresses: 
+              - 2001:7f8:33::a121:1184:1/64
+          ipv4: 
+            addresses:
+              - 193.189.83.6/23
           description: "KleyReX Peering"
           mtu: 1500
+    routing:
+      bgp:
+        as: 211184
+        router_id: 193.189.83.6
+        imports: 
+          v6:
+            route_map: rm-AS211184
+            vrfs:
+              - default
+        networks:
+          v6:
+            - 2a12:4946:4000::/44
+        neighbor_groups:
+          - peer: kleyrex
+            as: 31142
+            soft_reconfiguration_inbound: true
+            activate: 
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184-exact
+        neighbors:
+          - neighbor_group: kleyrex
+            peer: 2001:7f8:33::a103:1142:1
+            description: "Kleyrex RS1"
+          - neighbor_group: kleyrex
+            peer: 2001:7f8:33::a103:1142:2
+            description: "Kleyrex RS2"
+          - neighbor_group: kleyrex
+            peer: 2001:7f8:33::a103:1142:3
+            description: "Kleyrex RS3"  
   locix:
     interfaces:
       loopback:
@@ -94,6 +136,7 @@ VRFS:
             - 2a12:4946:4000::/44
         neighbor_groups:
           - peer: locix
+            as: 202409
             soft_reconfiguration_inbound: true
             activate: 
               - v6
@@ -108,15 +151,12 @@ VRFS:
         neighbors:
           - neighbor_group: locix
             peer: 2001:7f8:f2:e1::babe:1
-            as: 202409
             description: "Locix RS1"
           - neighbor_group: locix
             peer: 2001:7f8:f2:e1::dead:1
-            as: 202409
             description: "Locix RS2"
           - neighbor_group: locix
             peer: 2001:7f8:f2:e1::be5a
-            as: 202409
             description: "Locix RS3"
   evix:
     interfaces:
@@ -180,7 +220,7 @@ VRFS:
         router_id: 10.10.33.1
         imports: 
           v6: 
-            route_map: rm-default
+            route_map: rm-REMOTE_SITES-out
             vrfs: 
               - default
           v4: 
