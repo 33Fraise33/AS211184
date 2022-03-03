@@ -29,9 +29,6 @@ VRFS:
           v4: 
             vrfs: 
               - remote-sites
-        networks:
-          v6:
-            - ::/0
         aggregates: 
           v6: 
             - address: 2a12:4946:4000::/44
@@ -39,6 +36,9 @@ VRFS:
         neighbor_groups:
           - peer: default
             soft_reconfiguration_inbound: true
+            redistribute: 
+              - static
+              - connected 
             activate: 
               - v6
             timers:
@@ -54,6 +54,9 @@ VRFS:
             peer: 2a0c:9a40:1::1
             as: 34927
             description: "IFOG PEERING" 
+      static:
+        - destination: ::/0
+          gateway: 2a0c:9a40:1::1
   kleyrex:
     interfaces:
       loopback:
@@ -86,6 +89,8 @@ VRFS:
           - peer: kleyrex
             as: 31142
             soft_reconfiguration_inbound: true
+            redistribute: 
+              - connected 
             activate: 
               - v6
             timers:
@@ -138,6 +143,8 @@ VRFS:
           - peer: locix
             as: 202409
             soft_reconfiguration_inbound: true
+            redistribute: 
+              - connected 
             activate: 
               - v6
             timers:
@@ -226,9 +233,6 @@ VRFS:
           v4: 
             vrfs: 
               - default
-        # networks: # not needed, already forwarded from route_leak from default vrf
-        #   v6:
-        #     - ::/0
         aggregates: 
           v6: 
             - address: 2a12:4946:4000::/44
@@ -236,6 +240,8 @@ VRFS:
         neighbor_groups:
           - peer: remote-sites
             soft_reconfiguration_inbound: true
+            redistribute: 
+              - connected 
             activate: 
               - v6
               - v4
