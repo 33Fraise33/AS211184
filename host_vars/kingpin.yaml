@@ -186,12 +186,11 @@ VRFS:
           addresses: 
             - 10.10.33.1/32
       wireguards:
-        - name: wgRemote
-          description: "WG Transit to remote sites"
+        - name: wgAsgard
+          description: "WG Transit to Asgard"
           mtu: 1420
           wg:
             port: 51820
-            prefix: "2a12:4946:4001:34::"
             keepalive: 25
             private_key: !vault |
               $ANSIBLE_VAULT;1.1;AES256
@@ -204,7 +203,7 @@ VRFS:
             public_key: AT8EI+D8hCr6pn5jY7FeEeDTLRbr7vEPSPWYpE7fT0U=
             peers:
               - name: ASGARD
-                id: 2
+                id: 10
                 public_key: FEXcWIEspuTBFii/gPT1vfJk3LYllBIklyHFgW4tim8=
                 private_key: !vault |
                   $ANSIBLE_VAULT;1.1;AES256
@@ -216,13 +215,45 @@ VRFS:
                   6666373664323166393935666330663130356330333064646534
           ipv6:
             addresses:
-              - 2a12:4946:4001:34::1/64
-              # - 2a12:4946:4001:34::2/64
-              # - 2a12:4946:4001:34::3/64
-              - fe80::5054:ff:fe99:96e8/64
+              - 2a12:4946:4001:34::1:1/112
+              - fe80:34::1:1/64
           ipv4: 
             addresses:
-              - 10.10.34.1/24
+              - 10.10.34.1/30
+        - name: wgMom
+          description: "WG Transit to MOM"
+          mtu: 1420
+          wg:
+            port: 51821
+            prefix: "2a12:4946:4001:34::"
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              37393265653834313137636263613566613734663730666236363437663865386535316638343436
+              3938383464376465313962663735653234356434643535620a333562333261306433313266326164
+              39333633633763656634646635366430376262306664333536393130373930646330353965303235
+              3838376330323832330a646535653735616438343036363962653735383663643133613430326366
+              61343665323665616533383866346362373534393338633931383066373366326337393364633063
+              3537303362626231336566303866393565393366313630353139
+            public_key: AT8EI+D8hCr6pn5jY7FeEeDTLRbr7vEPSPWYpE7fT0U=
+            peers:
+              - name: MOM
+                public_key: hGCG48gXMEi2Kf8KXbWA+LppaSGyHaZkqtjHkGGbvxo=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  31333632386264363262366439663463393337333836356531386235626539383266623164346561
+                  6131643537666333623937616164336536653661616130370a643561353036373931663834303364
+                  65366462386339396465383731326131393234373436626361326438396133386262636636626335
+                  6335646432366234390a353937326633646334333739363734623161663432316637306634336431
+                  62643138613864363066613036386533366439643162353064313239383539343065313662373633
+                  3166333334396330666634393935623737356533363038383337
+          ipv6:
+            addresses:
+              - 2a12:4946:4001:34::2:1/112
+              - fe80:34::2:1/64
+          ipv4: 
+            addresses:
+              - 10.10.34.5/30
     routing:
       bgp:
         graceful_restart: false
@@ -255,17 +286,23 @@ VRFS:
                 name: rm-REMOTE_SITES-out                
         neighbors:
           - neighbor_group: remote-sites
-            peer: 2a12:4946:4001:34::10
+            peer: 2a12:4946:4001:34::1:2
             activate:
               - v6
             as: 65501
             description: "ASGARDv6" 
           - neighbor_group: remote-sites
-            peer: 10.10.34.10
+            peer: 10.10.34.2
             activate:
               - v4
             as: 65501
             description: "ASGARDv4" 
+          - neighbor_group: remote-sites
+            peer: 10.10.34.6
+            activate:
+              - v4
+            as: 65511
+            description: "MOMv4" 
 
 route_filtering:
   prefix_lists:
