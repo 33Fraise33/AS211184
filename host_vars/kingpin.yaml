@@ -176,7 +176,7 @@ VRFS:
           enabled: false
           description: "EVIX Peering"
           mtu: 1500
-  remote-sites:
+  remotesites:
     interfaces:
       loopback:
         ipv6:
@@ -244,7 +244,7 @@ VRFS:
           - peer: remote-sites
             soft_reconfiguration_inbound: true
             redistribute: 
-              - connected 
+              - connected
             timers:
               keepalive: 20
               hold: 60
