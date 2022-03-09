@@ -220,6 +220,9 @@ VRFS:
               # - 2a12:4946:4001:34::2/64
               # - 2a12:4946:4001:34::3/64
               - fe80::5054:ff:fe99:96e8/64
+          ipv4: 
+            addresses:
+              - 10.10.34.1/24
     routing:
       bgp:
         graceful_restart: false
@@ -242,9 +245,6 @@ VRFS:
             soft_reconfiguration_inbound: true
             redistribute: 
               - connected 
-            activate: 
-              - v6
-              - v4
             timers:
               keepalive: 20
               hold: 60
@@ -256,8 +256,16 @@ VRFS:
         neighbors:
           - neighbor_group: remote-sites
             peer: 2a12:4946:4001:34::10
+            activate:
+              - v6
             as: 65501
-            description: "ASGARD" 
+            description: "ASGARDv6" 
+          - neighbor_group: remote-sites
+            peer: 10.10.34.10
+            activate:
+              - v4
+            as: 65501
+            description: "ASGARDv4" 
 
 route_filtering:
   prefix_lists:
