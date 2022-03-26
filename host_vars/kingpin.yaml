@@ -176,6 +176,54 @@ VRFS:
           enabled: false
           description: "EVIX Peering"
           mtu: 1500
+  fogixp:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4001:3::1/64
+      physicals:
+        - name: "ens22"
+          ipv6:
+            addresses:
+              - 2001:7f8:ca:1::45/64
+          ipv4:
+            addresses:
+              - 185.1.147.45/24
+          description: "FogIXP Peering"
+          mtu: 1500
+    routing:
+      bgp:
+        as: 211184
+        router_id: 185.1.147.45
+        imports: 
+          v6:
+            route_map: rm-AS211184
+            vrfs:
+              - default
+        networks:
+          v6:
+            - 2a12:4946:4000::/44
+        neighbor_groups:
+          - peer: fogixp
+            as: 47498
+            soft_reconfiguration_inbound: true
+            redistribute: 
+              - connected 
+            activate: 
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184-exact
+        neighbors:
+          - neighbor_group: fogixp
+            peer: 2001:7f8:ca:1::111
+            description: "FogIXP RS1"
   remotesites:
     interfaces:
       loopback:
