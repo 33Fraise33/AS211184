@@ -25,10 +25,10 @@ VRFS:
             vrfs: 
               - locix
               - kleyrex
-              - remote-sites
+              - remotesites
           v4: 
             vrfs: 
-              - remote-sites
+              - remotesites
         aggregates: 
           v6: 
             - address: 2a12:4946:4000::/44
@@ -305,7 +305,7 @@ VRFS:
     routing:
       bgp:
         graceful_restart: false
-        as: 65500
+        as: 211184
         router_id: 10.10.33.1
         imports: 
           v6: 
@@ -320,7 +320,7 @@ VRFS:
             - address: 2a12:4946:4000::/44
               summary_only: false
         neighbor_groups:
-          - peer: remote-sites
+          - peer: remotesites
             soft_reconfiguration_inbound: true
             redistribute: 
               - connected
@@ -333,19 +333,19 @@ VRFS:
               - direction: out
                 name: rm-REMOTE_SITES-out                
         neighbors:
-          - neighbor_group: remote-sites
+          - neighbor_group: remotesites
             peer: 2a12:4946:4001:34::1:2
             activate:
               - v6
             as: 65501
             description: "ASGARDv6" 
-          - neighbor_group: remote-sites
+          - neighbor_group: remotesites
             peer: 10.10.34.2
             activate:
               - v4
             as: 65501
             description: "ASGARDv4" 
-          - neighbor_group: remote-sites
+          - neighbor_group: remotesites
             peer: 10.10.34.6
             activate:
               - v4
