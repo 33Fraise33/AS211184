@@ -1,8 +1,6 @@
 frr defaults traditional
 hostname {{ inventory_hostname }}
 domainname {{ domain }}
-log syslog informational
-zebra nexthop proto only
 service integrated-vtysh-config
 !
 {% for vrf_key, VRF in VRFS.items() %}
