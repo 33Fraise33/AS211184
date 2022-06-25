@@ -206,7 +206,6 @@ VRFS:
             - 2a12:4946:4000::/44
         neighbor_groups:
           - peer: fogixp
-            as: 47498
             soft_reconfiguration_inbound: true
             redistribute: 
               - connected 
@@ -222,8 +221,13 @@ VRFS:
                 name: rm-AS211184-exact
         neighbors:
           - neighbor_group: fogixp
+            as: 47498
             peer: 2001:7f8:ca:1::111
             description: "FogIXP RS1"
+          - neighbor_group: fogixp
+            peer: 2001:7f8:ca:1::77
+            description: "Bubacarr Sowe"
+            as: 210387
   remotesites:
     interfaces:
       loopback:
