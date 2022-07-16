@@ -240,7 +240,7 @@ VRFS:
       wireguards:
         - name: wgAsgard
           description: "WG Transit to Asgard"
-          mtu: 1420
+          mtu: 1500
           wg:
             port: 51820
             keepalive: 25
