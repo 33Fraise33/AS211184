@@ -403,17 +403,12 @@ VRFS:
                 name: rm-REMOTE_SITES-out                
         neighbors:
           - neighbor_group: remotesites
-            peer: 2a12:4946:4001:34::1:2
-            activate:
-              - v6
-            as: 65501
-            description: "ASGARDv6" 
-          - neighbor_group: remotesites
             peer: 10.10.34.2
             activate:
               - v4
+              - v6
             as: 65501
-            description: "ASGARDv4" 
+            description: "ASGARD" 
             route_maps:
               - direction: in
                 name: rm-REMOTE_SITES-in
