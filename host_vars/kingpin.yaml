@@ -414,6 +414,11 @@ VRFS:
               - v4
             as: 65501
             description: "ASGARDv4" 
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-ASGARD-out 
           - neighbor_group: remotesites
             peer: 10.10.34.6
             activate:
@@ -479,6 +484,14 @@ route_filtering:
           policy: permit
         - prefix: 185.1.166.0/23
           policy: permit
+    - name: pl-MGMT
+      lists: 
+        - prefix: 172.16.33.0/24
+          policy: permit
+        - prefix: 10.33.0.0/24
+          policy: permit
+        - prefix: 10.10.33.1/32
+          policy: permit
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
@@ -512,10 +525,15 @@ route_filtering:
             v6_prefix_list: pl-AS211184
           policy: permit
         - match: 
-            v4_prefix_list: pl-RFC1918
+            v4_prefix_list: pl-MGMT
           policy: permit
+    - name: rm-ASGARD-out
+      maps: 
         - match:
-            v4_prefix_list: pl-default
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match: 
+            v4_prefix_list: pl-RFC1918
           policy: permit
         - match:
             v6_prefix_list: pl-default
