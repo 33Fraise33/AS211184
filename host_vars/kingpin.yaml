@@ -378,7 +378,7 @@ VRFS:
         router_id: 10.10.33.1
         imports: 
           v6: 
-            route_map: rm-REMOTE_SITES-out
+            route_map: rm-DEFUALT_TO_REMOTE
             vrfs: 
               - default
           v4: 
@@ -500,6 +500,14 @@ route_filtering:
           policy: permit
         - match:
             v6_prefix_list: pl-default-public
+          policy: permit
+    - name: rm-DEFUALT_TO_REMOTE
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match:
+            v6_prefix_list: pl-default
           policy: permit
     - name: rm-AS211184-exact
       maps:
