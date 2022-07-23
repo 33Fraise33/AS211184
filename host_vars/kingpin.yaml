@@ -371,6 +371,39 @@ VRFS:
           ipv4: 
             addresses:
               - 10.10.34.13/30
+        - name: wgMidguard
+          description: "WG Transit to Midguard"
+          mtu: 1420
+          wg:
+            port: 51824
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              32373865366137623232653264383464653031353631313833313737383036616365643338646461
+              3464326238323537643037383261383035623330346630630a303162616339616366643365383937
+              34626665623063623831643237356663646663356233373734313136353363643064663863353130
+              6434663166383834320a326137303831303664316134366364633030353766363034646561643662
+              30343036623935313166323036393935666531333730626338646666613164663136333330643737
+              3439303861333065346637616132613666336630666162633734
+            public_key: OZ0hJSTjJgJYm+f4wD6wBYDzDQ1aq5gJN+RvBzk/fF4=
+            peers:
+              - name: MIDGUARD_CR_HEIMDALL
+                public_key: VWPA1c7JuTK10riRoGq40mkj4TzHsygipz5kipl5Zi8=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  34376630373238633036623038363563623862633430313739346161376230363136376462343035
+                  3563393737323639373931653366643038353865373066390a346139376632623163303331303037
+                  33613064353466656231333438643337343064336333376166383561326336383864333638323037
+                  3564633865363630370a343130623763666230316466396263643466616432653232393161326531
+                  64623565323265326232646531343035316132356462616236616638643539383030383465613131
+                  3266323762636537383435623662363062636337656665323235
+          ipv6:
+            addresses:
+              - 2a12:4946:4001:34::5:1/112
+              - fe80:34::5:1/64
+          ipv4: 
+            addresses:
+              - 10.10.34.17/30
     routing:
       bgp:
         graceful_restart: false
@@ -406,7 +439,6 @@ VRFS:
             peer: 10.10.34.2
             activate:
               - v4
-              - v6
             as: 65501
             description: "ASGARD" 
             route_maps:
@@ -415,17 +447,34 @@ VRFS:
               - direction: out
                 name: rm-ASGARD-out 
           - neighbor_group: remotesites
-            peer: 10.10.34.6
+            peer: 2a12:4946:4001:34::1:2
             activate:
-              - v4
-            as: 65511
-            description: "MOMv4" 
+              - v6
+            as: 65501
+            description: "ASGARDv6" 
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-ASGARD-out 
           - neighbor_group: remotesites
             peer: 10.10.34.10
             activate:
               - v4
             as: 65502
             description: "SAKAARv4" 
+          - neighbor_group: remotesites
+            peer: 10.10.34.18
+            activate:
+              - v4
+            as: 65503
+            description: "MIDGUARDv4" 
+          - neighbor_group: remotesites
+            peer: 10.10.34.6
+            activate:
+              - v4
+            as: 65511
+            description: "MOMv4" 
           - neighbor_group: remotesites
             peer: 10.10.34.14
             activate:
