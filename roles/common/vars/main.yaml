@@ -1,5 +1,7 @@
 node_exporter_version: 1.3.1
 
-user:
-  name: gianni
-  pub_key: https://github.com/33Fraise33.keys
+users:
+  - name: gianni
+    pub_key: https://github.com/33Fraise33.keys
+  - name: tynan
+    pub_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDE4Ln3QQQXbgg7kETsYn340hO/supHMkWcwS/uyT0LjN5IAF81AbkXg/rWYxxXb9pgy8P7FppgJNjwNi5JR2BwZ0AWnwd8SbQBRjA0hCBq4cPM/9XdTL9uPUsN9ZM4MZB6tjWoMTP0Krz+xqkjnPO2fC/YN/ods9Xu6tTEaiNm1JhONra1m1kLDVjeu/Gzcb9XxNah7ArIme9gk1s1nl0ncjtFtXmN3wDZZlI7q2UTsgNJCDV3O/nCzD5y9ZGgEtp8ZrmgYvJb5gOlqfZN7X6TZ/skYPHeZlnCqENo0dBHrlSHpv6FCSdzfPB7479XNc5UYQHUDsyM4ABS8KtB6hIoRutyNvsQHOwgxNrG52NuG4G/pIpplM07e4WUVE+6PZYqRaggiEgTcLlfpwpwy73HvOLcjyviKAqTwyau5cR6REmKZEuRlT9aTiVMZHAsTytRpWGtlTE8HZvLi2Gj2Ec2ryK8M6i44XS88bUwqvufvDiuxuYYISM6z9h389jx680="

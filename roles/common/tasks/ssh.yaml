@@ -1,15 +1,17 @@
 - name: SSH - Create user "{{ user.name }}"
   user:
-    name: "{{ user.name }}"
+    name: "{{ item.name }}"
     groups: sudo
     append: yes
     shell: /bin/bash
+  loop: "{{ users }}"
 
 - name: SSH - Set authorized keyfile for "{{ user.name }}"
   authorized_key:
-    user: "{{ user.name }}"
+    user: "{{ item.name }}"
     state: present
-    key: "{{ user.pub_key }}"
+    key: "{{ item.pub_key }}"
+  loop: "{{ users }}"
 
 - name: SSH - Change daemon settings
   lineinfile:
