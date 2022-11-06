@@ -404,6 +404,40 @@ VRFS:
           ipv4: 
             addresses:
               - 10.10.34.17/30
+        - name: wgRoadwarrior
+          description: "WG Interface Road Warrior clients"
+          mtu: 1420
+          wg:
+            port: 2034
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              36663332356236626537383561346534373866646232383537623465653861353965363230663437
+              6264396533653661343330643036646361303037356236610a643662393234363264633837623132
+              33393032623737363239663262373739633761336432376239393232386362396530373764316337
+              3735383364646563330a633635346661626133636233366231306231616533303362336537663935
+              36626566303832306338613532373161663463343234393561306330646263663562333530326266
+              6635633962393761303364623431303839623465363131383234
+            public_key: 6PvkKYx6mAg2nkDihioEY8Kz8QNwdoejoWc2cqE5pCs=
+            peers:
+              - name: CM_Laptop
+                public_key: jqn7VCUQebPQD34Qo1+aJoMV8AcE53QNI69qY1idJ1A=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  65373035396634623730643064626439626364626133646161613632363930363934303732353061
+                  6534366566663833623163666661643034643333343532630a643963653462663533656565633239
+                  37633737363533633239326366653865336564303530373338303664306636393637616431373937
+                  6566316539636332330a636163656531633739383431306333613063363839623334653137323935
+                  66303531393738346432356634363436623162633266353739396538353833396339666638633434
+                  6361306136666330626534323931633463373762363565313636
+                allowed_ips: "10.10.35.2/32, 2a12:4946:4001:35::2/128"
+          ipv6:
+            addresses:
+              - 2a12:4946:4001:35::1/64
+              - fe80:35::0:1/64
+          ipv4: 
+            addresses:
+              - 10.10.35.1/24
     routing:
       bgp:
         graceful_restart: false
@@ -520,14 +554,6 @@ route_filtering:
         - prefix: 192.168.0.0/16
           policy: permit
           ge: 16
-    - name: pl-LocalIpv4s
-      lists:
-        - prefix: 10.10.33.1/32
-          policy: permit
-        - prefix: 193.148.249.0/24
-          policy: permit
-        - prefix: 185.1.166.0/23
-          policy: permit
     - name: pl-MGMT
       lists: 
         - prefix: 172.16.33.0/24
@@ -535,6 +561,8 @@ route_filtering:
         - prefix: 10.33.0.0/24
           policy: permit
         - prefix: 10.10.33.1/32
+          policy: permit
+        - prefix: 10.10.35.0/24
           policy: permit
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
@@ -589,11 +617,6 @@ route_filtering:
           policy: permit
         - match:
             v6_prefix_list: pl-default
-          policy: permit
-    - name: rm-LocalIpv4s
-      maps: 
-        - match: 
-            v4_prefix_list: pl-LocalIpv4s
           policy: permit
     - name: rm-default
       maps: 

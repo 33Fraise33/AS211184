@@ -6,7 +6,7 @@ PrivateKey = {{ item.wg.private_key }}
 [Peer]
 # Name = {{ wg_peer.name }}
 PublicKey = {{ wg_peer.public_key }}
-AllowedIPs = 0.0.0.0/0, ::/0
+AllowedIPs = {{ wg_peer.allowed_ips | default("0.0.0.0/0, ::/0") }}
 PersistentKeepalive = {{ item.wg.keepalive }}
 
 {% endfor %}
