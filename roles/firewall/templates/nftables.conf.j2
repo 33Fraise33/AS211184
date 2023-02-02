@@ -16,8 +16,15 @@ table inet filter {
                 include "/etc/nftables.d/input.conf"
         }
 
+        flowtable f {
+                hook ingress priority 0; devices = { ens18, ens19, ens20, ens21, ens22, wgAsgard, wgRoadwarrior };
+        }
+
         chain FORWARD {
                 type filter hook forward priority 0; policy drop;
+
+                meta l4proto { tcp, udp } counter flow offload @f 
+
                 ct state established,related accept
                 meta l4proto icmp accept comment "Allow ICMP"
                 icmpv6 type { echo-request, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert } accept comment "Allow ICMP"
