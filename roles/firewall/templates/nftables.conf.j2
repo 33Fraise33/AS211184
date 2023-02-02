@@ -1,0 +1,29 @@
+#!/usr/sbin/nft -f
+flush ruleset
+
+#### START OF CONFIG
+table inet filter {
+
+        include "/etc/nftables.d/sets.conf"
+
+        chain INPUT {
+                type filter hook input priority 0; policy drop;
+                iif "lo" accept
+                ct state established,related accept
+                meta l4proto icmp accept comment "Allow ICMP"
+                icmpv6 type { echo-request, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert } accept comment "Allow ICMP"
+
+                include "/etc/nftables.d/input.conf"
+        }
+
+        chain FORWARD {
+                type filter hook forward priority 0; policy drop;
+                ct state established,related accept
+                meta l4proto icmp accept comment "Allow ICMP"
+                icmpv6 type { echo-request, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert } accept comment "Allow ICMP"
+
+                include "/etc/nftables.d/forward.conf"
+        }
+
+        # Default OUTPUT policy is accept
+}

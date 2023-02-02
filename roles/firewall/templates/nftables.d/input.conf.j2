@@ -1,0 +1,3 @@
+{%- for fil_item in firewall.filter.input|default([]) -%}
+{%- include './filter_item.j2' -%}
+{%- endfor %}

@@ -9,3 +9,10 @@
   roles:
     - frr
   tags: frr
+
+- hosts: frr
+  gather_facts: true
+  roles:
+    - firewall
+  tags: firewall
+  become: true

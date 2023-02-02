@@ -1,0 +1,38 @@
+- name: Make sure nftables is installed
+  apt:
+    name: nftables
+    state: present
+    update_cache: true
+
+- name: make sure nftables is started and starts on boot
+  systemd: 
+    name: nftables
+    state: started
+    enabled: true
+
+- name: make nftables.d directory
+  file:
+    path: /etc/nftables.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+    
+- name: copy nftables templates
+  template: 
+    src: "{{ item }}.j2"
+    dest: /etc/{{ item }}
+    owner: root
+    group: root
+    mode: 0755
+  loop: 
+    - nftables.conf
+    - nftables.d/forward.conf
+    - nftables.d/input.conf
+    - nftables.d/sets.conf
+
+- name: check if nftables config is valid
+  command: "nft --check --file /etc/nftables.conf"
+
+- name: install nftables rules
+  command: "nft -f /etc/nftables.conf"

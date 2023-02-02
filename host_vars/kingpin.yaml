@@ -371,8 +371,8 @@ VRFS:
           ipv4: 
             addresses:
               - 10.10.34.13/30
-        - name: wgMidguard
-          description: "WG Transit to Midguard"
+        - name: wgKit01
+          description: "WG Transit to Unitix KIT01"
           mtu: 1420
           wg:
             port: 51824
@@ -387,7 +387,7 @@ VRFS:
               3439303861333065346637616132613666336630666162633734
             public_key: OZ0hJSTjJgJYm+f4wD6wBYDzDQ1aq5gJN+RvBzk/fF4=
             peers:
-              - name: MIDGUARD_CR_HEIMDALL
+              - name: UNITIX_KIT01_CR
                 public_key: VWPA1c7JuTK10riRoGq40mkj4TzHsygipz5kipl5Zi8=
                 private_key: !vault |
                   $ANSIBLE_VAULT;1.1;AES256
@@ -404,6 +404,39 @@ VRFS:
           ipv4: 
             addresses:
               - 10.10.34.17/30
+        - name: wgKit02
+          description: "WG Transit to UNITIX_KIT02"
+          mtu: 1420
+          wg:
+            port: 51825
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              31613830363738666566666532323937333231386464636232333836333733393862396135313362
+              3937333237663632633830636532653330363931386530380a623366323039636362306466393638
+              66626466353339323637323437386663323464376237393532383235343434613335646665323332
+              3839386564396365310a306634343263303730613466346666363333333935373837613464663763
+              33383462623434356139343231373139393837663636346632613239353432663363343233353836
+              3930643336353032643931646538333563353730356561643264
+            public_key: 5z3VGuzATwSczxx21jelVAZ8FAf75yr0q8/f7Yx6ZDg=
+            peers:
+              - name: UNITIX_KIT02_CR
+                public_key: Rmc8AgduE9AEO7iwguixIHt/ZxhQr2J67v3D4bdXY1k=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  39616234333162386335633962633531626230666236613266623162383036616435386636663865
+                  3839613662316436393565616231653962396237306439640a373437373639366636396262373761
+                  65356466326138376438313531663833373537373339613632666534376439323539316233326435
+                  3765306363353433360a303962653761653564356532633164653166353362303466623739373639
+                  61373236636435636666643066653832613265613239386565623061633765366237656563666435
+                  3937306530313930376633326537336665646666393437353931
+          ipv6:
+            addresses:
+              - 2a12:4946:4001:34::6:1/112
+              - fe80:34::6:1/64
+          ipv4: 
+            addresses:
+              - 10.10.34.21/30
         - name: wgRoadwarrior
           description: "WG Interface Road Warrior clients"
           mtu: 1420
@@ -431,6 +464,17 @@ VRFS:
                   66303531393738346432356634363436623162633266353739396538353833396339666638633434
                   6361306136666330626534323931633463373762363565313636
                 allowed_ips: "10.10.35.2/32, 2a12:4946:4001:35::2/128"
+              - name: Unitix_Stream_PC
+                public_key: eJ5/gLv4/jf5eRHcvl9aLXkvhE4rOdDVIAbb9alwtRw=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  36326165393065313163626631383033346162663834373533656430303863376538303537353333
+                  6364613931623734336463643732633535363565643166310a323632303739646131363261653161
+                  37323838376563633932653637393464663830376535353766653537356339373534303935346562
+                  3366626534306166390a343766373435316432636637623161656230323530363739356463643235
+                  62376137386335383762623433353639346537633164353336326261303265346239393338303664
+                  6566313163333865353830316563613030393331653733366265
+                allowed_ips: "10.10.35.3/32, 2a12:4946:4001:35::3/128"
           ipv6:
             addresses:
               - 2a12:4946:4001:35::1/64
@@ -502,7 +546,13 @@ VRFS:
             activate:
               - v4
             as: 65503
-            description: "MIDGUARDv4" 
+            description: "UNITIX_KIT01v4" 
+          - neighbor_group: remotesites
+            peer: 10.10.34.22
+            activate:
+              - v4
+            as: 65504
+            description: "UNITIX_KIT02v4" 
           - neighbor_group: remotesites
             peer: 10.10.34.6
             activate:
@@ -626,3 +676,110 @@ route_filtering:
         - match:
             v4_prefix_list: pl-default
           policy: permit
+
+firewall:
+  sets:
+    - name: MGMT
+      type: ipv4
+      elements:
+        - 10.33.0.0/24 # Docker Network
+        - 10.10.35.0/24 # Wireguard Roadwarrior
+    - name: AS211184
+      type: ipv6
+      elements: 
+        - 2a12:4946:4000::/44
+    - name: BGP_PEERS_v6
+      type: ipv6
+      elements: 
+        - 2a0c:9a40:1::1 # IFOG
+        - 2001:7f8:33::a103:1142:1 # kleyrex rs1
+        - 2001:7f8:33::a103:1142:2 # kleyrex rs2
+        - 2001:7f8:33::a103:1142:3 # kleyrex rs3
+        - 2001:7f8:f2:e1::babe:1 # locix rs1
+        - 2001:7f8:f2:e1::dead:1 # locix rs2
+        - 2001:7f8:f2:e1::be5a # locix rs3
+        - 2001:7f8:ca:1::111 # fogixp rs1
+        - 2001:7f8:ca:1::77 # bubacarr sowe
+        - 2a12:4946:4001:34::1:2 # ASGARD
+    - name: BGP_PEERS_v4
+      type: ipv4
+      elements: 
+        - 10.10.34.2 # ASGARD
+        - 10.10.34.10 # CMB/SAKAAR
+        - 10.10.34.18 # UNITIX_KIT01
+        - 10.10.34.22 # UNITIX_KIT02
+        - 10.10.34.6 # MOM
+        - 10.10.34.14 # DAD
+  filter:
+    input: 
+      - comment: "Allow SSH"
+        destination:
+          port: 1830
+          protocol: tcp
+        counter: true
+      - comment: "Allow node_exporter from MGMT"
+        source:
+          set: MGMT
+        destination:
+          port: 9100
+          protocol: tcp
+        counter: true
+      - comment: "Allow frr_expoter from MGMT"
+        source:
+          set: MGMT
+        destination:
+          port: 9342
+          protocol: tcp
+        counter: true
+      - comment: "Allow BGP from PEERS_v4"
+        source:
+          set: BGP_PEERS_v4
+        destination:
+          port: 179
+          protocol: tcp
+        counter: true
+      - comment: "Allow BGP from PEERS_v6"
+        type: ip6
+        source:
+          set: BGP_PEERS_v6
+        destination:
+          port: 179
+          protocol: tcp
+        counter: true
+      - comment: "Allow Wireguard edge sites"
+        destination:
+          port: 51820-51830
+          protocol: udp
+        counter: true
+      - comment: "Allow Wireguard Roadwarrior"
+        destination:
+          port: 2034
+          protocol: udp
+        counter: true
+    forward:
+      - comment: "Allow from MGMT" # needed for monitoring towards edge sites
+        source:
+          set: MGMT
+        counter: true
+      - comment: "Allow AS211184 out of ens interfaces"
+        type: ip6
+        source:
+          set: AS211184
+        destination:
+          interface: "ens*"
+        counter: true
+      - comment: "Allow to AS211184"
+        type: ip6
+        destination:
+          set: AS211184
+        counter: true
+  # NOT SUPPORTED YET
+  # nat:
+  #   srcnat:
+  #     - statement: masquarade
+  #       destination:
+  #         interface: 
+  #         set: 
+  #         ip:
+  #         port: 
+  #   dstnat: 
