@@ -1,0 +1,3 @@
+{%- for nat_item in firewall.nat.srcnat|default([]) -%}
+{%- include './nat_item.j2' -%}
+{%- endfor %}

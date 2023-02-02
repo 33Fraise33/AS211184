@@ -679,6 +679,12 @@ route_filtering:
 
 firewall:
   sets:
+    - name: RFC1918
+      type: ipv4
+      elements:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
     - name: MGMT
       type: ipv4
       elements:
@@ -773,13 +779,12 @@ firewall:
         destination:
           set: AS211184
         counter: true
-  # NOT SUPPORTED YET
-  # nat:
-  #   srcnat:
-  #     - statement: masquarade
-  #       destination:
-  #         interface: 
-  #         set: 
-  #         ip:
-  #         port: 
-  #   dstnat: 
+  nat:
+    srcnat:
+      - statement: snat to 193.148.249.106
+        source:
+          set: MGMT
+        destination:
+          negate: true
+          set: RFC1918
+    # dstnat: 

@@ -30,6 +30,7 @@
     - nftables.d/forward.conf
     - nftables.d/input.conf
     - nftables.d/sets.conf
+    - nftables.d/postrouting.conf
 
 - name: check if nftables config is valid
   command: "nft --check --file /etc/nftables.conf"

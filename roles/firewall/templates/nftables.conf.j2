@@ -27,3 +27,14 @@ table inet filter {
 
         # Default OUTPUT policy is accept
 }
+
+table ip nat {
+        
+        include "/etc/nftables.d/sets.conf"
+
+        chain POSTROUTING {
+                type nat hook postrouting priority 100;
+
+                include "/etc/nftables.d/postrouting.conf"
+        }
+}
