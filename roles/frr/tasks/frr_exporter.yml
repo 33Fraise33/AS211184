@@ -6,6 +6,7 @@
       v{{ frr_exporter_version }}/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz"
     mode: '0644'
   delegate_to: localhost
+  check_mode: false
 
 - name: FRR_EXPORTER - Unpack frr_exporter binary
   ansible.builtin.unarchive:
@@ -14,6 +15,7 @@
     creates: "/tmp/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz/frr_exporter"
     remote_src: true
   delegate_to: localhost
+  check_mode: false
 
 - name: FRR_EXPORTER - Copy frr_exporter binaries
   ansible.builtin.copy:
