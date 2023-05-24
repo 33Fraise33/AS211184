@@ -1,19 +1,21 @@
+---
 - name: NODE_EXORTER - Download node_exporter binary to local folder
-  get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+  ansible.builtin.get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/\
+      v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
     dest: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
     mode: '0644'
   delegate_to: localhost
 
 - name: NODE_EXORTER - Unpack node_exporter binary
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
     dest: "/tmp"
     creates: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
   delegate_to: localhost
 
 - name: NODE_EXORTER - Copy the node_exporter systemd service file
-  copy:
+  ansible.builtin.copy:
     src: node_exporter.service
     dest: /etc/systemd/system/node_exporter.service
     owner: root
@@ -21,10 +23,10 @@
     mode: 0644
 
 - name: NODE_EXORTER - Copy node_exporter binaries
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
     dest: "/usr/local/bin/node_exporter"
     mode: 0755
     owner: root
     group: root
-  notify: restart node_exporter
+  notify: Restart node_exporter

@@ -1,3 +1,4 @@
+---
 firewall:
   sets:
     - name: MGMT
@@ -8,31 +9,31 @@ firewall:
         - 1.1.1.1
         - 10.1.1.0/24
   filter:
-    input: 
+    input:
       - comment: "Nice rule"
-        statement: accept/drop/jump CHAIN/... # default accept
+        statement: accept/drop/jump CHAIN/...  # default accept
         source:
-          set: MGMT # ip set name, only set or ip supported, not both
-          ip: 10.1.1.1 # ip address
-          interface: ens3 # in interface name
+          set: MGMT  # ip set name, only set or ip supported, not both
+          ip: 10.1.1.1  # ip address
+          interface: ens3  # in interface name
         destination:
           set:
           ip:
-          port: 1337 # "{ 10, 22, https }" for multiple ports
+          port: 1337  # "{ 10, 22, https }" for multiple ports
           protocol: tcp
-          interface: 
+          interface:
         counter: true
     forward:
-      - # comment: 
+      -  # comment:
+        # counter: true/false
         statement: accept
         source:
-          set: MGMT 
-          # ip: 
+          set: MGMT
+          # ip:
           # interface:
         destination:
           # set:
           # ip:
-          port: "{ 22, 23, https }" # "{ 10, 22, https }" for multiple ports
-          protocol: tcp 
-          #interface: 
-        #counter: true/false 
+          port: "{ 22, 23, https }"  # "{ 10, 22, https }" for multiple ports
+          protocol: tcp
+          # interface:

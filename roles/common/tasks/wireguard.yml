@@ -1,6 +1,7 @@
+---
 - name: WIREGUARD - Install
-  apt:
+  ansible.builtin.apt:
     name:
       - wireguard
-    state: latest
+    state: present
     update_cache: true

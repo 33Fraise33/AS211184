@@ -1,0 +1,43 @@
+---
+shared_items:
+  generic_interface:
+    # interface description
+    description: ""
+    # enable or disable interface | not specified = enabled
+    enabled: true|false
+    # interface mtu
+    mtu:
+    # interface addressing auto, dhcp for ipv4, auto for ipv6
+    auto: true|false
+    # vlan ids
+    vids:
+      # tagged vlan ids for bridge or interface
+      tagged:
+        -
+
+vrf_interfaces:
+  # vrf name
+  - name: default
+    # loopback interface and config
+    loopback:
+      enabled: true|false
+      ipv6:
+        addresses:
+          -
+      ipv4:
+        addresses:
+          -
+    bridges:
+      - name: bridge
+        ports:
+          -
+        vids:
+          allow_untagged: true|false
+    physicals:
+      - name:
+        speed:
+        vids:
+          untagged:  # sets PVID in case of tagged, bridge-access in case of no tagged
+    vlans:
+      - id: 10
+  - name: vrf2

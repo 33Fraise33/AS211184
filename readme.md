@@ -7,7 +7,7 @@ This is my ansible project to manage my own infrastructure for my personal AS fo
 ## Running a playbook
 ``eval `ssh-agent` ``   
 `ssh-add <ssh-key here>`      
-`ansible-playbook -i inventories/development <playbook>.yaml` (vault pass is asked by default so --ask-vault-pass is not needed)
+`ansible-playbook -i inventories/development <playbook>.yml` (vault pass is asked by default so --ask-vault-pass is not needed)
 
 ## Encrypting passwords
 `ansible-vault encrypt_string`    

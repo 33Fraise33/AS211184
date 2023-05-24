@@ -1,13 +1,16 @@
+---
 # https://github.com/CumulusNetworks/ifupdown2
+
 - name: IFUPDOWN2 - Install and restart networking in one command for ansible
-  shell: 'apt install ifupdown2 -y && systemctl restart networking'
+  ansible.builtin.shell: 'apt install ifupdown2 -y && systemctl restart networking'
+  changed_when: true
 
 - name: IFUPDOWN2 - Install optional packages
-  apt:
+  ansible.builtin.apt:
     name:
       - bridge-utils
       - ethtool
-    state: latest
+    state: present
     update_cache: true
 
 # - name: IFUPDOWN2 - Get git repo

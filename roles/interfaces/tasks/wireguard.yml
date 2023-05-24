@@ -1,7 +1,11 @@
+---
 - name: WIREGUARD - Set config
-  template:
+  ansible.builtin.template:
     src: wg.conf.j2
     dest: /etc/wireguard/{{ item.name }}.conf
+    owner: root
+    group: root
+    mode: 0644
   loop: "{{ VRF.value.interfaces.wireguards }}"
   loop_control:
     label: "VRF:{{ VRF.key }} Interface:{{ item.name }}"

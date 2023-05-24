@@ -1,22 +1,25 @@
+---
 - name: FRR - Change enabled daemons
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/frr/daemons
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
-    - { regexp: '^bgpd=', line: 'bgpd=yes'}
-  notify: reload frr
+    - regexp: '^bgpd='
+      line: 'bgpd=yes'
+  notify: Reload frr
   become: true
 
 - name: FRR - Set configuration in file
-  template:
+  ansible.builtin.template:
     src: "frr.conf.j2"
     dest: /etc/frr/frr.conf
     mode: 0640
     owner: frr
     group: frr
-  notify: reload frr
+  notify: Reload frr
   become: true
 
-- import_tasks: frr_exporter.yaml
+- name: Import frr_exporter tasks
+  ansible.builtin.import_tasks: frr_exporter.yml
   tags: frr_exporter

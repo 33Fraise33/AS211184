@@ -1,4 +1,6 @@
-- hosts: all
+---
+- name: Run setup role
+  hosts: all
   gather_facts: false
   roles:
     - setup

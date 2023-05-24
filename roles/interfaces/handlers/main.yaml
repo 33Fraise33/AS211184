@@ -1,3 +1,0 @@
-- name: ifreload
-  command: ifreload -a
-  become: true

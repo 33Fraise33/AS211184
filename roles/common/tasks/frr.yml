@@ -1,14 +1,15 @@
+---
 - name: FRR - Install gpg key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://deb.frrouting.org/frr/keys.asc
     state: present
 - name: FRR - Add repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://deb.frrouting.org/frr {{ ansible_distribution_release }} frr-stable"
-    update_cache: yes
+    update_cache: true
 - name: FRR - Install
-  apt:
+  ansible.builtin.apt:
     name:
       - frr
       - frr-pythontools
-    state: latest
+    state: present

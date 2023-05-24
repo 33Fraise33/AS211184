@@ -1,0 +1,7 @@
+---
+- name: Run Common role
+  hosts: all
+  gather_facts: true
+  roles:
+    - common
+  become: true

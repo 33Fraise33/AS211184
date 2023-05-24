@@ -1,12 +1,13 @@
+---
 - name: SETUP - install sudo package
-  apt:
+  ansible.builtin.apt:
     name:
       - sudo
-    state: latest
+    state: present
   become_method: su
 
 - name: SETUP - Allow sudo user group to have passwordless sudo
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     state: present
     regexp: '^%sudo'
@@ -15,39 +16,42 @@
   become_method: su
 
 - name: SETUP - temporarily add debian to the sudo group
-  user:
+  ansible.builtin.user:
     name: debian
     groups: sudo
-    append: yes
+    append: true
   become_method: su
 
 - name: SETUP - reset connection so sudo permission is recognized
-  meta: reset_connection
+  ansible.builtin.meta: reset_connection
 
 - name: SETUP - Generate random root password
-  set_fact:
-    new_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits,.,_,! length=15' ) }}"
+  ansible.builtin.set_fact:
+    setup_new_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits,.,_,! length=15') }}"
 
 - name: SETUP - Add password to file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "~/root_password"
-    line: "{{ lookup('pipe', 'date -u +%FT%TZ')}};{{ inventory_hostname }};{{new_password}}"
-    create: yes
+    line: "{{ lookup('pipe', 'date -u +%FT%TZ') }};{{ inventory_hostname }};{{ setup_new_password }}"
+    owner: root
+    group: root
+    mode: 0644
+    create: true
   delegate_to: localhost
 
 - name: SETUP - change root user password
-  user:
+  ansible.builtin.user:
     name: "root"
-    password: "{{ new_password | password_hash('sha512', 'mysecretsalt') }}"
+    password: "{{ setup_new_password | password_hash('sha512', 'mysecretsalt') }}"
 
 - name: SETUP - Set ssh port to 1830
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^(# *)?Port '
     line: 'Port 1830'
 
 - name: SETUP - reload sshd
-  systemd:
+  ansible.builtin.systemd:
     name: sshd
     state: reloaded
-    enabled: yes
+    enabled: true

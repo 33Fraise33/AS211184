@@ -1,0 +1,5 @@
+---
+- name: Ifreload
+  ansible.builtin.command: ifreload -a
+  become: true
+  changed_when: false

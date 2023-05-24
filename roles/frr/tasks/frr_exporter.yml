@@ -1,35 +1,36 @@
+---
 - name: FRR_EXPORTER - Download frr_exporter binary to local folder
-  get_url:
+  ansible.builtin.get_url:
     dest: "/tmp/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz"
-    url: "https://github.com/tynany/frr_exporter/releases/download/v{{ frr_exporter_version }}/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz"
+    url: "https://github.com/tynany/frr_exporter/releases/download/\
+      v{{ frr_exporter_version }}/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz"
     mode: '0644'
   delegate_to: localhost
 
 - name: FRR_EXPORTER - Unpack frr_exporter binary
-  unarchive:
+  ansible.builtin.unarchive:
     src: "/tmp/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz"
     dest: "/tmp"
-    creates: "/tmp/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz/frr _exporter"
-    remote_src: yes
+    creates: "/tmp/frr_exporter-{{ frr_exporter_version }}.linux-amd64.tar.gz/frr_exporter"
+    remote_src: true
   delegate_to: localhost
 
 - name: FRR_EXPORTER - Copy frr_exporter binaries
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/frr_exporter-{{ frr_exporter_version }}.linux-amd64/frr_exporter"
     dest: "/usr/local/bin/frr_exporter"
     mode: 0755
     owner: root
     group: root
   become: true
-  notify: restart frr_exporter
+  notify: Restart frr_exporter
 
 - name: FRR_EXPORTER - Copy the frr_exporter systemd service file
-  copy:
+  ansible.builtin.copy:
     src: frr_exporter.service
     dest: /etc/systemd/system/frr_exporter.service
     owner: root
     group: root
     mode: 0644
   become: true
-  notify: restart frr_exporter
-
+  notify: Restart frr_exporter
