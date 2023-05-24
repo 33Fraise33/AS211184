@@ -142,7 +142,6 @@ vrfs:
             - 2a12:4946:4000::/44
         neighbor_groups:
           - peer: locix
-            as: 202409
             soft_reconfiguration_inbound: true
             redistribute:
               - connected
@@ -158,14 +157,21 @@ vrfs:
                 name: rm-AS211184-exact
         neighbors:
           - neighbor_group: locix
+            as: 202409
             peer: 2001:7f8:f2:e1::babe:1
             description: "Locix RS1"
           - neighbor_group: locix
+            as: 202409
             peer: 2001:7f8:f2:e1::dead:1
             description: "Locix RS2"
           - neighbor_group: locix
+            as: 202409
             peer: 2001:7f8:f2:e1::be5a
             description: "Locix RS3"
+          - neighbor_group: locix
+            peer: 2001:7f8:f2:e1::6939:1
+            description: Hurricane Electric
+            as: 6939
   evix:
     interfaces:
       loopback:
@@ -708,6 +714,7 @@ firewall:
         - 2001:7f8:ca:1::111  # fogixp rs1
         - 2001:7f8:ca:1::77  # bubacarr sowe
         - 2a12:4946:4001:34::1:2  # ASGARD
+        - 2001:7f8:f2:e1::6939:1  # HE Locix
     - name: BGP_PEERS_v4
       type: ipv4
       elements:
