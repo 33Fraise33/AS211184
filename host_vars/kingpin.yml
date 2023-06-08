@@ -30,16 +30,12 @@ vrfs:
           v4:
             vrfs:
               - remotesites
-        aggregates:
+        networks:
           v6:
-            - address: 2a12:4946:4000::/44
-              summary_only: false
+            - 2a12:4946:4000::/44
         neighbor_groups:
           - peer: default
             soft_reconfiguration_inbound: true
-            redistribute:
-              - static
-              - connected
             activate:
               - v6
             timers:
@@ -50,11 +46,29 @@ vrfs:
                 name: rm-DEFAULT_ONLY_PUBLIC
               - direction: out
                 name: rm-AS211184-exact
+          - peer: cymru-bogons
+            soft_reconfiguration_inbound: true
+            multihop: true
+            passive: true
+            as: 65332
+            activate:
+              - v6
+            route_maps:
+              - direction: in
+                name: rm-deny
+              - direction: out
+                name: rm-deny
         neighbors:
           - neighbor_group: default
             peer: 2a0c:9a40:1::1
             as: 34927
             description: "IFOG PEERING"
+          - neighbor_group: cymru-bogons
+            peer: 2604:8800:50:81:216:31:3:81
+            description: "NOMONITOR Cymru Fullgons #1"
+          - neighbor_group: cymru-bogons
+            peer: 2604:8800:60:81:216:31:7:81
+            description: "NOMONITOR Cymru Fullgons #2"
       static:
         - destination: ::/0
           gateway: 2a0c:9a40:1::1
@@ -90,8 +104,6 @@ vrfs:
           - peer: kleyrex
             as: 31142
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             activate:
               - v6
             timers:
@@ -143,8 +155,6 @@ vrfs:
         neighbor_groups:
           - peer: locix
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             activate:
               - v6
             timers:
@@ -214,8 +224,6 @@ vrfs:
         neighbor_groups:
           - peer: fogixp
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             activate:
               - v6
             timers:
@@ -591,6 +599,14 @@ route_filtering:
           policy: permit
         - prefix: ::/0
           policy: permit
+    - name: pl-default-bogons
+      lists:
+        - prefix: 0.0.0.0/0
+          policy: permit
+          ge: 25
+        - prefix: ::/0
+          policy: permit
+          ge: 49
     - name: pl-AS211184-exact
       lists:
         - prefix: 2a12:4946:4000::/44
@@ -629,6 +645,19 @@ route_filtering:
           policy: permit
         - match:
             v6_prefix_list: pl-default-public
+          policy: permit
+    - name: rm-fullbogons-in
+      maps:
+        - match:
+            v6_prefix_list: pl-default-bogons
+          action:
+            on_match: next
+          policy: permit
+        - match:
+            community: bogons
+          action:
+            set:
+              next_hop: 127.0.0.1
           policy: permit
     - name: rm-DEFUALT_TO_REMOTE
       maps:
@@ -683,6 +712,13 @@ route_filtering:
         - match:
             v4_prefix_list: pl-default
           policy: permit
+    - name: rm-deny
+      maps:
+        - policy: deny
+  communities:
+    - name: bogons
+      content:
+        - community: "64496:0"
 
 firewall:
   sets:
@@ -701,6 +737,11 @@ firewall:
       type: ipv6
       elements:
         - 2a12:4946:4000::/44
+    - name: BGP_CYMRU
+      type: ipv6
+      elements:
+        - 2604:8800:50:81:216:31:3:81  # Cymru Fullbogons #1
+        - 2604:8800:60:81:216:31:7:81  # Cymru Fullbogons #2
     - name: BGP_PEERS_v6
       type: ipv6
       elements:
@@ -756,6 +797,14 @@ firewall:
         type: ip6
         source:
           set: BGP_PEERS_v6
+        destination:
+          port: 179
+          protocol: tcp
+        counter: true
+      - comment: "Allow BGP from CYMRU"
+        type: ip6
+        source:
+          set: BGP_CYMRU
         destination:
           port: 179
           protocol: tcp
