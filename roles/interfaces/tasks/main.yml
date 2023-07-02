@@ -9,6 +9,7 @@
     loop_var: VRF
     label: "{{ VRF.key }}"
   tags: always
+  notify: Ifreload
 
 - name: INTERFACES - Set configuration in file
   ansible.builtin.template:
