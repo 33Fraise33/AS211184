@@ -1,0 +1,7 @@
+---
+- name: Run wireguard_client role
+  hosts: frr
+  gather_facts: false
+  roles:
+    - wireguard_client
+  tags: wireguard
