@@ -1,6 +1,9 @@
 {% if VRF.routing.static is defined %}
 {%  for route in VRF.routing.static %}
-ip route {{ route.destination }} {{ route.gateway }} {{ route.metric|default(10) }} {% if vrf_key != "default" %} vrf {{ vrf_key }} {% endif %}
+ip route {{ route.destination }}
+{%- if route.gateway is defined %} {{ route.gateway }}{% endif -%}
+{%- if route.type is defined %} {{ route.type }}{% else %} {{ route.metric|default(10) }}{% endif -%}
+{%- if vrf_key != "default" %} vrf {{ vrf_key }}{% endif %}
 
 {%  endfor %}
 {% endif %}

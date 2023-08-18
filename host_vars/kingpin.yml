@@ -72,6 +72,8 @@ vrfs:
       static:
         - destination: ::/0
           gateway: 2a0c:9a40:1::1
+        - destination: 192.0.0.1/32
+          type: blackhole
   kleyrex:
     interfaces:
       loopback:
@@ -679,7 +681,7 @@ route_filtering:
             community: bogons
           action:
             set:
-              next_hop: 127.0.0.1
+              next_hop: 192.0.0.1
           policy: permit
     - name: rm-DEFUALT_TO_REMOTE
       maps:
