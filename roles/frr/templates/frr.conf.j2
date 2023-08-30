@@ -1,4 +1,9 @@
 frr defaults traditional
+
+log syslog informational
+debug bgp neighbor-events
+debug bgp updates
+
 hostname {{ inventory_hostname }}
 domainname {{ domain }}
 service integrated-vtysh-config

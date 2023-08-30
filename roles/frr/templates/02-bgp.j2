@@ -2,6 +2,7 @@
 router bgp {{ VRF.routing.bgp.as }}{% if vrf_key != "default" %} vrf {{ vrf_key }}{% endif %}
 
  bgp router-id {{ VRF.routing.bgp.router_id }}
+ bgp log-neighbor-changes
 {% if VRF.routing.bgp.graceful_restart|default(true) %}
  bgp graceful-restart
 {% endif %}
