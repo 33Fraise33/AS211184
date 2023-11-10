@@ -11,3 +11,4 @@
     label: "VRF:{{ VRF.key }} Interface:{{ item.name }}"
   when: VRF.value.interfaces.wireguards is defined
   become: true
+  notify: Ifreload

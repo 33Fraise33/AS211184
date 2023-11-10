@@ -1,0 +1,11 @@
+[Interface]
+Address = {{ item.allowed_ips }}
+PrivateKey = {{ item.private_key }}
+DNS = 10.33.0.60
+
+[Peer]
+# Name = VORMIR_KINGPIN
+PublicKey = 6PvkKYx6mAg2nkDihioEY8Kz8QNwdoejoWc2cqE5pCs= 
+AllowedIPs = 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 2a12:4946:4000::/44
+Endpoint = wireguard.frai.se:2034
+PersistentKeepalive = 25

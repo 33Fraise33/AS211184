@@ -12,6 +12,9 @@
 {% if VRF.routing.bgp.imports.v4.route_map is defined or false %}
   import vrf route-map {{ VRF.routing.bgp.imports.v4.route_map }}
 {% endif %}
+{% for rdst in VRF.routing.bgp.redistribute|default() %}
+  redistribute {{ rdst }}
+{% endfor %}
 {%  for bgp_item in VRF.routing.bgp.neighbor_groups|default() %}
 {% include 'bgp/address_family.j2' %}
 {% if bgp_item.activate is defined and 'v4' in bgp_item.activate %}

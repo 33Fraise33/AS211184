@@ -30,16 +30,14 @@ vrfs:
           v4:
             vrfs:
               - remotesites
-        aggregates:
+        networks:
           v6:
-            - address: 2a12:4946:4000::/44
-              summary_only: false
+            - 2a12:4946:4000::/44
+        redistribute:
+          - static
         neighbor_groups:
           - peer: default
             soft_reconfiguration_inbound: true
-            redistribute:
-              - static
-              - connected
             activate:
               - v6
             timers:
@@ -50,14 +48,34 @@ vrfs:
                 name: rm-DEFAULT_ONLY_PUBLIC
               - direction: out
                 name: rm-AS211184-exact
+          - peer: cymru-bogons
+            soft_reconfiguration_inbound: true
+            multihop: true
+            passive: true
+            as: 65332
+            activate:
+              - v6
+            route_maps:
+              - direction: in
+                name: rm-deny
+              - direction: out
+                name: rm-deny
         neighbors:
           - neighbor_group: default
             peer: 2a0c:9a40:1::1
             as: 34927
             description: "IFOG PEERING"
+            # - neighbor_group: cymru-bogons
+            #   peer: 2604:8800:50:81:216:31:3:81
+            #   description: "NOMONITOR Cymru Fullgons #1"
+            # - neighbor_group: cymru-bogons
+            #   peer: 2604:8800:60:81:216:31:7:81
+            #   description: "NOMONITOR Cymru Fullgons #2"
       static:
         - destination: ::/0
           gateway: 2a0c:9a40:1::1
+        - destination: 192.0.0.1/32
+          type: blackhole
   kleyrex:
     interfaces:
       loopback:
@@ -90,8 +108,6 @@ vrfs:
           - peer: kleyrex
             as: 31142
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             activate:
               - v6
             timers:
@@ -143,8 +159,6 @@ vrfs:
         neighbor_groups:
           - peer: locix
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             activate:
               - v6
             timers:
@@ -214,8 +228,6 @@ vrfs:
         neighbor_groups:
           - peer: fogixp
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             activate:
               - v6
             timers:
@@ -312,39 +324,6 @@ vrfs:
           ipv4:
             addresses:
               - 10.10.34.5/30
-        - name: wgSakaar
-          description: "WG Transit to Sakaar (CMB)"
-          mtu: 1420
-          wg:
-            port: 51822
-            keepalive: 25
-            private_key: !vault |
-              $ANSIBLE_VAULT;1.1;AES256
-              62363162613032353361633165363166633133373764633931396238626434633032333530323734
-              6432393933646562663938653866623430383332636433300a353366666361323264316362373663
-              38383564376430313463666638623133356131313665396265663365626338363931363163666436
-              3739316130303762320a613561353434393464353464383966333734643431353733623636363932
-              35666330313636323132623463366635366366623039343661303432306164353638656662376635
-              6462376134316335666536653432616538616563303432653963
-            public_key: wjpfT+se/3N8dIyFfBb9w6k4EFdUqfocc/lzYxliWG0=
-            peers:
-              - name: KORG
-                public_key: knixK97NHmdXOTGxPsVjBKF2ckfLu0nx6xDfAZpiT2M=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  38393931626431323566326661653362663163623936313762313732333434663032663234646166
-                  6262626237626234613134363034343037663362383738320a323966356232613035336165363466
-                  62633239643134643566653936333833393335333666666263333963636261343535306330643662
-                  6433316539386664650a643634366165323332353961633930306461346662386436346365393261
-                  65656562353535336630346461363436646465393163663366313363363932376233363864643531
-                  3430656437373165306336663832623364623135626662626164
-          ipv6:
-            addresses:
-              - 2a12:4946:4001:34::3:1/112
-              - fe80:34::3:1/64
-          ipv4:
-            addresses:
-              - 10.10.34.9/30
         - name: wgDad
           description: "WG Transit to Dad"
           mtu: 1420
@@ -460,7 +439,7 @@ vrfs:
               6635633962393761303364623431303839623465363131383234
             public_key: 6PvkKYx6mAg2nkDihioEY8Kz8QNwdoejoWc2cqE5pCs=
             peers:
-              - name: CM_Laptop
+              - name: Unitix_Laptop
                 public_key: jqn7VCUQebPQD34Qo1+aJoMV8AcE53QNI69qY1idJ1A=
                 private_key: !vault |
                   $ANSIBLE_VAULT;1.1;AES256
@@ -482,6 +461,28 @@ vrfs:
                   62376137386335383762623433353639346537633164353336326261303265346239393338303664
                   6566313163333865353830316563613030393331653733366265
                 allowed_ips: "10.10.35.3/32, 2a12:4946:4001:35::3/128"
+              - name: Fraise_Pixel6
+                public_key: nqbVgdCy0/XNbtq0Du4Qeu9Pse60KN7oMSgFGXg+2kk=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  64373964643431333130346330306561663263616462663131626636303335653639396638343562
+                  6662653961643465396332326236653763393162353134350a336562616539393838343066323361
+                  62323161386363313632313432373631636238383632616561393630626135626264366231653764
+                  3538363764316365300a383434626563623632333532626165336634343638613535643138646334
+                  66613934613664666230643761356332616564346632633031323164343266323566383533623461
+                  6337663062656135613833613066376335333262616361346265
+                allowed_ips: "10.10.35.4/32, 2a12:4946:4001:35::4/128"
+              - name: Amelle_SamsungA54
+                public_key: mTgVmjhdR6+LXxLLtxEx+rH/zJWSs8K18I5Fywm06TY=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  33323661333164316664303764333962373532626363366537653534653339356364656338383664
+                  3033376132356362613736386534636366303062303738330a636536386131363536333261386334
+                  33623838646533323732323739303135623966643731666533366262313235376432386435636664
+                  3164373933366163650a396436303564363139643563343333626564343238626331623966386563
+                  30396164336666656534373835653164353266633231646336323936646232643034343132353233
+                  3864343361383435663839613136373537393465333662383832
+                allowed_ips: "10.10.35.5/32, 2a12:4946:4001:35::5/128"
           ipv6:
             addresses:
               - 2a12:4946:4001:35::1/64
@@ -506,11 +507,11 @@ vrfs:
           v6:
             - address: 2a12:4946:4000::/44
               summary_only: false
+        redistribute:
+          - connected
         neighbor_groups:
           - peer: remotesites
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             timers:
               keepalive: 20
               hold: 60
@@ -542,12 +543,6 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-ASGARD-out
-          - neighbor_group: remotesites
-            peer: 10.10.34.10
-            activate:
-              - v4
-            as: 65502
-            description: "SAKAARv4"
           - neighbor_group: remotesites
             peer: 10.10.34.18
             activate:
@@ -591,6 +586,14 @@ route_filtering:
           policy: permit
         - prefix: ::/0
           policy: permit
+    - name: pl-default-bogons
+      lists:
+        - prefix: 0.0.0.0/0
+          policy: permit
+          ge: 25
+        - prefix: ::/0
+          policy: permit
+          ge: 49
     - name: pl-AS211184-exact
       lists:
         - prefix: 2a12:4946:4000::/44
@@ -629,6 +632,19 @@ route_filtering:
           policy: permit
         - match:
             v6_prefix_list: pl-default-public
+          policy: permit
+    - name: rm-fullbogons-in
+      maps:
+        - match:
+            v6_prefix_list: pl-default-bogons
+          action:
+            on_match: next
+          policy: permit
+        - match:
+            community: bogons
+          action:
+            set:
+              next_hop: 192.0.0.1
           policy: permit
     - name: rm-DEFUALT_TO_REMOTE
       maps:
@@ -683,6 +699,13 @@ route_filtering:
         - match:
             v4_prefix_list: pl-default
           policy: permit
+    - name: rm-deny
+      maps:
+        - policy: deny
+  communities:
+    - name: bogons
+      content:
+        - community: "64496:0"
 
 firewall:
   sets:
@@ -701,6 +724,11 @@ firewall:
       type: ipv6
       elements:
         - 2a12:4946:4000::/44
+    - name: BGP_CYMRU
+      type: ipv6
+      elements:
+        - 2604:8800:50:81:216:31:3:81  # Cymru Fullbogons #1
+        - 2604:8800:60:81:216:31:7:81  # Cymru Fullbogons #2
     - name: BGP_PEERS_v6
       type: ipv6
       elements:
@@ -719,7 +747,6 @@ firewall:
       type: ipv4
       elements:
         - 10.10.34.2  # ASGARD
-        - 10.10.34.10  # CMB/SAKAAR
         - 10.10.34.18  # UNITIX_KIT01
         - 10.10.34.22  # UNITIX_KIT02
         - 10.10.34.6  # MOM
@@ -756,6 +783,14 @@ firewall:
         type: ip6
         source:
           set: BGP_PEERS_v6
+        destination:
+          port: 179
+          protocol: tcp
+        counter: true
+      - comment: "Allow BGP from CYMRU"
+        type: ip6
+        source:
+          set: BGP_CYMRU
         destination:
           port: 179
           protocol: tcp

@@ -13,3 +13,12 @@
 {% if bgp_item.timers is defined %}
  neighbor {{ bgp_item.peer }} timers {{ bgp_item.timers.keepalive }} {{ bgp_item.timers.hold }}
 {% endif %}
+{% if bgp_item.multihop|default(false) %}
+ neighbor {{ bgp_item.peer }} ebgp-multihop
+{% endif %}
+{% if bgp_item.passive|default(false) %}
+ neighbor {{ bgp_item.peer }} passive
+{% endif %}
+{% if bgp_item.interface is defined %}
+ neighbor {{ bgp_item.peer }} interface {{ bgp_item.interface }}
+{% endif %}

@@ -4,6 +4,3 @@
 {% if bgp_item.soft_reconfiguration_inbound|default(false) %}
   neighbor {{ bgp_item.peer }} soft-reconfiguration inbound
 {% endif %}
-{% for rdst in bgp_item.redistribute|default() %}
-  redistribute {{ rdst }}
-{% endfor %}
