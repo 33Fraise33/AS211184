@@ -33,6 +33,8 @@ vrfs:
         networks:
           v6:
             - 2a12:4946:4000::/44
+        redistribute:
+          - static
         neighbor_groups:
           - peer: default
             soft_reconfiguration_inbound: true
@@ -505,11 +507,11 @@ vrfs:
           v6:
             - address: 2a12:4946:4000::/44
               summary_only: false
+        redistribute:
+          - connected
         neighbor_groups:
           - peer: remotesites
             soft_reconfiguration_inbound: true
-            redistribute:
-              - connected
             timers:
               keepalive: 20
               hold: 60
