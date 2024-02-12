@@ -243,10 +243,6 @@ vrfs:
             as: 47498
             peer: 2001:7f8:ca:1::111
             description: "FogIXP RS1"
-          - neighbor_group: fogixp
-            peer: 2001:7f8:ca:1::77
-            description: "Bubacarr Sowe"
-            as: 210387
   remotesites:
     interfaces:
       loopback:
@@ -543,18 +539,18 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-ASGARD-out
-          - neighbor_group: remotesites
-            peer: 10.10.34.18
-            activate:
-              - v4
-            as: 65503
-            description: "UNITIX_KIT01v4"
-          - neighbor_group: remotesites
-            peer: 10.10.34.22
-            activate:
-              - v4
-            as: 65504
-            description: "UNITIX_KIT02v4"
+          # - neighbor_group: remotesites
+          #   peer: 10.10.34.18
+          #   activate:
+          #     - v4
+          #   as: 65503
+          #   description: "UNITIX_KIT01v4"
+          # - neighbor_group: remotesites
+          #   peer: 10.10.34.22
+          #   activate:
+          #     - v4
+          #   as: 65504
+          #   description: "UNITIX_KIT02v4"
           - neighbor_group: remotesites
             peer: 10.10.34.6
             activate:
