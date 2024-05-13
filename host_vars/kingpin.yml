@@ -38,6 +38,7 @@ vrfs:
         neighbor_groups:
           - peer: default
             soft_reconfiguration_inbound: true
+            local_role: customer
             activate:
               - v6
             timers:
@@ -108,6 +109,7 @@ vrfs:
           - peer: kleyrex
             as: 31142
             soft_reconfiguration_inbound: true
+            local_role: rs-client
             activate:
               - v6
             timers:
@@ -159,6 +161,7 @@ vrfs:
         neighbor_groups:
           - peer: locix
             soft_reconfiguration_inbound: true
+            local_role: rs-client
             activate:
               - v6
             timers:
@@ -186,6 +189,7 @@ vrfs:
             peer: 2001:7f8:f2:e1::6939:1
             description: Hurricane Electric
             as: 6939
+            local_role: customer
   evix:
     interfaces:
       loopback:
@@ -228,6 +232,7 @@ vrfs:
         neighbor_groups:
           - peer: fogixp
             soft_reconfiguration_inbound: true
+            local_role: rs-client
             activate:
               - v6
             timers:
@@ -539,12 +544,12 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-ASGARD-out
-          # - neighbor_group: remotesites
-          #   peer: 10.10.34.18
-          #   activate:
-          #     - v4
-          #   as: 65503
-          #   description: "UNITIX_KIT01v4"
+          - neighbor_group: remotesites
+            peer: 10.10.34.18
+            activate:
+              - v4
+            as: 65503
+            description: "UNITIX_KIT01v4"
           # - neighbor_group: remotesites
           #   peer: 10.10.34.22
           #   activate:
