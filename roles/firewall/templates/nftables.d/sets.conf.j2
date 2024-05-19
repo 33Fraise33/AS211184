@@ -1,10 +1,11 @@
-{%- for set_item in firewall.sets|default([]) -%}
-{%- if set_item.name != "CM_MGMT" %}
+#jinja2: trim_blocks:True
+{% for set_item in firewall.sets|default([]) %}
+{% if set_item.name != "CM_MGMT" %}
 set {{ set_item.name }} {
         type {{ set_item.type }}_addr
         flags interval
 
         elements = { {{ set_item.elements|join(", ") }} }
 } 
-{% endif -%}
-{%- endfor -%}
+{% endif %}
+{% endfor %}

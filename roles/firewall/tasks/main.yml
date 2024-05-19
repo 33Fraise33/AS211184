@@ -32,6 +32,7 @@
     - nftables.d/input.conf
     - nftables.d/sets.conf
     - nftables.d/postrouting.conf
+    - nftables.d/prerouting.conf
 
 - name: Check if nftables config is valid
   ansible.builtin.command: "nft --check --file /etc/nftables.conf"

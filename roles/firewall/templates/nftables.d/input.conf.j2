@@ -1,3 +1,6 @@
-{%- for fil_item in firewall.filter.input|default([]) -%}
-{%- include './filter_item.j2' -%}
-{%- endfor %}
+#jinja2: trim_blocks:True
+{% for nft_item in firewall.filter.input|default([]) %}
+{% set statement = 'accept' %}
+{% include './nft_item.j2' %}
+
+{% endfor %}
