@@ -1,9 +1,0 @@
----
-- name: Run setup role
-  hosts: all
-  gather_facts: false
-  roles:
-    - setup
-  become: true
-  vars:
-    ansible_port: 22

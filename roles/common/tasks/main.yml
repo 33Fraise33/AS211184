@@ -12,7 +12,3 @@
 - name: Import FRR Tasks
   ansible.builtin.import_tasks: frr.yml
   tags: frr
-
-- name: Import node_exporter Tasks
-  ansible.builtin.import_tasks: node_exporter.yml
-  tags: node_exporter

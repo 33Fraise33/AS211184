@@ -1,6 +1,0 @@
----
-node_exporter_version: 1.5.0
-
-users:
-  - name: gianni
-    pub_key: https://github.com/33Fraise33.keys
