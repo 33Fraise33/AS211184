@@ -1,0 +1,687 @@
+---
+vrfs:
+  default:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4002::/128
+      physicals:
+        - name: "ens17"
+          description: "MikeNetworks Peering 10G"
+          mtu: 1500
+      vlans:
+        - name: VLAN_0770
+          interface: ens17
+          vlan_id: 770
+          ipv4:
+            addresses:
+              - 31.24.249.70/30
+            gateway: 31.24.249.68
+
+    routing:
+      bgp:
+        as: 211184
+        router_id: 31.24.249.70
+        imports:
+          v6:
+            vrfs:
+              - remotesites
+          v4:
+            vrfs:
+              - remotesites
+        # networks:
+        #   v6:
+        #     - 2a12:4946:4000::/44
+        redistribute:
+          - static
+        neighbor_groups:
+          - peer: default
+            soft_reconfiguration_inbound: true
+            local_role: customer
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184-exact
+        neighbors:
+          - neighbor_group: default
+            peer: 2a0c:9a40:1::1
+            as: 34927
+            description: "Mike Networks Peering"
+            disabled: true
+      static:
+        # - destination: ::/0
+        #   gateway: 2a0c:9a40:1::1
+        - destination: 192.0.0.1/32
+          type: blackhole
+  remotesites:
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4002::2/128
+        ipv4:
+          addresses:
+            - 10.10.48.0/32
+      physicals:
+        - name: "ens18"
+          description: "Proxmox MGMT Bridge"
+          mtu: 1500
+          ipv4:
+            addresses:
+              - 10.10.48.9/29
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:1::1/64
+      wireguards:
+        - name: wgBEJBEGIA
+          description: "WG Transit to Home"
+          mtu: 1420
+          wg:
+            port: 51820
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              65386438303333313739323738326431346564653539396362373963353732383266323439313763
+              6462353838353063646163393864353934376630316562360a323539376638646431356262613436
+              66313136643166373662323636353062366465386231396666363234373862323035366430336231
+              3637613062653162310a316266396133633163326633623235393563663363333335616461323530
+              33316239373130613032643934303761326339623238313165383636303437613536636138383838
+              3464373063303330616335656339643430323935393231623662
+            public_key: gTXHxmgP8GkllODzWt/5Jh5d6eGDlTRdLbDDWIWKTjQ=
+            peers:
+              - name: BEJBEGIART01
+                id: 10
+                public_key: CsktxSvHquJEVyMwU2d46VSvsjoXqb/CZawDxDtLjmU=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  62623232356333383033653664616337656431623133623466353366333264623539316339616535
+                  3236393337343733313532616338383161326266323132330a313661626364643566653834353033
+                  31343666626431663764633465393832626263316533663231306666306239306333363236303564
+                  3266646263653662350a333833343062643964633062306364356139343361326439653563336134
+                  32386266363763356563376439363539356165353765613761343665326330623931326563666230
+                  6233323532373163303631643064636665636636373131616364
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::1:1/112
+              - fe80:34::1:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.1/30
+        - name: wgBELPMMOM
+          description: "WG Transit to MOM"
+          mtu: 1420
+          wg:
+            port: 51821
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              37393265653834313137636263613566613734663730666236363437663865386535316638343436
+              3938383464376465313962663735653234356434643535620a333562333261306433313266326164
+              39333633633763656634646635366430376262306664333536393130373930646330353965303235
+              3838376330323832330a646535653735616438343036363962653735383663643133613430326366
+              61343665323665616533383866346362373534393338633931383066373366326337393364633063
+              3537303362626231336566303866393565393366313630353139
+            public_key: AT8EI+D8hCr6pn5jY7FeEeDTLRbr7vEPSPWYpE7fT0U=
+            peers:
+              - name: BELPMMOMRT01
+                public_key: hGCG48gXMEi2Kf8KXbWA+LppaSGyHaZkqtjHkGGbvxo=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  31333632386264363262366439663463393337333836356531386235626539383266623164346561
+                  6131643537666333623937616164336536653661616130370a643561353036373931663834303364
+                  65366462386339396465383731326131393234373436626361326438396133386262636636626335
+                  6335646432366234390a353937326633646334333739363734623161663432316637306634336431
+                  62643138613864363066613036386533366439643162353064313239383539343065313662373633
+                  3166333334396330666634393935623737356533363038383337
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::2:1/112
+              - fe80:34::2:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.5/30
+        - name: wgBELPMDAD
+          description: "WG Transit to Dad"
+          mtu: 1420
+          wg:
+            port: 51823
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              39343030336139323465323736343362633737643531656664386538333137313861333033366566
+              6336373733616661666634376235313437623433646438300a316235356363633639383337393736
+              36356630643866396439323766633036373966653961376338383031363739653930316538396562
+              3164386436343563310a376639373565303733356538663138353132326138343462616138646537
+              36376666643638373362663534613363336566633663613965346534356461336633346637323533
+              3030636534653063623864376164306637336134336238623533
+            public_key: 5cJh0US/ol176fPNJ4Auzd9qU+nOyH6lXbs59kF1xns=
+            peers:
+              - name: BELPMDADRT01
+                public_key: sncn3P0nYLKwxwzGMktyD5qNqYnzB45Zg9vP+v2EpVI=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  33363564653433303162306465656234613561393533346264393133633363396361373933333566
+                  6663623331623265303561376132653931323938363536650a363865656333333136636266356639
+                  35623964633564653431316231343333643730626638326636343931633533613738303261383730
+                  6564653638326538640a653137383565323663346534666635336136343465613663333561666133
+                  34376636333466333834326331323834623762663661333937303564613161623335303838366236
+                  3930666265336435343764663665313765313664316661366231
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::4:1/112
+              - fe80:34::4:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.13/30
+        - name: wgOTGKIT01
+          description: "WG Transit to Unitix KIT01"
+          mtu: 1420
+          wg:
+            port: 51824
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              32373865366137623232653264383464653031353631313833313737383036616365643338646461
+              3464326238323537643037383261383035623330346630630a303162616339616366643365383937
+              34626665623063623831643237356663646663356233373734313136353363643064663863353130
+              6434663166383834320a326137303831303664316134366364633030353766363034646561643662
+              30343036623935313166323036393935666531333730626338646666613164663136333330643737
+              3439303861333065346637616132613666336630666162633734
+            public_key: OZ0hJSTjJgJYm+f4wD6wBYDzDQ1aq5gJN+RvBzk/fF4=
+            peers:
+              - name: OTGKIT01RT01
+                public_key: VWPA1c7JuTK10riRoGq40mkj4TzHsygipz5kipl5Zi8=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  34376630373238633036623038363563623862633430313739346161376230363136376462343035
+                  3563393737323639373931653366643038353865373066390a346139376632623163303331303037
+                  33613064353466656231333438643337343064336333376166383561326336383864333638323037
+                  3564633865363630370a343130623763666230316466396263643466616432653232393161326531
+                  64623565323265326232646531343035316132356462616236616638643539383030383465613131
+                  3266323762636537383435623662363062636337656665323235
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::5:1/112
+              - fe80:34::5:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.17/30
+        - name: wgBEZEDHVN
+          description: "WG Transit to t Hovenierke"
+          mtu: 1420
+          wg:
+            port: 51825
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              31613830363738666566666532323937333231386464636232333836333733393862396135313362
+              3937333237663632633830636532653330363931386530380a623366323039636362306466393638
+              66626466353339323637323437386663323464376237393532383235343434613335646665323332
+              3839386564396365310a306634343263303730613466346666363333333935373837613464663763
+              33383462623434356139343231373139393837663636346632613239353432663363343233353836
+              3930643336353032643931646538333563353730356561643264
+            public_key: 5z3VGuzATwSczxx21jelVAZ8FAf75yr0q8/f7Yx6ZDg=
+            peers:
+              - name: BEZEDHVNRT01
+                public_key: FI99BI3hkkubynYpFDYuxWJBHBQNe8R4OosgrBZcPSk=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  36616234316366323465373263316364366436656461623532613464383462343034646664653666
+                  6266376362323263323739336465616332393137323762300a653430633761643036363031336663
+                  65636533656638363563326634626464626634383139636531656139316362376461326565386531
+                  3039346632396665640a663832623830353064366663646132306462303432623034313466356234
+                  36386336616636386139636531396430313031613334656237643161303838613264333465313537
+                  3563386237373837396535373339346164663565653236373030
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::6:1/112
+              - fe80:34::6:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.21/30
+        - name: wgBEOKPDCOOR01
+          description: "WG Transit to OOB"
+          mtu: 1420
+          wg:
+            port: 51826
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              37643236656232373432633030643834366436353434306132613236666632396239396234636338
+              3164616133623763653961653033376639303539353162650a373730383764636561613964663239
+              30386238643130333161656230316564643436383931663239663666313862333866633232373264
+              3832393334643538350a313864616436326365316262633238636539323662303133313365336563
+              66383933373238393132613132303433633831333439656364613765376330343736313538333564
+              6662343437666234373930306161356130656564653738623434
+            public_key: gxr5fLUXxJSVBmAqXqL3aKKbXWl9XPzwnnLSQcgNvXw=
+            peers:
+              - name: BEOKPDCOOR01
+                public_key: sR6xsJJQBtzrOZfbPuoruQthvP+8NnnCF8xAqcCKJSE=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  30343361343534353731613664326665666434653933383365666464656262643364633933316262
+                  3032393237303065653361376134383837363132373536380a646464643833336165383265303435
+                  61356362373732303837393162316334666363323966633731383432366331313263343333333434
+                  3334613739656361320a363634663437623831323134373530333230336636643563643564636636
+                  38383433396163623865383234316163643763363463333338366133656438663163303038383130
+                  3733376164393432633663623261376531376236303631383137
+          # ipv6:
+          #   addresses:
+          #     - 2a12:4946:4002:34::7:1/112
+          #     - fe80:34::7:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.25/30
+        - name: wgRoadwarrior
+          description: "WG Interface Road Warrior clients"
+          mtu: 1420
+          wg:
+            port: 2034
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              36663332356236626537383561346534373866646232383537623465653861353965363230663437
+              6264396533653661343330643036646361303037356236610a643662393234363264633837623132
+              33393032623737363239663262373739633761336432376239393232386362396530373764316337
+              3735383364646563330a633635346661626133636233366231306231616533303362336537663935
+              36626566303832306338613532373161663463343234393561306330646263663562333530326266
+              6635633962393761303364623431303839623465363131383234
+            public_key: 6PvkKYx6mAg2nkDihioEY8Kz8QNwdoejoWc2cqE5pCs=
+            peers:
+              - name: Unitix_Laptop
+                public_key: jqn7VCUQebPQD34Qo1+aJoMV8AcE53QNI69qY1idJ1A=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  65373035396634623730643064626439626364626133646161613632363930363934303732353061
+                  6534366566663833623163666661643034643333343532630a643963653462663533656565633239
+                  37633737363533633239326366653865336564303530373338303664306636393637616431373937
+                  6566316539636332330a636163656531633739383431306333613063363839623334653137323935
+                  66303531393738346432356634363436623162633266353739396538353833396339666638633434
+                  6361306136666330626534323931633463373762363565313636
+                allowed_ips: "10.10.35.2/32, 2a12:4946:4001:35::2/128"
+              - name: Unitix_Stream_PC
+                public_key: eJ5/gLv4/jf5eRHcvl9aLXkvhE4rOdDVIAbb9alwtRw=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  36326165393065313163626631383033346162663834373533656430303863376538303537353333
+                  6364613931623734336463643732633535363565643166310a323632303739646131363261653161
+                  37323838376563633932653637393464663830376535353766653537356339373534303935346562
+                  3366626534306166390a343766373435316432636637623161656230323530363739356463643235
+                  62376137386335383762623433353639346537633164353336326261303265346239393338303664
+                  6566313163333865353830316563613030393331653733366265
+                allowed_ips: "10.10.35.3/32, 2a12:4946:4001:35::3/128"
+              - name: Fraise_Pixel6
+                public_key: nqbVgdCy0/XNbtq0Du4Qeu9Pse60KN7oMSgFGXg+2kk=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  64373964643431333130346330306561663263616462663131626636303335653639396638343562
+                  6662653961643465396332326236653763393162353134350a336562616539393838343066323361
+                  62323161386363313632313432373631636238383632616561393630626135626264366231653764
+                  3538363764316365300a383434626563623632333532626165336634343638613535643138646334
+                  66613934613664666230643761356332616564346632633031323164343266323566383533623461
+                  6337663062656135613833613066376335333262616361346265
+                allowed_ips: "10.10.35.4/32, 2a12:4946:4001:35::4/128"
+              - name: Amelle_SamsungA54
+                public_key: mTgVmjhdR6+LXxLLtxEx+rH/zJWSs8K18I5Fywm06TY=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  33323661333164316664303764333962373532626363366537653534653339356364656338383664
+                  3033376132356362613736386534636366303062303738330a636536386131363536333261386334
+                  33623838646533323732323739303135623966643731666533366262313235376432386435636664
+                  3164373933366163650a396436303564363139643563343333626564343238626331623966386563
+                  30396164336666656534373835653164353266633231646336323936646232643034343132353233
+                  3864343361383435663839613136373537393465333662383832
+                allowed_ips: "10.10.35.5/32, 2a12:4946:4001:35::5/128"
+          ipv6:
+            addresses:
+              - 2a12:4946:4001:35::1/64
+              - fe80:35::0:1/64
+          ipv4:
+            addresses:
+              - 10.10.35.1/24
+    routing:
+      bgp:
+        graceful_restart: false
+        as: 211184
+        router_id: 10.10.48.0
+        imports:
+          v6:
+            route_map: rm-DEFUALT_TO_REMOTE
+            vrfs:
+              - default
+          v4:
+            vrfs:
+              - default
+        # aggregates:
+        #   v6:
+        #     - address: 2a12:4946:4002::/48
+        #       summary_only: false
+        redistribute:
+          - connected
+        neighbor_groups:
+          - peer: remotesites
+            soft_reconfiguration_inbound: true
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-REMOTE_SITES-out
+        neighbors:
+          - neighbor_group: remotesites
+            peer: 10.10.49.2
+            activate:
+              - v4
+            as: 65501
+            description: "BEJBEGIA"
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-ASGARD-out
+          - neighbor_group: remotesites
+            peer: 2a12:4946:4002:34::1:2
+            activate:
+              - v6
+            as: 65501
+            description: "BEJBEGIA"
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-ASGARD-out
+          - neighbor_group: remotesites
+            disabled: true
+            peer: 10.10.49.18
+            activate:
+              - v4
+            as: 65503
+            description: "UNITIX_KIT01v4"
+          - neighbor_group: remotesites
+            peer: 10.10.49.6
+            activate:
+              - v4
+            as: 65511
+            description: "MOMv4"
+          - neighbor_group: remotesites
+            peer: 10.10.49.14
+            activate:
+              - v4
+            as: 65512
+            description: "DADv4"
+          - neighbor_group: remotesites
+            peer: 10.10.49.22
+            activate:
+              - v4
+            as: 65513
+            description: "BEZEDHVN"
+          - neighbor_group: remotesites
+            peer: 10.10.49.26
+            activate:
+              - v4
+            as: 65514
+            description: "BEOKPDCOOR01"
+
+route_filtering:
+  prefix_lists:
+    - name: pl-default-public
+      lists:
+        - prefix: 0.0.0.0/0
+          policy: permit
+          le: 24
+          ge: 0
+        - prefix: ::/0
+          policy: permit
+          le: 48
+          ge: 0
+    - name: pl-default
+      lists:
+        - prefix: 0.0.0.0/0
+          policy: permit
+        - prefix: ::/0
+          policy: permit
+    - name: pl-AS211184-exact
+      lists:
+        - prefix: 2a12:4946:4000::/44
+          policy: permit
+    - name: pl-AS211184
+      lists:
+        - prefix: 2a12:4946:4000::/44
+          policy: permit
+          ge: 44
+    - name: pl-RFC1918
+      lists:
+        - prefix: 10.0.0.0/8
+          policy: permit
+          ge: 8
+        - prefix: 172.16.0.0/12
+          policy: permit
+          ge: 12
+        - prefix: 192.168.0.0/16
+          policy: permit
+          ge: 16
+    - name: pl-MGMT
+      lists:
+        - prefix: 10.33.0.0/24
+          policy: permit
+        - prefix: 10.10.48.0/32
+          policy: permit
+        - prefix: 10.10.35.0/24
+          policy: permit
+  route_maps:
+    - name: rm-DEFAULT_ONLY_PUBLIC
+      maps:
+        - match:
+            v4_prefix_list: pl-default-public
+          policy: permit
+        - match:
+            v6_prefix_list: pl-default-public
+          policy: permit
+    - name: rm-fullbogons-in
+      maps:
+        - match:
+            v6_prefix_list: pl-default-bogons
+          action:
+            on_match: next
+          policy: permit
+        - match:
+            community: bogons
+          action:
+            set:
+              next_hop: 192.0.0.1
+          policy: permit
+    - name: rm-DEFUALT_TO_REMOTE
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match:
+            v6_prefix_list: pl-default
+          policy: permit
+    - name: rm-AS211184-exact
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184-exact
+          policy: permit
+    - name: rm-AS211184
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+    - name: rm-REMOTE_SITES-in
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match:
+            v4_prefix_list: pl-RFC1918
+          policy: permit
+    - name: rm-REMOTE_SITES-out
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match:
+            v4_prefix_list: pl-MGMT
+          policy: permit
+    - name: rm-ASGARD-out
+      maps:
+        - match:
+            v6_prefix_list: pl-AS211184
+          policy: permit
+        - match:
+            v4_prefix_list: pl-RFC1918
+          policy: permit
+          # - match:
+          #     v6_prefix_list: pl-default
+          #   policy: permit
+    - name: rm-default
+      maps:
+        - match:
+            v6_prefix_list: pl-default
+          policy: permit
+        - match:
+            v4_prefix_list: pl-default
+          policy: permit
+    - name: rm-deny
+      maps:
+        - policy: deny
+  communities:
+    - name: bogons
+      content:
+        - community: "64496:0"
+
+firewall:
+  sets:
+    - name: RFC1918
+      type: ipv4
+      elements:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+    - name: MGMT
+      type: ipv4
+      elements:
+        - 10.33.0.0/24  # Docker Network
+        - 10.10.35.0/24  # Wireguard Roadwarrior
+    - name: UNIFI
+      type: ipv4
+      elements:
+        - 10.33.0.244/32
+    - name: AS211184
+      type: ipv6
+      elements:
+        - 2a12:4946:4000::/44
+    - name: BGP_PEERS_v6
+      type: ipv6
+      elements:
+        - 2a12:4946:4002:34::/64
+    - name: BGP_PEERS_v4
+      type: ipv4
+      elements:
+        - 10.10.49.0/24
+  filter:
+    input:
+      - comment: "Allow SSH"
+        destination:
+          port: 1830
+          protocol: tcp
+        counter: true
+      - comment: "Allow node_exporter from MGMT"
+        source:
+          set: MGMT
+        destination:
+          port: 9100
+          protocol: tcp
+        counter: true
+      - comment: "Allow frr_expoter from MGMT"
+        source:
+          set: MGMT
+        destination:
+          port: 9342
+          protocol: tcp
+        counter: true
+      - comment: "Allow BGP from PEERS_v4"
+        source:
+          set: BGP_PEERS_v4
+        destination:
+          port: 179
+          protocol: tcp
+        counter: true
+      - comment: "Allow BGP from PEERS_v6"
+        type: ip6
+        source:
+          set: BGP_PEERS_v6
+        destination:
+          port: 179
+          protocol: tcp
+        counter: true
+      - comment: "Allow Wireguard edge sites"
+        destination:
+          port: 51820-51830
+          protocol: udp
+        counter: true
+      - comment: "Allow Wireguard Roadwarrior"
+        destination:
+          port: 2034
+          protocol: udp
+        counter: true
+    forward:
+      - comment: "Allow to WAN"
+        destination:
+          interface: VLAN_0770
+          negate: true
+          set: RFC1918
+        counter: true
+      - comment: "v6 - Allow AS211184 to WAN"
+        type: ip6
+        source:
+          set: AS211184
+        destination:
+          interface: VLAN_0770
+        counter: true
+      - comment: "Allow from MGMT"  # needed for monitoring towards edge sites
+        source:
+          set: MGMT
+        counter: true
+      - comment: "Allow to UNIFI"
+        destination:
+          set: UNIFI
+        counter: true
+      - comment: "Allow to Proxmox MGMT"
+        destination:
+          ip: 10.10.48.10
+  nat:
+    srcnat:  # default masquerade
+      - comment: SNAT to inet from wireguard
+        source:
+          interface: wgRoadwarrior
+        destination:
+          negate: true
+          set: RFC1918
+      - comment: SNAT from Proxmox MGMT Range
+        source:
+          ip: 10.10.48.10
+        destination:
+          negate: true
+          set: RFC1918
+        counter: true
+    dstnat:
+      - comment: DNAT to proxmox MGMT interface
+        statement: dnat to 10.10.48.10
+        # source:
+        #   set: MGMT
+        destination:
+          port: 8006
+          protocol: tcp
+          ip: 31.24.249.70
+        counter: true

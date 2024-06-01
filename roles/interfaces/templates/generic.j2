@@ -6,7 +6,7 @@
 auto {{ intf_name }}
 {% if intf.auto|default(false) %}
 iface {{ intf_name }} inet dhcp
-iface {{ intf_name }} inet6 auto
+iface {{ intf_name }} inet6 dhcp
 {% else %}
 iface {{ intf_name }}
 {% endif %}

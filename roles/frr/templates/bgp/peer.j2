@@ -10,6 +10,9 @@
 {% if bgp_item.as is defined %}
  neighbor {{ bgp_item.peer }} remote-as {{ bgp_item.as }} 
 {% endif %}
+{% if bgp_item.local_as is defined %}
+ neighbor {{ bgp_item.peer }} local-as {{ bgp_item.local_as }} replace-as
+{% endif %}
 {% if bgp_item.timers is defined %}
  neighbor {{ bgp_item.peer }} timers {{ bgp_item.timers.keepalive }} {{ bgp_item.timers.hold }}
 {% endif %}

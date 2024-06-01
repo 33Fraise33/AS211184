@@ -4,8 +4,12 @@ all:
     frr:
       children:
         vormir:
+        beokpdco:
     vormir:
       hosts:
         kingpin:
           ansible_host: 193.148.249.106
-          ansible_port: 1830
+    beokpdco:
+      hosts:
+        beokpdcort01:
+          ansible_host: 31.24.249.70
