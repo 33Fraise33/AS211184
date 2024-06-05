@@ -1,7 +1,7 @@
 {% if intf.id is not defined %}
 {% set intf_name = intf.name %}
 {% else %}
-{% set intf_name = ('vlan' + intf.id) %}
+{% set intf_name = ('vlan' + (intf.id |string)) %}
 {% endif %}
 auto {{ intf_name }}
 {% if intf.auto|default(false) %}

@@ -11,9 +11,8 @@ vrfs:
           description: "MikeNetworks Peering 10G"
           mtu: 1500
       vlans:
-        - name: VLAN_0770
+        - id: 770
           interface: ens17
-          vlan_id: 770
           ipv4:
             addresses:
               - 31.24.249.70/30
@@ -79,6 +78,27 @@ vrfs:
           ipv6:
             addresses:
               - 2a12:4946:4002:1::1/64
+        - name: "ens19"
+          description: "VM Interface"
+      vlans:
+        - id: 1000
+          interface: ens19
+          description: VM Vlan
+          ipv4:
+            addresses:
+              - 10.10.48.33/27
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:1000::1/64
+        - id: 1001
+          description: Monitoring Vlan
+          interface: ens19
+          ipv4:
+            addresses:
+              - 10.10.48.66/27
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:1001::1/64
       wireguards:
         - name: wgBEJBEGIA
           description: "WG Transit to Home"
@@ -638,7 +658,7 @@ firewall:
     forward:
       - comment: "Allow to WAN"
         destination:
-          interface: VLAN_0770
+          interface: vlan770
           negate: true
           set: RFC1918
         counter: true
@@ -668,9 +688,9 @@ firewall:
         destination:
           negate: true
           set: RFC1918
-      - comment: SNAT from Proxmox MGMT Range
+      - comment: SNAT from DCO Range
         source:
-          ip: 10.10.48.10
+          ip: 10.10.48.0/21
         destination:
           negate: true
           set: RFC1918

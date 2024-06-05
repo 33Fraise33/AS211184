@@ -2,7 +2,7 @@
 {%    for intf in VRF.interfaces.vlans %}
 {%      include 'generic.j2' %}
     vlan-raw-device {{ intf.interface | default('bridge') }}
-    vlan-id {{ intf.vlan_id }}
+    vlan-id {{ intf.id }}
 {%    endfor %}
 
 {%  endif %}
