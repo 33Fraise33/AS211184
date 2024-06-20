@@ -17,7 +17,9 @@ vrfs:
             addresses:
               - 31.24.249.70/30
             gateway: 31.24.249.68
-
+          ipv6:
+            addresses:
+              - 2a12:4946:80ed:1::2/64
     routing:
       bgp:
         as: 211184
@@ -29,9 +31,9 @@ vrfs:
           v4:
             vrfs:
               - remotesites
-        # networks:
-        #   v6:
-        #     - 2a12:4946:4000::/44
+        networks:
+          v6:
+            - 2a12:4946:4000::/44
         redistribute:
           - static
         neighbor_groups:
@@ -50,13 +52,10 @@ vrfs:
                 name: rm-AS211184-exact
         neighbors:
           - neighbor_group: default
-            peer: 2a0c:9a40:1::1
-            as: 34927
+            peer: 2a12:4946:80ed:1::1
+            as: 199839
             description: "Mike Networks Peering"
-            disabled: true
       static:
-        # - destination: ::/0
-        #   gateway: 2a0c:9a40:1::1
         - destination: 192.0.0.1/32
           type: blackhole
   remotesites:
@@ -95,10 +94,19 @@ vrfs:
           interface: ens19
           ipv4:
             addresses:
-              - 10.10.48.66/27
+              - 10.10.48.65/27
           ipv6:
             addresses:
               - 2a12:4946:4002:1001::1/64
+        - id: 1002
+          description: Services Vlan
+          interface: ens19
+          ipv4:
+            addresses:
+              - 10.10.48.97/27
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:1002::1/64
       wireguards:
         - name: wgBEJBEGIA
           description: "WG Transit to Home"
@@ -379,10 +387,6 @@ vrfs:
           v4:
             vrfs:
               - default
-        # aggregates:
-        #   v6:
-        #     - address: 2a12:4946:4002::/48
-        #       summary_only: false
         redistribute:
           - connected
         neighbor_groups:
@@ -407,7 +411,7 @@ vrfs:
               - direction: in
                 name: rm-REMOTE_SITES-in
               - direction: out
-                name: rm-ASGARD-out
+                name: rm-BEJBEGIA-out
           - neighbor_group: remotesites
             peer: 2a12:4946:4002:34::1:2
             activate:
@@ -418,7 +422,7 @@ vrfs:
               - direction: in
                 name: rm-REMOTE_SITES-in
               - direction: out
-                name: rm-ASGARD-out
+                name: rm-BEJBEGIA-out
           - neighbor_group: remotesites
             disabled: true
             peer: 10.10.49.18
@@ -491,11 +495,13 @@ route_filtering:
           ge: 16
     - name: pl-MGMT
       lists:
-        - prefix: 10.33.0.0/24
-          policy: permit
         - prefix: 10.10.48.0/32
           policy: permit
         - prefix: 10.10.35.0/24
+          policy: permit
+    - name: pl-MONITORING
+      lists:
+        - prefix: 10.10.48.64/27
           policy: permit
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
@@ -553,17 +559,20 @@ route_filtering:
         - match:
             v4_prefix_list: pl-MGMT
           policy: permit
-    - name: rm-ASGARD-out
+        - match:
+            v4_prefix_list: pl-MONITORING
+          policy: permit
+    - name: rm-BEJBEGIA-out
       maps:
+        - match:
+            v4_prefix_list: pl-RFC1918
+          policy: permit
         - match:
             v6_prefix_list: pl-AS211184
           policy: permit
         - match:
-            v4_prefix_list: pl-RFC1918
+            v6_prefix_list: pl-default
           policy: permit
-          # - match:
-          #     v6_prefix_list: pl-default
-          #   policy: permit
     - name: rm-default
       maps:
         - match:
@@ -582,31 +591,63 @@ route_filtering:
 
 firewall:
   sets:
+    - name: WAN
+      type: ifname
+      elements:
+        - vlan770
     - name: RFC1918
-      type: ipv4
+      type: ipv4_addr
       elements:
         - 10.0.0.0/8
         - 172.16.0.0/12
         - 192.168.0.0/16
     - name: MGMT
-      type: ipv4
+      type: ipv4_addr
       elements:
         - 10.33.0.0/24  # Docker Network
         - 10.10.35.0/24  # Wireguard Roadwarrior
+    - name: DCO_RemoteSites
+      type: ipv4_addr
+      elements:
+        - 10.10.48.0/24
+    - name: DNS
+      type: ipv4_addr
+      elements:
+        - 10.33.0.254
+    - name: PROXY
+      type: ipv4_addr
+      elements:
+        - 10.33.0.245
+    - name: MONITORING
+      type: ipv4_addr
+      elements:
+        - "10.10.48.64/27"
+    - name: MONITORING_v6
+      type: ipv6_addr
+      elements:
+        - "2a12:4946:4002:1001::/64"
+    - name: TRAEFIK
+      type: ipv4_addr
+      elements:
+        - 10.10.48.125/32
+    - name: TRAEFIK_v6
+      type: ipv6_addr
+      elements:
+        - 2a12:4946:4002:1002::125/128
     - name: UNIFI
-      type: ipv4
+      type: ipv4_addr
       elements:
         - 10.33.0.244/32
     - name: AS211184
-      type: ipv6
+      type: ipv6_addr
       elements:
         - 2a12:4946:4000::/44
     - name: BGP_PEERS_v6
-      type: ipv6
+      type: ipv6_addr
       elements:
-        - 2a12:4946:4002:34::/64
+        - 2a12:4946:80ed:1::1/128
     - name: BGP_PEERS_v4
-      type: ipv4
+      type: ipv4_addr
       elements:
         - 10.10.49.0/24
   filter:
@@ -616,23 +657,10 @@ firewall:
           port: 1830
           protocol: tcp
         counter: true
-      - comment: "Allow node_exporter from MGMT"
-        source:
-          set: MGMT
-        destination:
-          port: 9100
-          protocol: tcp
-        counter: true
-      - comment: "Allow frr_expoter from MGMT"
-        source:
-          set: MGMT
-        destination:
-          port: 9342
-          protocol: tcp
-        counter: true
+
       - comment: "Allow BGP from PEERS_v4"
         source:
-          set: BGP_PEERS_v4
+          ip: "@BGP_PEERS_v4"
         destination:
           port: 179
           protocol: tcp
@@ -640,11 +668,24 @@ firewall:
       - comment: "Allow BGP from PEERS_v6"
         type: ip6
         source:
-          set: BGP_PEERS_v6
+          ip: "@BGP_PEERS_v6"
         destination:
           port: 179
           protocol: tcp
         counter: true
+
+      - comment: "Allow node_exporter from MONITORING"
+        source:
+          ip: "@MONITORING"
+        destination:
+          port: 9100
+          protocol: tcp
+      - comment: "Allow frr_expoter from MONITORING"
+        source:
+          ip: "@MONITORING"
+        destination:
+          port: 9342
+          protocol: tcp
       - comment: "Allow Wireguard edge sites"
         destination:
           port: 51820-51830
@@ -655,31 +696,108 @@ firewall:
           port: 2034
           protocol: udp
         counter: true
+
     forward:
+      # WAN
       - comment: "Allow to WAN"
         destination:
-          interface: vlan770
+          interface: "@WAN"
           negate: true
-          set: RFC1918
+          ip: "@RFC1918"
         counter: true
       - comment: "v6 - Allow AS211184 to WAN"
         type: ip6
         source:
-          set: AS211184
+          ip: "@AS211184"
         destination:
-          interface: VLAN_0770
+          interface: "@WAN"
         counter: true
-      - comment: "Allow from MGMT"  # needed for monitoring towards edge sites
+      # MGMT
+      - comment: "Allow from MGMT"
         source:
-          set: MGMT
+          ip: "@MGMT"
         counter: true
-      - comment: "Allow to UNIFI"
+      # MONITORING
+      - comment: "Allow from MONITORING"
+        source:
+          ip: "@MONITORING"
         destination:
-          set: UNIFI
+          protocol: udp
+          port: "{ 161 }"  # snmp
         counter: true
-      - comment: "Allow to Proxmox MGMT"
+      - comment: "Allow from MONITORING"
+        source:
+          ip: "@MONITORING"
+        destination:
+          protocol: tcp
+          port: "{ 80,443,9100,9323,9342 }"  # http,https,node_exporter,docker_exporter,frr_exporter
+        counter: true
+      # PROXY/TRAEFIK
+      - comment: "Allow to TRAEFIK"
+        source:
+          interface: "remotesites"
+        destination:
+          ip: "@TRAEFIK"
+        counter: true
+      - comment: "Allow to TRAEFIK"
+        type: ip6
+        source:
+          interface: "remotesites"
+        destination:
+          ip: "@TRAEFIK_v6"
+        counter: true
+      - comment: "Allow from TRAEFIK to monitoring vlan tcp"
+        source:
+          ip: "@TRAEFIK"
+        destination:
+          ip: "@MONITORING"
+          protocol: tcp
+          port: "{ 1 - 65000 }"
+        counter: true
+      - comment: "v6 - Allow from TRAEFIK to monitoring vlan tcp"
+        type: ip6
+        source:
+          ip: "@TRAEFIK_v6"
+        destination:
+          ip: "@MONITORING_v6"
+          protocol: tcp
+          port: "{ 1 - 65000 }"
+        counter: true
+      - comment: "Allow from TRAEFIK to Proxmox"
+        source:
+          ip: "@TRAEFIK"
         destination:
           ip: 10.10.48.10
+          protocol: tcp
+          port: 8006
+        counter: true
+      # SERVICES
+      - comment: "Allow to UNIFI"
+        destination:
+          ip: "@UNIFI"
+        counter: true
+      - comment: "Allow DNS from DCO_RemoteSites"
+        source:
+          ip: "@DCO_RemoteSites"
+        destination:
+          ip: "@DNS"
+        counter: true
+      - comment: "Allow reverse PROXY from DCO_RemoteSites"
+        source:
+          ip: "@DCO_RemoteSites"
+        destination:
+          ip: "@PROXY"
+        counter: true
+      # DENY LOG
+      - comment: "Drop unknown destination addresses returning to default route"
+        counter: true
+        source:
+          interface: "@WAN"
+        destination:
+          interface: "@WAN"
+        statement: 'drop'
+      - counter: true
+        statement: 'log prefix "DROPPED: "'
   nat:
     srcnat:  # default masquerade
       - comment: SNAT to inet from wireguard
@@ -687,21 +805,21 @@ firewall:
           interface: wgRoadwarrior
         destination:
           negate: true
-          set: RFC1918
+          ip: "@RFC1918"
       - comment: SNAT from DCO Range
         source:
           ip: 10.10.48.0/21
         destination:
           negate: true
-          set: RFC1918
+          ip: "@RFC1918"
         counter: true
-    dstnat:
-      - comment: DNAT to proxmox MGMT interface
-        statement: dnat to 10.10.48.10
-        # source:
-        #   set: MGMT
-        destination:
-          port: 8006
-          protocol: tcp
-          ip: 31.24.249.70
-        counter: true
+    dstnat: []
+    # - comment: DNAT to proxmox MGMT interface
+    #   statement: dnat to 10.10.48.10
+    #   # source:
+    #   #   set: MGMT
+    #   destination:
+    #     port: 8006
+    #     protocol: tcp
+    #     ip: 31.24.249.70
+    #   counter: true
