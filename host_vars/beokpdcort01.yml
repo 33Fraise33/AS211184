@@ -54,7 +54,7 @@ vrfs:
           - neighbor_group: default
             peer: 2a12:4946:80ed:1::1
             as: 199839
-            description: "Mike Networks Peering"
+            description: "Uptream Mike"
       static:
         - destination: 192.0.0.1/32
           type: blackhole
@@ -307,6 +307,39 @@ vrfs:
           ipv4:
             addresses:
               - 10.10.49.25/30
+        - name: wgBELPMPAR
+          description: "WG Transit to Parys"
+          mtu: 1420
+          wg:
+            port: 51827
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              62366261383366623434386631313763653633323263623332323961303730353138313030643339
+              3664663835323539393963653938303436653165656362630a623366663932643663346137383038
+              32356365323836383235396437346364623237326233376362363930353636373236353963353364
+              6636633139366461350a643233663232333038303330393231363066383066643238303064353861
+              36646437353035333138393433653263366435313232383234623834383031643364613535396239
+              3633376535616135326137333763623063333733313436346564
+            public_key: Q51kLEdIQKOb0jPYwpfUa1dYiyF006SoEYmbVFQqQ28=
+            peers:
+              - name: BELPMPARRT01
+                public_key: 414jZEfktKGFQvf5UooON42atTYp4kq7s15sCRHUV18=
+                private_key: !vault |
+                  $ANSIBLE_VAULT;1.1;AES256
+                  39343833306265316637383637303961323332613438363264656138653165353439623232386139
+                  3837336234393662336533306162663761653334393935610a373239653730666336656362376432
+                  37633232633131363964666533643538663835613534613862643564663033333061306565313766
+                  3032346435633464370a646334306230643333376336343362363535346366396233366335653133
+                  61643965646438373439643361323961666434656266386664353261633933306163333537373366
+                  3765393431343464616232653133323563396165336133656237
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::8:1/112
+              - fe80:34::8:1/64
+          ipv4:
+            addresses:
+              - 10.10.49.29/30
         - name: wgRoadwarrior
           description: "WG Interface Road Warrior clients"
           mtu: 1420
@@ -429,19 +462,19 @@ vrfs:
             activate:
               - v4
             as: 65503
-            description: "UNITIX_KIT01v4"
+            description: "OTGKIT"
           - neighbor_group: remotesites
             peer: 10.10.49.6
             activate:
               - v4
             as: 65511
-            description: "MOMv4"
+            description: "BELPMMOM"
           - neighbor_group: remotesites
             peer: 10.10.49.14
             activate:
               - v4
             as: 65512
-            description: "DADv4"
+            description: "BELPMDAD"
           - neighbor_group: remotesites
             peer: 10.10.49.22
             activate:
@@ -454,6 +487,12 @@ vrfs:
               - v4
             as: 65514
             description: "BEOKPDCOOR01"
+          - neighbor_group: remotesites
+            peer: 10.10.49.30
+            activate:
+              - v4
+            as: 65515
+            description: "BELPMPAR"
 
 route_filtering:
   prefix_lists:
@@ -606,6 +645,10 @@ firewall:
       elements:
         - 10.33.0.0/24  # Docker Network
         - 10.10.35.0/24  # Wireguard Roadwarrior
+    - name: VM01
+      type: ipv4_addr
+      elements:
+        - 10.10.48.34/32
     - name: DCO_RemoteSites
       type: ipv4_addr
       elements:
@@ -634,6 +677,22 @@ firewall:
       type: ipv6_addr
       elements:
         - 2a12:4946:4002:1002::125/128
+    - name: DNS
+      type: ipv4_addr
+      elements:
+        - 10.33.0.254/32
+    - name: DNS_v6
+      type: ipv6_addr
+      elements:
+        - 2a12:4946:4000:333::254/128
+    - name: Proxmox
+      type: ipv4_addr
+      elements:
+        - 10.10.48.10/32
+    - name: Truenas
+      type: ipv4_addr
+      elements:
+        - 172.16.33.3/32
     - name: UNIFI
       type: ipv4_addr
       elements:
@@ -717,13 +776,21 @@ firewall:
         source:
           ip: "@MGMT"
         counter: true
+      - comment: "Allow from VM to Captain"
+        source:
+          ip: "@VM01"
+        destination:
+          ip: 172.16.33.5
+          port: 1830
+          protocol: tcp
+        counter: true
       # MONITORING
       - comment: "Allow from MONITORING"
         source:
           ip: "@MONITORING"
         destination:
           protocol: udp
-          port: "{ 161 }"  # snmp
+          port: "{ 161, 623 }"  # snmp, ipmi
         counter: true
       - comment: "Allow from MONITORING"
         source:
@@ -731,6 +798,24 @@ firewall:
         destination:
           protocol: tcp
           port: "{ 80,443,9100,9323,9342 }"  # http,https,node_exporter,docker_exporter,frr_exporter
+        counter: true
+      # DNS
+      - comment: "Allow to DNS"
+        source:
+          interface: "remotesites"
+        destination:
+          ip: "@DNS"
+          protocol: udp
+          port: 53
+        counter: true
+      - comment: "Allow to DNS"
+        type: ip6
+        source:
+          interface: "remotesites"
+        destination:
+          ip: "@DNS_v6"
+          protocol: udp
+          port: 53
         counter: true
       # PROXY/TRAEFIK
       - comment: "Allow to TRAEFIK"
@@ -767,12 +852,31 @@ firewall:
         source:
           ip: "@TRAEFIK"
         destination:
-          ip: 10.10.48.10
+          ip: "@Proxmox"
           protocol: tcp
           port: 8006
         counter: true
+      # BACKUPS
+      - comment: "Proxmox to Truenas - NFS"
+        source:
+          ip: "@Proxmox"
+        destination:
+          ip: "@Truenas"
+          protocol: tcp
+          port: "{ 111,2049 }"
+        counter: true
+      - comment: "Proxmox to Truenas - NFS"
+        source:
+          ip: "@Proxmox"
+        destination:
+          ip: "@Truenas"
+          protocol: udp
+          port: 2049
+        counter: true
       # SERVICES
       - comment: "Allow to UNIFI"
+        source:
+          interface: "remotesites"
         destination:
           ip: "@UNIFI"
         counter: true
@@ -796,20 +900,20 @@ firewall:
         destination:
           interface: "@WAN"
         statement: 'drop'
+      - comment: "Drop WAN"
+        counter: true
+        source:
+          interface: "@WAN"
+        statement: 'drop'
       - counter: true
         statement: 'log prefix "DROPPED: "'
   nat:
     srcnat:  # default masquerade
-      - comment: SNAT to inet from wireguard
+      - comment: SNAT to inet
         source:
-          interface: wgRoadwarrior
-        destination:
-          negate: true
           ip: "@RFC1918"
-      - comment: SNAT from DCO Range
-        source:
-          ip: 10.10.48.0/21
         destination:
+          interface: "@WAN"
           negate: true
           ip: "@RFC1918"
         counter: true
