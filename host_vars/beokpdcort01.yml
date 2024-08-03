@@ -107,6 +107,15 @@ vrfs:
           ipv6:
             addresses:
               - 2a12:4946:4002:1002::1/64
+        - id: 1003
+          description: Media Vlan
+          interface: ens19
+          ipv4:
+            addresses:
+              - 10.10.48.129/27
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:1003::1/64
       wireguards:
         - name: wgBEJBEGIA
           description: "WG Transit to Home"
@@ -366,7 +375,7 @@ vrfs:
                   6566316539636332330a636163656531633739383431306333613063363839623334653137323935
                   66303531393738346432356634363436623162633266353739396538353833396339666638633434
                   6361306136666330626534323931633463373762363565313636
-                allowed_ips: "10.10.35.2/32, 2a12:4946:4001:35::2/128"
+                allowed_ips: "10.10.35.2/32, 2a12:4946:4002:35::2/128"
               - name: Unitix_Stream_PC
                 public_key: eJ5/gLv4/jf5eRHcvl9aLXkvhE4rOdDVIAbb9alwtRw=
                 private_key: !vault |
@@ -377,7 +386,7 @@ vrfs:
                   3366626534306166390a343766373435316432636637623161656230323530363739356463643235
                   62376137386335383762623433353639346537633164353336326261303265346239393338303664
                   6566313163333865353830316563613030393331653733366265
-                allowed_ips: "10.10.35.3/32, 2a12:4946:4001:35::3/128"
+                allowed_ips: "10.10.35.3/32, 2a12:4946:4002:35::3/128"
               - name: Fraise_Pixel6
                 public_key: nqbVgdCy0/XNbtq0Du4Qeu9Pse60KN7oMSgFGXg+2kk=
                 private_key: !vault |
@@ -388,7 +397,7 @@ vrfs:
                   3538363764316365300a383434626563623632333532626165336634343638613535643138646334
                   66613934613664666230643761356332616564346632633031323164343266323566383533623461
                   6337663062656135613833613066376335333262616361346265
-                allowed_ips: "10.10.35.4/32, 2a12:4946:4001:35::4/128"
+                allowed_ips: "10.10.35.4/32, 2a12:4946:4002:35::4/128"
               - name: Amelle_SamsungA54
                 public_key: mTgVmjhdR6+LXxLLtxEx+rH/zJWSs8K18I5Fywm06TY=
                 private_key: !vault |
@@ -399,10 +408,10 @@ vrfs:
                   3164373933366163650a396436303564363139643563343333626564343238626331623966386563
                   30396164336666656534373835653164353266633231646336323936646232643034343132353233
                   3864343361383435663839613136373537393465333662383832
-                allowed_ips: "10.10.35.5/32, 2a12:4946:4001:35::5/128"
+                allowed_ips: "10.10.35.5/32, 2a12:4946:4002:35::5/128"
           ipv6:
             addresses:
-              - 2a12:4946:4001:35::1/64
+              - 2a12:4946:4002:35::1/64
               - fe80:35::0:1/64
           ipv4:
             addresses:
@@ -669,6 +678,14 @@ firewall:
       type: ipv6_addr
       elements:
         - "2a12:4946:4002:1001::/64"
+    - name: MEDIA
+      type: ipv4_addr
+      elements:
+        - "10.10.48.128/27"
+    - name: MEDIA_v6
+      type: ipv6_addr
+      elements:
+        - "2a12:4946:4002:1003::/64"
     - name: TRAEFIK
       type: ipv4_addr
       elements:
@@ -845,6 +862,23 @@ firewall:
           ip: "@TRAEFIK_v6"
         destination:
           ip: "@MONITORING_v6"
+          protocol: tcp
+          port: "{ 1 - 65000 }"
+        counter: true
+      - comment: "Allow from TRAEFIK to media vlan tcp"
+        source:
+          ip: "@TRAEFIK"
+        destination:
+          ip: "@MEDIA"
+          protocol: tcp
+          port: "{ 1 - 65000 }"
+        counter: true
+      - comment: "v6 - Allow from TRAEFIK to media vlan tcp"
+        type: ip6
+        source:
+          ip: "@TRAEFIK_v6"
+        destination:
+          ip: "@MEDIA_v6"
           protocol: tcp
           port: "{ 1 - 65000 }"
         counter: true
