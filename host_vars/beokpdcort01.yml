@@ -116,6 +116,15 @@ vrfs:
           ipv6:
             addresses:
               - 2a12:4946:4002:1003::1/64
+        - id: 1004
+          description: Networking Vlan
+          interface: ens19
+          ipv4:
+            addresses:
+              - 10.10.48.161/27
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:1004::1/64
       wireguards:
         - name: wgBEJBEGIA
           description: "WG Transit to Home"
@@ -686,6 +695,14 @@ firewall:
       type: ipv6_addr
       elements:
         - "2a12:4946:4002:1003::/64"
+    - name: NETWORKING
+      type: ipv4_addr
+      elements:
+        - "10.10.48.160/27"
+    - name: NETWORKING_v6
+      type: ipv6_addr
+      elements:
+        - "2a12:4946:4002:1004::/64"
     - name: TRAEFIK
       type: ipv4_addr
       elements:
@@ -879,6 +896,23 @@ firewall:
           ip: "@TRAEFIK_v6"
         destination:
           ip: "@MEDIA_v6"
+          protocol: tcp
+          port: "{ 1 - 65000 }"
+        counter: true
+      - comment: "Allow from TRAEFIK to  networking tcp"
+        source:
+          ip: "@TRAEFIK"
+        destination:
+          ip: "@NETWORKING"
+          protocol: tcp
+          port: "{ 1 - 65000 }"
+        counter: true
+      - comment: "v6 - Allow from TRAEFIK to networking vlan tcp"
+        type: ip6
+        source:
+          ip: "@TRAEFIK_v6"
+        destination:
+          ip: "@NETWORKING_v6"
           protocol: tcp
           port: "{ 1 - 65000 }"
         counter: true
