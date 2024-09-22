@@ -905,6 +905,23 @@ firewall:
         destination:
           ip: "@Truenas"
           protocol: udp
+          port: "{ 111,2049 }"
+        counter: true
+      # MEDIA
+      - comment: "VM01 to Truenas - NFS"
+        source:
+          ip: "@VM01"
+        destination:
+          ip: "@Truenas"
+          protocol: tcp
+          port: "{ 111,2049 }"
+        counter: true
+      - comment: "VM01 to Truenas - NFS"
+        source:
+          ip: "@VM01"
+        destination:
+          ip: "@Truenas"
+          protocol: udp
           port: 2049
         counter: true
       # SERVICES
@@ -925,6 +942,14 @@ firewall:
           ip: "@DCO_RemoteSites"
         destination:
           ip: "@PROXY"
+        counter: true
+      - comment: "Allow Portainer to Captain"
+        source:
+          ip: 10.10.48.0/24
+        destination:
+          ip: 172.16.33.5
+          port: 9001
+          protocol: tcp
         counter: true
       # DENY LOG
       - comment: "Drop unknown destination addresses returning to default route"
