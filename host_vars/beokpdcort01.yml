@@ -560,6 +560,10 @@ route_filtering:
       lists:
         - prefix: 10.10.48.64/27
           policy: permit
+    - name: pl-NETWORKING
+      lists:
+        - prefix: 10.10.48.160/27
+          policy: permit
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
@@ -618,6 +622,9 @@ route_filtering:
           policy: permit
         - match:
             v4_prefix_list: pl-MONITORING
+          policy: permit
+        - match:
+            v4_prefix_list: pl-NETWORKING
           policy: permit
     - name: rm-BEJBEGIA-out
       maps:
@@ -730,7 +737,11 @@ firewall:
     - name: UNIFI
       type: ipv4_addr
       elements:
-        - 10.33.0.244/32
+        - 10.10.48.190/32
+    - name: UISP
+      type: ipv4_addr
+      elements:
+        - 10.10.48.189/32
     - name: AS211184
       type: ipv6_addr
       elements:
@@ -959,12 +970,6 @@ firewall:
           port: 2049
         counter: true
       # SERVICES
-      - comment: "Allow to UNIFI"
-        source:
-          interface: "remotesites"
-        destination:
-          ip: "@UNIFI"
-        counter: true
       - comment: "Allow DNS from DCO_RemoteSites"
         source:
           ip: "@DCO_RemoteSites"
@@ -984,6 +989,38 @@ firewall:
           ip: 172.16.33.5
           port: 9001
           protocol: tcp
+        counter: true
+      # NETWORKING
+      - comment: "Allow to UNIFI udp - stun, rsyslog"
+        source:
+          interface: "remotesites"
+        destination:
+          ip: "@UNIFI"
+          protocol: udp
+          port: "{ 3478, 5514 }"
+        counter: true
+      - comment: "Allow to UNIFI tcp - device comm, web"
+        source:
+          interface: "remotesites"
+        destination:
+          ip: "@UNIFI"
+          protocol: tcp
+          port: "{ 8080, 8443 }"
+        counter: true
+      # icmp allowed by default
+      # - comment: "Allow from UISP - icmp"
+      #   source:
+      #     ip: "@UISP"
+      #   destination:
+      #     interface: "remotesites"
+      #     protocol: icmp
+      #   counter: true
+      - comment: "Allow from UISP - SNMP"
+        source:
+          ip: "@UISP"
+        destination:
+          protocol: udp
+          port: 161
         counter: true
       # DENY LOG
       - comment: "Drop unknown destination addresses returning to default route"
