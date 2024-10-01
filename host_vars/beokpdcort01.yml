@@ -1015,12 +1015,12 @@ firewall:
       #     interface: "remotesites"
       #     protocol: icmp
       #   counter: true
-      - comment: "Allow from UISP - SNMP"
+      - comment: "Allow from UISP - SNMP, device discovery"
         source:
           ip: "@UISP"
         destination:
           protocol: udp
-          port: 161
+          port: "{ 161, 10001 }"
         counter: true
       # DENY LOG
       - comment: "Drop unknown destination addresses returning to default route"
