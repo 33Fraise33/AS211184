@@ -3,12 +3,7 @@ all:
   children:
     frr:
       children:
-        vormir:
         beokpdco:
-    vormir:
-      hosts:
-        kingpin:
-          ansible_host: 193.148.249.106
     beokpdco:
       hosts:
         beokpdcort01:
