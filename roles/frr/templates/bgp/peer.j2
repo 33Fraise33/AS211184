@@ -4,7 +4,7 @@
 {% if bgp_item.description is defined %}
  neighbor {{ bgp_item.peer }} description {{ bgp_item.description }}
 {% endif %}
-{% if bgp_item.disabled|default(false) %}
+{% if not bgp_item.enabled|default(true) %}
  neighbor {{ bgp_item.peer }} shutdown
 {% endif %}
 {% if bgp_item.as is defined %}
