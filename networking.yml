@@ -12,11 +12,3 @@
   roles:
     - frr
   tags: frr
-
-- name: Run firewall role
-  hosts: frr
-  gather_facts: true
-  roles:
-    - firewall
-  tags: firewall
-  become: true
