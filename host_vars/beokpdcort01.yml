@@ -1,6 +1,6 @@
 ---
 vrfs:
-  default:
+  wan:
     interfaces:
       loopback:
         ipv6:
@@ -10,6 +10,9 @@ vrfs:
         - name: "ens17"
           description: "MikeNetworks Peering 10G"
           mtu: 1500
+        - name: ens20
+          ipv6:
+          description: VRF LINK
       vlans:
         - id: 770
           interface: ens17
@@ -25,19 +28,19 @@ vrfs:
         as: 211184
         router_id: 31.24.249.70
         imports:
-          v6:
-            vrfs:
-              - remotesites
+          # v6:
+          #   vrfs:
+          #     - default
           v4:
             vrfs:
-              - remotesites
+              - default
         networks:
           v6:
             - 2a12:4946:4000::/44
         redistribute:
-          - static
+          - kernel  # needed for default route to default vrf
         neighbor_groups:
-          - peer: default
+          - peer: transit
             soft_reconfiguration_inbound: true
             local_role: customer
             activate:
@@ -50,15 +53,32 @@ vrfs:
                 name: rm-DEFAULT_ONLY_PUBLIC
               - direction: out
                 name: rm-AS211184-exact
+          - peer: test
+            # local_role: customer
+            activate:
+              - v6
+              # - v4
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-default
         neighbors:
-          - neighbor_group: default
+          - neighbor_group: transit
             peer: 2a12:4946:80ed:1::1
             as: 199839
             description: "Uptream Mike"
+          - neighbor_group: test
+            peer: ens20
+            as: 65500
+            unnumbered: true
       static:
         - destination: 192.0.0.1/32
           type: blackhole
-  remotesites:
+  default:
     interfaces:
       loopback:
         ipv6:
@@ -79,6 +99,9 @@ vrfs:
               - 2a12:4946:4002:1::1/64
         - name: "ens19"
           description: "VM Interface"
+        - name: ens21
+          ipv6:
+          description: VRF LINK
       vlans:
         - id: 1000
           interface: ens19
@@ -494,20 +517,21 @@ vrfs:
     routing:
       bgp:
         graceful_restart: false
-        as: 211184
+        as: 65500
         router_id: 10.10.48.0
         imports:
-          v6:
-            route_map: rm-DEFUALT_TO_REMOTE
-            vrfs:
-              - default
+          # v6:
+          #   route_map: rm-DEFUALT_TO_REMOTE
+          #   vrfs:
+          #     - wan
           v4:
             vrfs:
-              - default
+              - wan
         redistribute:
           - connected
         neighbor_groups:
           - peer: remotesites
+            local_as: 211184
             soft_reconfiguration_inbound: true
             timers:
               keepalive: 20
@@ -517,7 +541,24 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-REMOTE_SITES-out
+          - peer: test
+            # local_role: customer
+            activate:
+              - v6
+              # - v4
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: out
+                name: rm-REMOTE_SITES-in
+              - direction: in
+                name: rm-default
         neighbors:
+          - neighbor_group: test
+            peer: ens21
+            as: 211184
+            unnumbered: true
           - neighbor_group: remotesites
             peer: 10.10.49.2
             activate:

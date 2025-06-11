@@ -4,7 +4,7 @@
     src: wg-Private.conf.j2
     dest: ~/Documents/wireguardconfigs/wg-Private-{{ item.name }}.conf
     mode: 0644
-  loop: "{{ (vrfs.remotesites.interfaces.wireguards
+  loop: "{{ (vrfs.default.interfaces.wireguards
     | selectattr('name', 'eq', 'wgRoadwarrior') | list | first).wg.peers }}"
   delegate_to: localhost
 
@@ -13,6 +13,6 @@
     src: wg-INET.conf.j2
     dest: ~/Documents/wireguardconfigs/wg-INET-{{ item.name }}.conf
     mode: 0644
-  loop: "{{ (vrfs.remotesites.interfaces.wireguards
+  loop: "{{ (vrfs.default.interfaces.wireguards
     | selectattr('name', 'eq', 'wgRoadwarrior') | list | first).wg.peers }}"
   delegate_to: localhost

@@ -7,4 +7,4 @@ all:
     beokpdco:
       hosts:
         beokpdcort01:
-          ansible_host: 31.24.249.70
+          ansible_host: 10.10.48.0

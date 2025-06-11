@@ -7,7 +7,7 @@ Type=simple
 User=root
 Group=root
 #ExecStart=/usr/local/bin/frr_exporter
-ExecStart=/usr/bin/ip vrf exec remotesites /usr/local/bin/frr_exporter --frr.socket.dir-path="/var/run/frr" --no-collector.ospf --no-collector.bfd --collector.bgp6 --collector.bgp.peer-descriptions --collector.bgp.peer-descriptions.plain-text
+ExecStart=/usr/local/bin/frr_exporter --frr.socket.dir-path="/var/run/frr" --no-collector.ospf --no-collector.bfd --collector.bgp6 --collector.bgp.peer-descriptions --collector.bgp.peer-descriptions.plain-text --collector.bgp.peer-hostnames --collector.bgp.peer-groups --collector.bgp.accepted-filtered-prefixes
 SyslogIdentifier=frr_exporter
 Restart=always
 RestartSec=1

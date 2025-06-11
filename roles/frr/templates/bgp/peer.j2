@@ -8,10 +8,10 @@
  neighbor {{ bgp_item.peer }} shutdown
 {% endif %}
 {% if bgp_item.as is defined %}
- neighbor {{ bgp_item.peer }} remote-as {{ bgp_item.as }} 
+ neighbor {{ bgp_item.peer }}{{ " interface" if bgp_item.unnumbered|default(false) }} remote-as {{ bgp_item.as }} 
 {% endif %}
 {% if bgp_item.local_as is defined %}
- neighbor {{ bgp_item.peer }} local-as {{ bgp_item.local_as }} replace-as
+ neighbor {{ bgp_item.peer }} local-as {{ bgp_item.local_as }} no-prepend replace-as
 {% endif %}
 {% if bgp_item.timers is defined %}
  neighbor {{ bgp_item.peer }} timers {{ bgp_item.timers.keepalive }} {{ bgp_item.timers.hold }}

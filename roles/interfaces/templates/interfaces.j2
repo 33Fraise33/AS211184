@@ -1,4 +1,5 @@
 {% for vrf_key, VRF in vrfs.items() %}
+{% set vrf_index = loop.index %}
 ##############################
 #### VRF: {{ vrf_key }} #####
 ##############################
@@ -8,4 +9,5 @@
 {% include '03-physicals.j2' %}
 {% include '04-vlans.j2' %}
 {% include '05-wireguard.j2' %}
+{% include '06-veth.j2' %}
 {% endfor %}

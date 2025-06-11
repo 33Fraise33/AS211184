@@ -1,0 +1,8 @@
+{%  if VRF.interfaces.veth is defined %}
+{%    for intf in VRF.interfaces.veth %}
+{%      include 'generic.j2' %}
+    link-type veth
+    veth-peer-name {{ intf.peer }}
+{%    endfor %}
+
+{%  endif %}
