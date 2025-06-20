@@ -1,93 +1,18 @@
 ---
 vrfs:
-  wan:
-    interfaces:
-      loopback:
-        ipv6:
-          addresses:
-            - 2a12:4946:4002::/128
-      physicals:
-        - name: "ens17"
-          description: "MikeNetworks Peering 10G"
-          mtu: 1500
-        - name: ens20
-          ipv6:
-          description: VRF LINK
-      vlans:
-        - id: 770
-          interface: ens17
-          ipv4:
-            addresses:
-              - 31.24.249.70/30
-            gateway: 31.24.249.68
-          ipv6:
-            addresses:
-              - 2a12:4946:80ed:1::2/64
-    routing:
-      bgp:
-        as: 211184
-        router_id: 31.24.249.70
-        imports:
-          # v6:
-          #   vrfs:
-          #     - default
-          v4:
-            vrfs:
-              - default
-        networks:
-          v6:
-            - 2a12:4946:4000::/44
-        redistribute:
-          - kernel  # needed for default route to default vrf
-        neighbor_groups:
-          - peer: transit
-            soft_reconfiguration_inbound: true
-            local_role: customer
-            activate:
-              - v6
-            timers:
-              keepalive: 20
-              hold: 60
-            route_maps:
-              - direction: in
-                name: rm-DEFAULT_ONLY_PUBLIC
-              - direction: out
-                name: rm-AS211184-exact
-          - peer: test
-            # local_role: customer
-            activate:
-              - v6
-              # - v4
-            timers:
-              keepalive: 20
-              hold: 60
-            route_maps:
-              - direction: in
-                name: rm-REMOTE_SITES-in
-              - direction: out
-                name: rm-default
-        neighbors:
-          - neighbor_group: transit
-            peer: 2a12:4946:80ed:1::1
-            as: 199839
-            description: "Uptream Mike"
-          - neighbor_group: test
-            peer: ens20
-            as: 65500
-            unnumbered: true
-      static:
-        - destination: 192.0.0.1/32
-          type: blackhole
   default:
     interfaces:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4002::2/128
+            - 2a12:4946:4002::/128
         ipv4:
           addresses:
             - 10.10.48.0/32
       physicals:
+        - name: "ens17"
+          description: "MikeNetworks Peering 10G"
+          mtu: 1500
         - name: "ens18"
           description: "Proxmox MGMT Bridge"
           mtu: 1500
@@ -99,10 +24,16 @@ vrfs:
               - 2a12:4946:4002:1::1/64
         - name: "ens19"
           description: "VM Interface"
-        - name: ens21
-          ipv6:
-          description: VRF LINK
       vlans:
+        - id: 770
+          interface: ens17
+          ipv4:
+            addresses:
+              - 31.24.249.70/30
+            gateway: 31.24.249.68
+          ipv6:
+            addresses:
+              - 2a12:4946:80ed:1::2/64
         - id: 1000
           interface: ens19
           description: VM Vlan
@@ -515,23 +446,33 @@ vrfs:
             addresses:
               - 10.10.35.1/24
     routing:
+      static:
+        - destination: 192.0.0.1/32
+          type: blackhole
       bgp:
-        graceful_restart: false
-        as: 65500
-        router_id: 10.10.48.0
-        imports:
-          # v6:
-          #   route_map: rm-DEFUALT_TO_REMOTE
-          #   vrfs:
-          #     - wan
-          v4:
-            vrfs:
-              - wan
+        as: 211184
+        router_id: 31.24.249.70
         redistribute:
           - connected
+          - kernel
+        networks:
+          v6:
+            - 2a12:4946:4000::/44
         neighbor_groups:
+          - peer: transit
+            soft_reconfiguration_inbound: true
+            local_role: customer
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-default
+              - direction: out
+                name: rm-AS211184-exact
           - peer: remotesites
-            local_as: 211184
             soft_reconfiguration_inbound: true
             timers:
               keepalive: 20
@@ -541,24 +482,11 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-REMOTE_SITES-out
-          - peer: test
-            # local_role: customer
-            activate:
-              - v6
-              # - v4
-            timers:
-              keepalive: 20
-              hold: 60
-            route_maps:
-              - direction: out
-                name: rm-REMOTE_SITES-in
-              - direction: in
-                name: rm-default
         neighbors:
-          - neighbor_group: test
-            peer: ens21
-            as: 211184
-            unnumbered: true
+          - neighbor_group: transit
+            peer: 2a12:4946:80ed:1::1
+            as: 199839
+            description: "Uptream Mike"
           - neighbor_group: remotesites
             peer: 10.10.49.2
             activate:

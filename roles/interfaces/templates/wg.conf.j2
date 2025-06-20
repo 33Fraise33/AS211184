@@ -1,7 +1,6 @@
 [Interface]
 ListenPort = {{ item.wg.port }}
 PrivateKey = {{ item.wg.private_key }}
-FwMark = 0x1001
 
 {% for wg_peer in item.wg.peers %}
 [Peer]

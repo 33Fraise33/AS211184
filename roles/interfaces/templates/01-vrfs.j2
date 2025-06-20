@@ -2,8 +2,6 @@
 auto {{ vrf_key }}
 iface {{ vrf_key }}
     vrf-table {{ 1000 + vrf_index }}
-    up ip    rule add fwmark 0x{{ 1000 + vrf_index}} table {{ 1000 + vrf_index }}
-    up ip -6 rule add fwmark 0x{{ 1000 + vrf_index}} table {{ 1000 + vrf_index }}
 {% else %}
 auto lo
 iface lo inet loopback
