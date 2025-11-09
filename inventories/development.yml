@@ -1,8 +1,0 @@
----
-all:
-  children:
-    frr:
-      hosts:
-        kingpin:
-          ansible_host: 169.254.33.197
-          ansible_port: 1830
