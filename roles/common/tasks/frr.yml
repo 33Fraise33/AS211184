@@ -1,15 +1,16 @@
 ---
-- name: FRR - Install gpg key
-  ansible.builtin.get_url:
-    url: https://deb.frrouting.org/frr/keys.asc
-    dest: /etc/apt/trusted.gpg.d/frr.asc
-    mode: 0644
 - name: FRR - Add repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/frr.asc] https://deb.frrouting.org/frr {{ ansible_distribution_release }} frr-stable"
-    update_cache: true
+  ansible.builtin.deb822_repository:
+    name: frr
+    types: deb
+    uris: https://deb.frrouting.org/frr
+    suites: "{{ ansible_distribution_release }}"
+    components: "{{ frr_version|default(common_frr_version) }}"
+    architectures: amd64
+    signed_by: https://deb.frrouting.org/frr/keys.gpg
 - name: FRR - Install
   ansible.builtin.apt:
+    update_cache: true
     name:
       - frr
       - frr-pythontools
