@@ -1,3 +1,6 @@
+{% if bgp_item.as is defined %}
+ neighbor {{ bgp_item.peer }}{{ " interface" if bgp_item.unnumbered|default(false) }} remote-as {{ bgp_item.as }} 
+{% endif %}
 {% if bgp_item.neighbor_group is defined %}
  neighbor {{ bgp_item.peer }} peer-group {{ bgp_item.neighbor_group }}
 {% endif %}
@@ -6,9 +9,6 @@
 {% endif %}
 {% if not bgp_item.enabled|default(true) %}
  neighbor {{ bgp_item.peer }} shutdown
-{% endif %}
-{% if bgp_item.as is defined %}
- neighbor {{ bgp_item.peer }}{{ " interface" if bgp_item.unnumbered|default(false) }} remote-as {{ bgp_item.as }} 
 {% endif %}
 {% if bgp_item.local_as is defined %}
  neighbor {{ bgp_item.peer }} local-as {{ bgp_item.local_as }} no-prepend replace-as

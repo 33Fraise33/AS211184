@@ -4,7 +4,13 @@ all:
     frr:
       children:
         beokpdco:
+        defraifg:
     beokpdco:
       hosts:
         beokpdcort01:
           ansible_host: 10.10.48.0
+    defraifg:
+      hosts:
+        defraifgrt01:
+          ansible_host: "2a12:4946:4003::"
+          #ansible_host: 193.148.249.172

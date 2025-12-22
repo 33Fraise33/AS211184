@@ -3,7 +3,7 @@
 {%  for pl in route_filtering.prefix_lists|default() %}
 !!!!! {{ pl.name }}
 {%    for entry in pl.lists %}
-ip prefix-list {{ pl.name }} {{ entry.policy }} {{ entry.prefix }}
+ip prefix-list {{ pl.name }} {{ entry.policy|default('permit') }} {{ entry.prefix }}
 {%- if entry.le is defined %} le {{ entry.le }}{% endif %}
 {%- if entry.ge is defined %} ge {{ entry.ge }}{% endif %}
 

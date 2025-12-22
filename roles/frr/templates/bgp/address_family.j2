@@ -4,3 +4,6 @@
 {% if bgp_item.soft_reconfiguration_inbound|default(false) %}
   neighbor {{ bgp_item.peer }} soft-reconfiguration inbound
 {% endif %}
+{%   if bgp_item.local_role is defined and (bgp_item.local_role == "rs-client" or bgp_item.local_role == "customer") %}
+  neighbor {{ bgp_item.peer }} remove-private-AS replace-AS
+{%   endif %}
