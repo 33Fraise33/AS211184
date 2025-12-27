@@ -6,7 +6,6 @@
 auto {{ intf_name }}
 {% if intf.auto|default(false) %}
 iface {{ intf_name }} inet dhcp
-iface {{ intf_name }} inet6 dhcp
 {% else %}
 iface {{ intf_name }}
 {% endif %}
@@ -32,7 +31,7 @@ iface {{ intf_name }}
     address {{ v6_addr }}
 {% endfor %}
 {% if intf.ipv6 is defined %}
-    ipv6-addrgen yes
+    ipv6-addrgen on
 {% endif %}
 {% if intf.ipv4 is defined and intf.ipv4.gateway is defined %}
     gateway {{ intf.ipv4.gateway  }}

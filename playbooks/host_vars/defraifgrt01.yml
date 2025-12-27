@@ -8,7 +8,7 @@ vrfs:
             - 2a12:4946:4003::/128
         ipv4:
           addresses:
-            - 10.10.49.0/32
+            - 10.48.0.0/32
       veth:
         - name: vthDefault
           peer: vthPubDef
@@ -22,32 +22,20 @@ vrfs:
             keepalive: 25
             private_key: !vault |
               $ANSIBLE_VAULT;1.1;AES256
-              65386438303333313739323738326431346564653539396362373963353732383266323439313763
-              6462353838353063646163393864353934376630316562360a323539376638646431356262613436
-              66313136643166373662323636353062366465386231396666363234373862323035366430336231
-              3637613062653162310a316266396133633163326633623235393563663363333335616461323530
-              33316239373130613032643934303761326339623238313165383636303437613536636138383838
-              3464373063303330616335656339643430323935393231623662
-            public_key: gTXHxmgP8GkllODzWt/5Jh5d6eGDlTRdLbDDWIWKTjQ=
+              63616535666438383734333030623561343666303862303037383033643962353261343436333964
+              3532356662376438383237353365343932336534653661350a326566616335376336393636623763
+              61663033616437313639643037346132373662333034653166633533623134383433656437363130
+              6631343538313933330a343031616537356561633333376264643663653635646337313831343537
+              30353465396264313635613565373561343232336264616137633238346436626537666234376237
+              3964633339306534343932306535663932363533663961656233
+            public_key: f3d1Gf0TWECoV2mlgVSEens9nRjWQNuq26oH6qq56Vw=
             peers:
               - name: BEJBEGIART01
-                id: 10
-                public_key: CsktxSvHquJEVyMwU2d46VSvsjoXqb/CZawDxDtLjmU=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  62623232356333383033653664616337656431623133623466353366333264623539316339616535
-                  3236393337343733313532616338383161326266323132330a313661626364643566653834353033
-                  31343666626431663764633465393832626263316533663231306666306239306333363236303564
-                  3266646263653662350a333833343062643964633062306364356139343361326439653563336134
-                  32386266363763356563376439363539356165353765613761343665326330623931326563666230
-                  6233323532373163303631643064636665636636373131616364
+                public_key: yPCXl5esPr8AnhjjfaQvlHTKd2seHzkIF1Ga06N8MCs=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::1:1/112
-              - fe80:34::1:1/64
-          ipv4:
-            addresses:
-              - 10.10.49.1/30
+              - 2a12:4946:4003:34::1:1/112
+              - fe80:3:34::1:1/64
         - name: wgBELPMMOM
           description: "WG Transit to MOM"
           mtu: 1420
@@ -81,6 +69,28 @@ vrfs:
           ipv4:
             addresses:
               - 10.10.49.5/30
+        - name: wgBEOKPDCO
+          description: "WG Transit to DCO"
+          mtu: 1420
+          wg:
+            port: 51822
+            keepalive: 25
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              31393063333464393231323637643639666237613530303436386632333663313231646236336165
+              3366663561353936343263653233663662653431363664340a396236396335363636646432636330
+              34646638326466666462383038656361373661323731393766323239303930303666336532383663
+              3637643032366631390a366538336566333930303534353339633431623031393765363930346166
+              63653832626430316661656332376561656134393534363663643433333737656435636264346263
+              3337636432666236306532626538616366643239616261623437
+            public_key: zOjpUNpdB0SCsBmDKAtsiU+gK5E60ncvFH2axdelXS8=
+            peers:
+              - name: BEOKPDCORT01
+                public_key: /If1/C6nzTbkCGvGbgEGnuQNAoQUIYiP0Vk3jx54M2s=
+          ipv6:
+            addresses:
+              - 2a12:4946:4002:34::3:1/112
+              - fe80:34::3:1/64
         - name: wgBELPMDAD
           description: "WG Transit to Dad"
           mtu: 1420
@@ -99,14 +109,6 @@ vrfs:
             peers:
               - name: BELPMDADRT01
                 public_key: sncn3P0nYLKwxwzGMktyD5qNqYnzB45Zg9vP+v2EpVI=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  33363564653433303162306465656234613561393533346264393133633363396361373933333566
-                  6663623331623265303561376132653931323938363536650a363865656333333136636266356639
-                  35623964633564653431316231343333643730626638326636343931633533613738303261383730
-                  6564653638326538640a653137383565323663346534666635336136343465613663333561666133
-                  34376636333466333834326331323834623762663661333937303564613161623335303838366236
-                  3930666265336435343764663665313765313664316661366231
           ipv6:
             addresses:
               - 2a12:4946:4002:34::4:1/112
@@ -132,14 +134,6 @@ vrfs:
             peers:
               - name: OTGKIT01RT01
                 public_key: VWPA1c7JuTK10riRoGq40mkj4TzHsygipz5kipl5Zi8=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  34376630373238633036623038363563623862633430313739346161376230363136376462343035
-                  3563393737323639373931653366643038353865373066390a346139376632623163303331303037
-                  33613064353466656231333438643337343064336333376166383561326336383864333638323037
-                  3564633865363630370a343130623763666230316466396263643466616432653232393161326531
-                  64623565323265326232646531343035316132356462616236616638643539383030383465613131
-                  3266323762636537383435623662363062636337656665323235
           ipv6:
             addresses:
               - 2a12:4946:4002:34::5:1/112
@@ -165,14 +159,6 @@ vrfs:
             peers:
               - name: BEZEDHVNRT01
                 public_key: FI99BI3hkkubynYpFDYuxWJBHBQNe8R4OosgrBZcPSk=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  36616234316366323465373263316364366436656461623532613464383462343034646664653666
-                  6266376362323263323739336465616332393137323762300a653430633761643036363031336663
-                  65636533656638363563326634626464626634383139636531656139316362376461326565386531
-                  3039346632396665640a663832623830353064366663646132306462303432623034313466356234
-                  36386336616636386139636531396430313031613334656237643161303838613264333465313537
-                  3563386237373837396535373339346164663565653236373030
           ipv6:
             addresses:
               - 2a12:4946:4002:34::6:1/112
@@ -198,14 +184,6 @@ vrfs:
             peers:
               - name: BELPMPARRT01
                 public_key: 414jZEfktKGFQvf5UooON42atTYp4kq7s15sCRHUV18=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  39343833306265316637383637303961323332613438363264656138653165353439623232386139
-                  3837336234393662336533306162663761653334393935610a373239653730666336656362376432
-                  37633232633131363964666533643538663835613534613862643564663033333061306565313766
-                  3032346435633464370a646334306230643333376336343362363535346366396233366335653133
-                  61643965646438373439643361323961666434656266386664353261633933306163333537373366
-                  3765393431343464616232653133323563396165336133656237
           ipv6:
             addresses:
               - 2a12:4946:4002:34::8:1/112
@@ -231,14 +209,6 @@ vrfs:
             peers:
               - name: BELOKSTORT01
                 public_key: 3TzNUQbfhVEBgRhW/5OpF5RAXKhfDyWvTT8oZbPEsQg=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  30333065393563333430376630626665383263616537356337366233663533343964343734366161
-                  6231303232396231633338643561306333663239393664320a356665643732353438326130383566
-                  63383562383330623262613935366237653234613335373737633832643064323837376365383666
-                  6137343737376532370a306434636661373335633231656534396636376231383965636463643539
-                  66316538333362333533313163663239633064333334633134393536383737633766373064613638
-                  3232363334623938323032643736616435386666613532343535
           ipv6:
             addresses:
               - 2a12:4946:4002:34::9:1/112
@@ -337,11 +307,13 @@ vrfs:
     routing:
       bgp:
         as: 65000
-        router_id: 10.10.49.0
+        router_id: 10.48.0.0
         redistribute:
           - connected
           - kernel
         aggregates:
+          v4:
+            - address: 10.48.32.0/24
           v6:
             - address: 2a12:4946:4003::/48
         networks:
@@ -363,6 +335,7 @@ vrfs:
                 name: rm-to_veth
           - peer: remotesites
             soft_reconfiguration_inbound: true
+            local_as: 211184
             timers:
               keepalive: 20
               hold: 60
@@ -371,26 +344,33 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-REMOTE_SITES-out
+          - peer: beokpdco
+            soft_reconfiguration_inbound: true
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-REMOTE_SITES-in
+              - direction: out
+                name: rm-DC-out
         neighbors:
           - neighbor_group: veth-public
             peer: vthDefault
             unnumbered: true
             as: 65001
             description: "veth - Public"
-          - neighbor_group: remotesites
-            peer: 10.10.49.2
+          - neighbor_group: beokpdco
+            peer: 2a12:4946:4002:34::3:2
             activate:
               - v4
-            as: 65501
-            description: "BEJBEGIA"
-            route_maps:
-              - direction: in
-                name: rm-REMOTE_SITES-in
-              - direction: out
-                name: rm-BEJBEGIA-out
+              - v6
+            as: 65502
+            description: "BEOKPDCO"
           - neighbor_group: remotesites
-            peer: 2a12:4946:4002:34::1:2
+            peer: 2a12:4946:4003:34::1:2
             activate:
+              - v4
               - v6
             as: 65501
             description: "BEJBEGIA"
@@ -400,42 +380,49 @@ vrfs:
               - direction: out
                 name: rm-BEJBEGIA-out
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.18
             activate:
               - v4
             as: 65503
             description: "OTGKIT01"
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.6
             activate:
               - v4
             as: 65511
             description: "BELPMMOM"
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.14
             activate:
               - v4
             as: 65512
             description: "BELPMDAD"
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.22
             activate:
               - v4
             as: 65513
             description: "BEZEDHVN"
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.26
             activate:
               - v4
             as: 65514
             description: "BEOKPDCOOR01"
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.30
             activate:
               - v4
             as: 65515
             description: "BELPMPAR"
           - neighbor_group: remotesites
+            enabled: false
             peer: 10.10.49.34
             activate:
               - v4
@@ -449,7 +436,7 @@ vrfs:
             - 2a12:4946:4003::1/128
         ipv4:
           addresses:
-            - 10.10.49.1/32
+            - 10.48.32.1/32
       veth:
         - name: vthPubDef
           peer: vthDefault
@@ -457,10 +444,19 @@ vrfs:
         - name: vthPubIfog
           peer: vthIfog
           ipv6:
+        - name: vthPubLocix
+          peer: vthLocix
+          ipv6:
+        - name: vthPubFogixp
+          peer: vthFogixp
+          ipv6:
+        - name: vthPubKleyrex
+          peer: vthKleyrex
+          ipv6:
     routing:
       bgp:
         as: 65001
-        router_id: 10.10.49.1
+        router_id: 10.48.32.1
         redistribute:
           - connected
         neighbor_groups:
@@ -501,6 +497,21 @@ vrfs:
             as: 65002
             unnumbered: true
             description: "VETH - IFOG VRF"
+          - neighbor_group: veth-peering
+            peer: vthPubLocix
+            as: 65003
+            unnumbered: true
+            description: "VETH - LOCIX"
+          - neighbor_group: veth-peering
+            peer: vthPubFogixp
+            as: 65004
+            unnumbered: true
+            description: "VETH - FOGIXP"
+          - neighbor_group: veth-peering
+            peer: vthPubKleyrex
+            as: 65005
+            unnumbered: true
+            description: "VETH - KLEYREX"
   ifog:  # peering vrf
     interfaces:
       loopback:
@@ -509,7 +520,7 @@ vrfs:
             - 2a12:4946:4003::2/128
         ipv4:
           addresses:
-            - 10.10.49.2/32
+            - 10.48.32.2/32
       physicals:
         - name: "ens18"
           description: "TRNS - IFOG"
@@ -573,63 +584,269 @@ vrfs:
             peer: 2a0c:9a40:1::1
             as: 34927
             description: "TRNS - Ifog"
-  
-  # physicals:
-  #       - name: "ens20"
-  #         description: "IX - FogIXP"
-  #         enabled: false
-  #       - name: "ens19"
-  #         description: "IX - LOCIX"
-  #         enabled: false
-  #       - name: "ens21"
-  #         description: "IX - KleyReX"
-  #         enabled: false      
-    
+  locix:  # IX vrf
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4003::3/128
+        ipv4:
+          addresses:
+            - 10.48.32.3/32
+      physicals:
+        - name: "ens19"
+          description: "IX - LOCIX"
+          enabled: false
+          ipv6:
+            addresses:
+              - 2001:7f8:f2:e1::21:2284:1/64
+          ipv4:
+            addresses:
+              - 185.1.167.89/23
+      veth:
+        - name: vthLocix
+          peer: vthPubLocix
+          ipv6:
+    routing:
+      static:
+        - destination: 192.0.0.1/32
+          type: blackhole
+      bgp:
+        as: 211184
+        router_id: 185.1.167.89
+        redistribute:
+          - connected
+          - kernel
+        neighbor_groups:
+          - peer: veth-public
+            soft_reconfiguration_inbound: true
+            local_as: 65003
+            activate:
+              - v4
+              - v6
+            timers:
+              keepalive: 3
+              hold: 9
+            route_maps:
+              - direction: in
+                name: rm-to_veth
+              - direction: out
+                name: rm-deny  # rm-veth_from_peering
+          - peer: route-servers
+            enabled: false
+            soft_reconfiguration_inbound: true
+            as: 202409
+            local_role: rs-client
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-deny  # rm-AS211184-exact
+          - peer: peers
+            enabled: false
+            soft_reconfiguration_inbound: true
+            local_role: peer
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-deny  # rm-AS211184-exact
+        neighbors:
+          - neighbor_group: veth-public
+            peer: vthLocix
+            as: 65001
+            unnumbered: true
+            description: "VETH - Public VRF"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:f2:e1::babe:1
+            description: "IX - Locix - RS1"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:f2:e1::dead:1
+            description: "IX - Locix - RS1"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:f2:e1::be5a
+            description: "IX - Locix - RS1"
+          - neighbor_group: peers
+            as: 6939
+            peer: 2001:7f8:f2:e1::6939:1
+            local_role: customer
+            description: "PEER - HE"
+  fogixp:  # IX vrf
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4003::4/128
+        ipv4:
+          addresses:
+            - 10.48.32.4/32
+      physicals:
+        - name: "ens20"
+          description: "IX - FogIXP"
+          enabled: false
+          ipv6:
+            addresses:
+              - 2001:7f8:ca:1::45/64
+          ipv4:
+            addresses:
+              - 185.1.147.45/24
+      veth:
+        - name: vthFogixp
+          peer: vthPubFogixp
+          ipv6:
+    routing:
+      static:
+        - destination: 192.0.0.1/32
+          type: blackhole
+      bgp:
+        as: 211184
+        router_id: 185.1.147.45
+        redistribute:
+          - connected
+          - kernel
+        neighbor_groups:
+          - peer: veth-public
+            soft_reconfiguration_inbound: true
+            local_as: 65004
+            activate:
+              - v4
+              - v6
+            timers:
+              keepalive: 3
+              hold: 9
+            route_maps:
+              - direction: in
+                name: rm-to_veth
+              - direction: out
+                name: rm-deny  # rm-veth_from_peering
+          - peer: route-servers
+            enabled: false
+            soft_reconfiguration_inbound: true
+            as: 47498
+            local_role: rs-client
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-deny  # rm-AS211184-exact
+        neighbors:
+          - neighbor_group: veth-public
+            peer: vthFogixp
+            as: 65001
+            unnumbered: true
+            description: "VETH - Public VRF"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:ca:1::111
+            description: "IX - Fogixp - RS1"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:ca:1::222
+            description: "IX - Fogixp - RS2"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:ca:1::333
+            description: "IX - Fogixp - RS3"
+  kleyrex:  # IX vrf
+    interfaces:
+      loopback:
+        ipv6:
+          addresses:
+            - 2a12:4946:4003::5/128
+        ipv4:
+          addresses:
+            - 10.48.32.5/32
+      physicals:
+        - name: "ens21"
+          description: "IX - KleyReX" 
+          ipv6:
+            addresses:
+              - 2001:7f8:33::a121:1184:1/64
+          ipv4:
+            addresses:
+              - 193.189.83.6/23 
+      veth:
+        - name: vthKleyrex
+          peer: vthPubKleyrex
+          ipv6:
+    routing:
+      static:
+        - destination: 192.0.0.1/32
+          type: blackhole
+      bgp:
+        as: 211184
+        router_id: 193.189.83.6
+        redistribute:
+          - connected
+          - kernel
+        neighbor_groups:
+          - peer: veth-public
+            soft_reconfiguration_inbound: true
+            local_as: 65005
+            activate:
+              - v4
+              - v6
+            timers:
+              keepalive: 3
+              hold: 9
+            route_maps:
+              - direction: in
+                name: rm-to_veth
+              - direction: out
+                name: rm-veth_from_peering
+          - peer: route-servers
+            soft_reconfiguration_inbound: true
+            as: 31142
+            local_role: rs-client
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184-exact
+        neighbors:
+          - neighbor_group: veth-public
+            peer: vthKleyrex
+            as: 65001
+            unnumbered: true
+            description: "VETH - Public VRF"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:33::a103:1142:1
+            description: "IX - Kleyrex - RS1"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:33::a103:1142:2
+            description: "IX - Kleyrex - RS2"
+          - neighbor_group: route-servers
+            peer: 2001:7f8:33::a103:1142:3
+            description: "IX - Kleyrex - RS3"
+
+prefix_lists_host: 
+  - name: pl-LO_VETH
+    lists:
+      - prefix: 10.48.0.0/32
+      - prefix: 10.48.32.0/30
+        ge: 32
+      - prefix: 2a12:4946:4003::/64
+        ge: 128
+
 route_filtering:
-  prefix_lists:
-    - name: pl-default-public
-      lists:
-        - prefix: 0.0.0.0/0
-          le: 24
-          ge: 0
-        - prefix: ::/0
-          le: 48
-          ge: 0
-    - name: pl-default
-      lists:
-        - prefix: 0.0.0.0/0
-        - prefix: ::/0
-    - name: pl-AS211184-exact
-      lists:
-        - prefix: 2a12:4946:4000::/44
-    - name: pl-AS211184
-      lists:
-        - prefix: 2a12:4946:4000::/44
-          ge: 44
-    - name: pl-LO_VETH
-      lists:
-        - prefix: 10.10.49.0/29
-          ge: 32
-        - prefix: 2a12:4946:4003::/64
-          ge: 128
-    - name: pl-RFC1918
-      lists:
-        - prefix: 10.0.0.0/8
-          ge: 8
-        - prefix: 172.16.0.0/12
-          ge: 12
-        - prefix: 192.168.0.0/16
-          ge: 16
-    - name: pl-MGMT
-      lists:
-        - prefix: 10.10.48.0/32
-        - prefix: 10.10.35.0/24
-    # - name: pl-MONITORING
-    #   lists:
-    #     - prefix: 10.10.48.64/27
-    # - name: pl-NETWORKING
-    #   lists:
-    #     - prefix: 10.10.48.160/27
+  prefix_lists: "{{ prefix_lists_all + prefix_lists_host }}"
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
@@ -637,31 +854,10 @@ route_filtering:
             v4_prefix_list: pl-default-public
         - match:
             v6_prefix_list: pl-default-public
-    - name: rm-fullbogons-in
-      maps:
-        - match:
-            v6_prefix_list: pl-default-bogons
-          action:
-            on_match: next
-        - match:
-            community: bogons
-          action:
-            set:
-              next_hop: 192.0.0.1
-    - name: rm-DEFUALT_TO_REMOTE
-      maps:
-        - match:
-            v6_prefix_list: pl-AS211184
-        - match:
-            v6_prefix_list: pl-default
     - name: rm-AS211184-exact
       maps:
         - match:
             v6_prefix_list: pl-AS211184-exact
-    - name: rm-AS211184
-      maps:
-        - match:
-            v6_prefix_list: pl-AS211184
     - name: rm-REMOTE_SITES-in
       maps:
         - match:
@@ -671,19 +867,27 @@ route_filtering:
     - name: rm-REMOTE_SITES-out
       maps:
         - match:
-            v6_prefix_list: pl-AS211184
+            v6_prefix_list: pl-AS211184-remotesites
         - match:
             v4_prefix_list: pl-MGMT
         - match:
             v4_prefix_list: pl-MONITORING
         - match:
             v4_prefix_list: pl-NETWORKING
-    - name: rm-BEJBEGIA-out
+    - name: rm-DC-out
       maps:
         - match:
             v4_prefix_list: pl-RFC1918
         - match:
             v6_prefix_list: pl-AS211184
+        - match:
+            v6_prefix_list: pl-default
+    - name: rm-BEJBEGIA-out
+      maps:
+        - match:
+            v4_prefix_list: pl-DEFRAIFG
+        - match:
+            v6_prefix_list: pl-AS211184-remotesites
         - match:
             v6_prefix_list: pl-default
     - name: rm-veth_from_peering

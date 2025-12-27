@@ -11,8 +11,8 @@ vrfs:
             - 10.10.48.0/32
       physicals:
         - name: "ens17"
-          description: "MikeNetworks Peering 10G"
-          mtu: 1500
+          description: "TEMP - Orange Uplink"
+          auto: true
         - name: "ens18"
           description: "Proxmox MGMT Bridge"
           mtu: 1500
@@ -25,15 +25,6 @@ vrfs:
         - name: "ens19"
           description: "VM Interface"
       vlans:
-        - id: 770
-          interface: ens17
-          ipv4:
-            addresses:
-              - 31.24.249.70/30
-            gateway: 31.24.249.68
-          ipv6:
-            addresses:
-              - 2a12:4946:80ed:1::2/64
         - id: 1000
           interface: ens19
           description: VM Vlan
@@ -147,39 +138,36 @@ vrfs:
           ipv4:
             addresses:
               - 10.10.49.5/30
-        - name: wgOTGKIT02
-          description: "WG Transit to Unitix KIT02"
+        - name: wgDEFRAIFG
+          description: "WG Transit to FRA"
           mtu: 1420
           wg:
-            port: 51822
             keepalive: 25
+            public_key: /If1/C6nzTbkCGvGbgEGnuQNAoQUIYiP0Vk3jx54M2s=
             private_key: !vault |
               $ANSIBLE_VAULT;1.1;AES256
-              38613733326332623863383932396335383233363264383165356432353262663931343138333664
-              3931373165626630316337323361313739663934323932300a386164303464336566386537363731
-              32326565643534386261313833623035386462633363306639393338393965653464366133636566
-              3739343338656538310a356536633839656164336262303936343737373865636336333630323966
-              38343635363036343866626637326161386634383464343037356365326162363763616265343466
-              3331353536376562633034643365653466333136323965343964
-            public_key: HXD7DNwx/jhJMLLLV38kAerxCXusrFMdQA7YyYt40FU=
+              35313433653430333034346132333234633730366439303135336235383361633565643062666561
+              3735393638663635386561636466616332653665306233640a643164653238333938363636353162
+              31343566316562316462653337613363313939613932613466303865303463666166383362663461
+              6461363661393533350a366162336330366437336439333364323166633365653530623934363538
+              31383064343238376364623365343732626639373734316237613162323863663437303035303132
+              3663353264366662373432666266653463316264313136336235
             peers:
-              - name: OTGKIT02RT01
-                public_key: ggYl877iW04fixIfLoWV2WKBfZM1hN9UrytLD9AB0Vs=
+              - name: DEFRAIFGRT01
+                endpoint: "193.148.249.172:51822"
                 private_key: !vault |
                   $ANSIBLE_VAULT;1.1;AES256
-                  34626133336666623631336432663166623165346561666264316265303930383863323565626436
-                  3732323230313664363334646638623038366261383435370a336666383435333330313333396236
-                  61333861363539393437646437663239646339313837353264636631346366343965636263396163
-                  3865356239323832320a376463336265613032323635333265643133313165613935616366626436
-                  31646365616233623236613936616564626237663162333439376462393361363461636430663432
-                  3666363365666665393663393133636336643832313437333037
+                  31393063333464393231323637643639666237613530303436386632333663313231646236336165
+                  3366663561353936343263653233663662653431363664340a396236396335363636646432636330
+                  34646638326466666462383038656361373661323731393766323239303930303666336532383663
+                  3637643032366631390a366538336566333930303534353339633431623031393765363930346166
+                  63653832626430316661656332376561656134393534363663643433333737656435636264346263
+                  3337636432666236306532626538616366643239616261623437
+                public_key: zOjpUNpdB0SCsBmDKAtsiU+gK5E60ncvFH2axdelXS8=       
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::3:1/112
-              - fe80:34::3:1/64
-          ipv4:
-            addresses:
-              - 10.10.49.9/30
+              - 2a12:4946:4002:34::3:2/112
+              - fe80:34::3:2/64
         - name: wgBELPMDAD
           description: "WG Transit to Dad"
           mtu: 1420
@@ -279,39 +267,6 @@ vrfs:
           ipv4:
             addresses:
               - 10.10.49.21/30
-        - name: wgBEOKPDCOOR01
-          description: "WG Transit to OOB"
-          mtu: 1420
-          wg:
-            port: 51826
-            keepalive: 25
-            private_key: !vault |
-              $ANSIBLE_VAULT;1.1;AES256
-              37643236656232373432633030643834366436353434306132613236666632396239396234636338
-              3164616133623763653961653033376639303539353162650a373730383764636561613964663239
-              30386238643130333161656230316564643436383931663239663666313862333866633232373264
-              3832393334643538350a313864616436326365316262633238636539323662303133313365336563
-              66383933373238393132613132303433633831333439656364613765376330343736313538333564
-              6662343437666234373930306161356130656564653738623434
-            public_key: gxr5fLUXxJSVBmAqXqL3aKKbXWl9XPzwnnLSQcgNvXw=
-            peers:
-              - name: BEOKPDCOOR01
-                public_key: sR6xsJJQBtzrOZfbPuoruQthvP+8NnnCF8xAqcCKJSE=
-                private_key: !vault |
-                  $ANSIBLE_VAULT;1.1;AES256
-                  30343361343534353731613664326665666434653933383365666464656262643364633933316262
-                  3032393237303065653361376134383837363132373536380a646464643833336165383265303435
-                  61356362373732303837393162316334666363323966633731383432366331313263343333333434
-                  3334613739656361320a363634663437623831323134373530333230336636643563643564636636
-                  38383433396163623865383234316163643763363463333338366133656438663163303038383130
-                  3733376164393432633663623261376531376236303631383137
-          # ipv6:
-          #   addresses:
-          #     - 2a12:4946:4002:34::7:1/112
-          #     - fe80:34::7:1/64
-          ipv4:
-            addresses:
-              - 10.10.49.25/30
         - name: wgBELPMPAR
           description: "WG Transit to Parys"
           mtu: 1420
@@ -463,7 +418,6 @@ vrfs:
           ipv6:
             addresses:
               - 2a12:4946:4002:35::1/64
-              - fe80:35::0:1/64
           ipv4:
             addresses:
               - 10.10.35.1/24
@@ -473,27 +427,17 @@ vrfs:
           type: blackhole
       bgp:
         as: 211184
-        router_id: 31.24.249.70
+        router_id: 10.10.48.0
+        aggregates:
+          v4:
+            - address: 10.48.33.0/24
+            - address: 10.10.48.0/24
+          v6:
+            - address: 2a12:4946:4002::/48
         redistribute:
           - connected
           - kernel
-        networks:
-          v6:
-            - 2a12:4946:4000::/44
         neighbor_groups:
-          - peer: transit
-            soft_reconfiguration_inbound: true
-            local_role: customer
-            activate:
-              - v6
-            timers:
-              keepalive: 20
-              hold: 60
-            route_maps:
-              - direction: in
-                name: rm-default
-              - direction: out
-                name: rm-AS211184-exact
           - peer: remotesites
             soft_reconfiguration_inbound: true
             timers:
@@ -504,11 +448,25 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-REMOTE_SITES-out
+          - peer: defraifg
+            soft_reconfiguration_inbound: true
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DC-in
+              - direction: out
+                name: rm-DC-out
         neighbors:
-          - neighbor_group: transit
-            peer: 2a12:4946:80ed:1::1
-            as: 199839
-            description: "Uptream Mike"
+          - neighbor_group: defraifg
+            peer: 2a12:4946:4002:34::3:1
+            activate:
+              - v4
+              - v6
+            local_as: 65502
+            as: 65000
+            description: "DEFRAIFG"
           - neighbor_group: remotesites
             peer: 10.10.49.2
             activate:
@@ -533,7 +491,6 @@ vrfs:
                 name: rm-BEJBEGIA-out
           - neighbor_group: remotesites
             peer: 10.10.49.18
-            enabled: false
             activate:
               - v4
             as: 65503
@@ -564,12 +521,6 @@ vrfs:
             as: 65513
             description: "BEZEDHVN"
           - neighbor_group: remotesites
-            peer: 10.10.49.26
-            activate:
-              - v4
-            as: 65514
-            description: "BEOKPDCOOR01"
-          - neighbor_group: remotesites
             peer: 10.10.49.30
             activate:
               - v4
@@ -582,58 +533,11 @@ vrfs:
             as: 65519
             description: "BELOKSTO"
 
+
+prefix_lists_host: []
+
 route_filtering:
-  prefix_lists:
-    - name: pl-default-public
-      lists:
-        - prefix: 0.0.0.0/0
-          policy: permit
-          le: 24
-          ge: 0
-        - prefix: ::/0
-          policy: permit
-          le: 48
-          ge: 0
-    - name: pl-default
-      lists:
-        - prefix: 0.0.0.0/0
-          policy: permit
-        - prefix: ::/0
-          policy: permit
-    - name: pl-AS211184-exact
-      lists:
-        - prefix: 2a12:4946:4000::/44
-          policy: permit
-    - name: pl-AS211184
-      lists:
-        - prefix: 2a12:4946:4000::/44
-          policy: permit
-          ge: 44
-    - name: pl-RFC1918
-      lists:
-        - prefix: 10.0.0.0/8
-          policy: permit
-          ge: 8
-        - prefix: 172.16.0.0/12
-          policy: permit
-          ge: 12
-        - prefix: 192.168.0.0/16
-          policy: permit
-          ge: 16
-    - name: pl-MGMT
-      lists:
-        - prefix: 10.10.48.0/32
-          policy: permit
-        - prefix: 10.10.35.0/24
-          policy: permit
-    - name: pl-MONITORING
-      lists:
-        - prefix: 10.10.48.64/27
-          policy: permit
-    - name: pl-NETWORKING
-      lists:
-        - prefix: 10.10.48.160/27
-          policy: permit
+  prefix_lists: "{{ prefix_lists_all }}"
   route_maps:
     - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
@@ -674,6 +578,20 @@ route_filtering:
         - match:
             v6_prefix_list: pl-AS211184
           policy: permit
+    - name: rm-DC-in
+      maps:
+        - match:
+            v4_prefix_list: pl-RFC1918
+        - match:
+            v6_prefix_list: pl-AS211184
+        - match:
+            v6_prefix_list: pl-default
+    - name: rm-DC-out
+      maps:
+        - match:
+            v4_prefix_list: pl-RFC1918
+        - match:
+            v6_prefix_list: pl-AS211184
     - name: rm-REMOTE_SITES-in
       maps:
         - match:
@@ -685,7 +603,7 @@ route_filtering:
     - name: rm-REMOTE_SITES-out
       maps:
         - match:
-            v6_prefix_list: pl-AS211184
+            v6_prefix_list: pl-AS211184-remotesites
           policy: permit
         - match:
             v4_prefix_list: pl-MGMT
@@ -699,10 +617,10 @@ route_filtering:
     - name: rm-BEJBEGIA-out
       maps:
         - match:
-            v4_prefix_list: pl-RFC1918
+            v4_prefix_list: pl-BEOKPDCO
           policy: permit
         - match:
-            v6_prefix_list: pl-AS211184
+            v6_prefix_list: pl-AS211184-remotesites
           policy: permit
         - match:
             v6_prefix_list: pl-default

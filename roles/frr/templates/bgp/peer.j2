@@ -22,6 +22,9 @@
 {% if bgp_item.passive|default(false) %}
  neighbor {{ bgp_item.peer }} passive
 {% endif %}
+{% if bgp_item.activate is defined and 'v4' in bgp_item.activate and 'v6' in bgp_item.activate %}
+ neighbor {{ bgp_item.peer }} capability extended-nexthop
+{% endif %}
 {% if bgp_item.interface is defined %}
  neighbor {{ bgp_item.peer }} interface {{ bgp_item.interface }}
 {% endif %}

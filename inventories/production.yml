@@ -13,4 +13,3 @@ all:
       hosts:
         defraifgrt01:
           ansible_host: "2a12:4946:4003::"
-          #ansible_host: 193.148.249.172

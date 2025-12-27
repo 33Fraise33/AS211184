@@ -1,5 +1,7 @@
 [Interface]
+{% if item.wg.port is defined %}
 ListenPort = {{ item.wg.port }}
+{% endif %}
 PrivateKey = {{ item.wg.private_key }}
 
 {% for wg_peer in item.wg.peers %}
@@ -8,5 +10,8 @@ PrivateKey = {{ item.wg.private_key }}
 PublicKey = {{ wg_peer.public_key }}
 AllowedIPs = {{ wg_peer.allowed_ips | default("0.0.0.0/0, ::/0") }}
 PersistentKeepalive = {{ item.wg.keepalive }}
+{% if wg_peer.endpoint is defined %}
+Endpoint = {{ wg_peer.endpoint }}
+{% endif %}
 
 {% endfor %}

@@ -1,3 +1,55 @@
 ---
 ansible_port: 1830
 domain: unitix.be
+
+prefix_lists_all:
+  - name: pl-default-public
+    lists:
+      - prefix: 0.0.0.0/0
+        le: 24
+      - prefix: ::/0
+        le: 48
+  - name: pl-default
+    lists:
+      - prefix: 0.0.0.0/0
+      - prefix: ::/0
+  - name: pl-AS211184-exact
+    lists:
+      - prefix: 2a12:4946:4000::/44
+  - name: pl-AS211184
+    lists:
+      - prefix: 2a12:4946:4000::/44
+        ge: 44
+  - name: pl-AS211184-remotesites
+    lists:
+      - prefix: 2a12:4946:4000::/44
+        le: 56
+  - name: pl-DEFRAIFG
+    lists:
+      - prefix: 10.48.0.0/32
+      - prefix: 10.48.32.0/24
+      - prefix: 2a12:4946:4003::/48
+  - name: pl-BEOKPDCO
+    lists:
+      - prefix: 10.48.0.1/32
+      - prefix: 10.10.48.0/24
+      - prefix: 10.48.33.0/24
+      - prefix: 2a12:4946:4002::/48
+  - name: pl-RFC1918
+    lists:
+      - prefix: 10.0.0.0/8
+        ge: 8
+      - prefix: 172.16.0.0/12
+        ge: 12
+      - prefix: 192.168.0.0/16
+        ge: 16
+  - name: pl-MGMT
+    lists:
+      - prefix: 10.10.48.0/32
+      - prefix: 10.10.35.0/24
+  - name: pl-MONITORING
+    lists:
+      - prefix: 10.10.48.64/27
+  - name: pl-NETWORKING
+    lists:
+      - prefix: 10.10.48.160/27
