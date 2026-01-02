@@ -8,8 +8,8 @@ all:
     beokpdco:
       hosts:
         beokpdcort01:
-          ansible_host: 10.10.48.0
+          ansible_host: "2001:678:1080::2"
     defraifg:
       hosts:
         defraifgrt01:
-          ansible_host: "2a12:4946:4003::"
+          ansible_host: "2001:678:1080::1"

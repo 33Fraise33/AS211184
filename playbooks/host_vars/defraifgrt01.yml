@@ -5,10 +5,10 @@ vrfs:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4003::/128
+            - 2001:678:1080::1/128
         ipv4:
           addresses:
-            - 10.48.0.0/32
+            - 10.48.0.1/32
       veth:
         - name: vthDefault
           peer: vthPubDef
@@ -34,7 +34,7 @@ vrfs:
                 public_key: yPCXl5esPr8AnhjjfaQvlHTKd2seHzkIF1Ga06N8MCs=
           ipv6:
             addresses:
-              - 2a12:4946:4003:34::1:1/112
+              - 2001:678:1080:101::1:1/112
               - fe80:3:34::1:1/64
         - name: wgBELPMMOM
           description: "WG Transit to MOM"
@@ -64,7 +64,7 @@ vrfs:
                   3166333334396330666634393935623737356533363038383337
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::2:1/112
+              - 2001:678:1080:101::2:1/112
               - fe80:34::2:1/64
           ipv4:
             addresses:
@@ -89,7 +89,7 @@ vrfs:
                 public_key: /If1/C6nzTbkCGvGbgEGnuQNAoQUIYiP0Vk3jx54M2s=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::3:1/112
+              - 2001:678:1080:101::3:1/112
               - fe80:34::3:1/64
         - name: wgBELPMDAD
           description: "WG Transit to Dad"
@@ -111,7 +111,7 @@ vrfs:
                 public_key: sncn3P0nYLKwxwzGMktyD5qNqYnzB45Zg9vP+v2EpVI=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::4:1/112
+              - 2001:678:1080:101::4:1/112
               - fe80:34::4:1/64
           ipv4:
             addresses:
@@ -136,7 +136,7 @@ vrfs:
                 public_key: VWPA1c7JuTK10riRoGq40mkj4TzHsygipz5kipl5Zi8=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::5:1/112
+              - 2001:678:1080:101::5:1/112
               - fe80:34::5:1/64
           ipv4:
             addresses:
@@ -161,7 +161,7 @@ vrfs:
                 public_key: FI99BI3hkkubynYpFDYuxWJBHBQNe8R4OosgrBZcPSk=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::6:1/112
+              - 2001:678:1080:101::6:1/112
               - fe80:34::6:1/64
           ipv4:
             addresses:
@@ -186,7 +186,7 @@ vrfs:
                 public_key: 414jZEfktKGFQvf5UooON42atTYp4kq7s15sCRHUV18=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::8:1/112
+              - 2001:678:1080:101::8:1/112
               - fe80:34::8:1/64
           ipv4:
             addresses:
@@ -211,7 +211,7 @@ vrfs:
                 public_key: 3TzNUQbfhVEBgRhW/5OpF5RAXKhfDyWvTT8oZbPEsQg=
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::9:1/112
+              - 2001:678:1080:101::9:1/112
               - fe80:34::9:1/64
           ipv4:
             addresses:
@@ -242,7 +242,7 @@ vrfs:
                   6566316539636332330a636163656531633739383431306333613063363839623334653137323935
                   66303531393738346432356634363436623162633266353739396538353833396339666638633434
                   6361306136666330626534323931633463373762363565313636
-                allowed_ips: "10.10.35.2/32, 2a12:4946:4002:35::2/128"
+                allowed_ips: "10.10.35.2/32, 2001:678:1080:1033::2/128"
               - name: Unitix_Stream_PC
                 public_key: eJ5/gLv4/jf5eRHcvl9aLXkvhE4rOdDVIAbb9alwtRw=
                 private_key: !vault |
@@ -253,7 +253,7 @@ vrfs:
                   3366626534306166390a343766373435316432636637623161656230323530363739356463643235
                   62376137386335383762623433353639346537633164353336326261303265346239393338303664
                   6566313163333865353830316563613030393331653733366265
-                allowed_ips: "10.10.35.3/32, 2a12:4946:4002:35::3/128"
+                allowed_ips: "10.10.35.3/32, 2001:678:1080:1033::3/128"
               - name: Fraise_Pixel
                 public_key: nqbVgdCy0/XNbtq0Du4Qeu9Pse60KN7oMSgFGXg+2kk=
                 private_key: !vault |
@@ -264,7 +264,7 @@ vrfs:
                   3538363764316365300a383434626563623632333532626165336634343638613535643138646334
                   66613934613664666230643761356332616564346632633031323164343266323566383533623461
                   6337663062656135613833613066376335333262616361346265
-                allowed_ips: "10.10.35.4/32, 2a12:4946:4002:35::4/128"
+                allowed_ips: "10.10.35.4/32, 2001:678:1080:1033::4/128"
               - name: Amelle_SamsungA54
                 public_key: mTgVmjhdR6+LXxLLtxEx+rH/zJWSs8K18I5Fywm06TY=
                 private_key: !vault |
@@ -275,7 +275,7 @@ vrfs:
                   3164373933366163650a396436303564363139643563343333626564343238626331623966386563
                   30396164336666656534373835653164353266633231646336323936646232643034343132353233
                   3864343361383435663839613136373537393465333662383832
-                allowed_ips: "10.10.35.5/32, 2a12:4946:4002:35::5/128"
+                allowed_ips: "10.10.35.5/32, 2001:678:1080:1033::5/128"
               - name: Fraise_Ipad
                 public_key: fHeNy8erX/oFjcUk5l7lPJJxcjU0CujBYbizRwtpzAE=
                 private_key: !vault |
@@ -286,7 +286,7 @@ vrfs:
                   3964316330396563630a643139613563646266336563656436343339633837353435363432313934
                   39313137653931316163623365303339343264353239336237636264643565346365633166323736
                   6562643936363264366339666432326666616236346434323030
-                allowed_ips: "10.10.35.6/32, 2a12:4946:4002:35::6/128"
+                allowed_ips: "10.10.35.6/32, 2001:678:1080:1033::6/128"
               - name: Fraise_Steamdeck
                 public_key: 6Nzp0AfxyE79Xrsbkzbt/mm931WBdSoIGBRMdELFXRg=
                 private_key: !vault |
@@ -297,17 +297,17 @@ vrfs:
                   3433616430636139380a653961353830666535616539313733373837653737396262323062323634
                   63323036366432363963666233643335323939653938323934363265363334356238303031646139
                   3333373062353535623537616166386230313331623236353339
-                allowed_ips: "10.10.35.7/32, 2a12:4946:4002:35::7/128"
+                allowed_ips: "10.10.35.7/32, 2001:678:1080:1033::7/128"
           ipv6:
             addresses:
-              - 2a12:4946:4002:35::1/64
+              - 2001:678:1080:1033::1/64
           ipv4:
             addresses:
               - 10.10.35.1/24
     routing:
       bgp:
         as: 65000
-        router_id: 10.48.0.0
+        router_id: 10.48.0.1
         redistribute:
           - connected
           - kernel
@@ -315,10 +315,11 @@ vrfs:
           v4:
             - address: 10.48.32.0/24
           v6:
-            - address: 2a12:4946:4003::/48
+            - address: 2001:678:1080:2100::/56
         networks:
           v6:
             - 2a12:4946:4000::/44
+            - 2001:678:1080::/48
         neighbor_groups:
           - peer: veth-public
             soft_reconfiguration_inbound: true
@@ -361,14 +362,14 @@ vrfs:
             as: 65001
             description: "veth - Public"
           - neighbor_group: beokpdco
-            peer: 2a12:4946:4002:34::3:2
+            peer: 2001:678:1080:101::3:2
             activate:
               - v4
               - v6
             as: 65502
             description: "BEOKPDCO"
           - neighbor_group: remotesites
-            peer: 2a12:4946:4003:34::1:2
+            peer: 2001:678:1080:101::1:2
             activate:
               - v4
               - v6
@@ -433,7 +434,7 @@ vrfs:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4003::1/128
+            - 2001:678:1080:2100::1/128
         ipv4:
           addresses:
             - 10.48.32.1/32
@@ -517,7 +518,7 @@ vrfs:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4003::2/128
+            - 2001:678:1080:2100::2/128
         ipv4:
           addresses:
             - 10.48.32.2/32
@@ -589,14 +590,13 @@ vrfs:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4003::3/128
+            - 2001:678:1080:2100::3/128
         ipv4:
           addresses:
             - 10.48.32.3/32
       physicals:
         - name: "ens19"
           description: "IX - LOCIX"
-          enabled: false
           ipv6:
             addresses:
               - 2001:7f8:f2:e1::21:2284:1/64
@@ -686,20 +686,16 @@ vrfs:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4003::4/128
+            - 2001:678:1080:2100::4/128
         ipv4:
           addresses:
             - 10.48.32.4/32
       physicals:
         - name: "ens20"
           description: "IX - FogIXP"
-          enabled: false
           ipv6:
             addresses:
-              - 2001:7f8:ca:1::45/64
-          ipv4:
-            addresses:
-              - 185.1.147.45/24
+              - 2001:7f8:ca:1::21:1184:1/64
       veth:
         - name: vthFogixp
           peer: vthPubFogixp
@@ -728,9 +724,8 @@ vrfs:
               - direction: in
                 name: rm-to_veth
               - direction: out
-                name: rm-deny  # rm-veth_from_peering
+                name: rm-veth_from_peering
           - peer: route-servers
-            enabled: false
             soft_reconfiguration_inbound: true
             as: 47498
             local_role: rs-client
@@ -743,7 +738,7 @@ vrfs:
               - direction: in
                 name: rm-DEFAULT_ONLY_PUBLIC
               - direction: out
-                name: rm-deny  # rm-AS211184-exact
+                name: rm-AS211184-exact
         neighbors:
           - neighbor_group: veth-public
             peer: vthFogixp
@@ -756,15 +751,12 @@ vrfs:
           - neighbor_group: route-servers
             peer: 2001:7f8:ca:1::222
             description: "IX - Fogixp - RS2"
-          - neighbor_group: route-servers
-            peer: 2001:7f8:ca:1::333
-            description: "IX - Fogixp - RS3"
   kleyrex:  # IX vrf
     interfaces:
       loopback:
         ipv6:
           addresses:
-            - 2a12:4946:4003::5/128
+            - 2001:678:1080:2100::5/128
         ipv4:
           addresses:
             - 10.48.32.5/32
@@ -820,12 +812,42 @@ vrfs:
                 name: rm-DEFAULT_ONLY_PUBLIC
               - direction: out
                 name: rm-AS211184-exact
+          - peer: transit
+            soft_reconfiguration_inbound: true
+            local_role: customer
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184-exact
+          # - peer: peers
+          #   soft_reconfiguration_inbound: true
+          #   local_role: peer
+          #   activate:
+          #     - v6
+          #   timers:
+          #     keepalive: 20
+          #     hold: 60
+          #   route_maps:
+          #     - direction: in
+          #       name: rm-DEFAULT_ONLY_PUBLIC
+          #     - direction: out
+          #       name: rm-deny  # rm-AS211184-exact
         neighbors:
           - neighbor_group: veth-public
             peer: vthKleyrex
             as: 65001
             unnumbered: true
             description: "VETH - Public VRF"
+          - neighbor_group: transit
+            as: 6939
+            peer: 2001:7f8:33::a100:6939:1
+            description: "IX - Kleyrex - HE"
           - neighbor_group: route-servers
             peer: 2001:7f8:33::a103:1142:1
             description: "IX - Kleyrex - RS1"
@@ -839,10 +861,10 @@ vrfs:
 prefix_lists_host: 
   - name: pl-LO_VETH
     lists:
-      - prefix: 10.48.0.0/32
+      - prefix: 10.48.0.1/32
       - prefix: 10.48.32.0/30
         ge: 32
-      - prefix: 2a12:4946:4003::/64
+      - prefix: 2001:678:1080:2100::/64
         ge: 128
 
 route_filtering:
