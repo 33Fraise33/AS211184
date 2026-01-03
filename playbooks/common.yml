@@ -1,6 +1,6 @@
 ---
 - name: Run Common role
-  hosts: all
+  hosts: tag_frr
   gather_facts: true
   roles:
     - common

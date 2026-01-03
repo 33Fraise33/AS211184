@@ -21,7 +21,7 @@ vrfs:
               - 10.10.48.9/29
           ipv6:
             addresses:
-              - 2a12:4946:4002:1::1/64
+              - 2001:678:1080:2201::1/64
         - name: "ens19"
           description: "VM Interface"
       vlans:
@@ -33,7 +33,7 @@ vrfs:
               - 10.10.48.33/27
           ipv6:
             addresses:
-              - 2a12:4946:4002:1000::1/64
+              - 2001:678:1080:2202::1/64
         - id: 1001
           description: Monitoring Vlan
           interface: ens19
@@ -42,7 +42,7 @@ vrfs:
               - 10.10.48.65/27
           ipv6:
             addresses:
-              - 2a12:4946:4002:1001::1/64
+              - 2001:678:1080:1001::1/64
         - id: 1002
           description: Services Vlan
           interface: ens19
@@ -51,7 +51,7 @@ vrfs:
               - 10.10.48.97/27
           ipv6:
             addresses:
-              - 2a12:4946:4002:1002::1/64
+              - 2001:678:1080:1102::1/64
         - id: 1003
           description: Media Vlan
           interface: ens19
@@ -60,7 +60,7 @@ vrfs:
               - 10.10.48.129/27
           ipv6:
             addresses:
-              - 2a12:4946:4002:1003::1/64
+              - 2001:678:1080:1103::1/64
         - id: 1004
           description: Networking Vlan
           interface: ens19
@@ -69,7 +69,7 @@ vrfs:
               - 10.10.48.161/27
           ipv6:
             addresses:
-              - 2a12:4946:4002:1004::1/64
+              - 2001:678:1080:1004::1/64
       wireguards:
         - name: wgBEJBEGIA
           description: "WG Transit to Home"
@@ -100,7 +100,7 @@ vrfs:
                   6233323532373163303631643064636665636636373131616364
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::1:1/112
+              - 2001:678:1080:102::1:1/112
               - fe80:34::1:1/64
           ipv4:
             addresses:
@@ -133,7 +133,7 @@ vrfs:
                   3166333334396330666634393935623737356533363038383337
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::2:1/112
+              - 2001:678:1080:102::2:1/112
               - fe80:34::2:1/64
           ipv4:
             addresses:
@@ -196,7 +196,7 @@ vrfs:
                   3930666265336435343764663665313765313664316661366231
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::4:1/112
+              - 2001:678:1080:102::4:1/112
               - fe80:34::4:1/64
           ipv4:
             addresses:
@@ -229,13 +229,13 @@ vrfs:
                   3266323762636537383435623662363062636337656665323235
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::5:1/112
+              - 2001:678:1080:102::5:1/112
               - fe80:34::5:1/64
           ipv4:
             addresses:
               - 10.10.49.17/30
         - name: wgBEZEDHVN
-          description: "WG Transit to t Hovenierke"
+          description: "WG Transit to tHovenierke"
           mtu: 1420
           wg:
             port: 51825
@@ -262,7 +262,7 @@ vrfs:
                   3563386237373837396535373339346164663565653236373030
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::6:1/112
+              - 2001:678:1080:102::6:1/112
               - fe80:34::6:1/64
           ipv4:
             addresses:
@@ -295,7 +295,7 @@ vrfs:
                   3765393431343464616232653133323563396165336133656237
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::8:1/112
+              - 2001:678:1080:102::8:1/112
               - fe80:34::8:1/64
           ipv4:
             addresses:
@@ -328,15 +328,12 @@ vrfs:
                   3232363334623938323032643736616435386666613532343535
           ipv6:
             addresses:
-              - 2a12:4946:4002:34::9:1/112
+              - 2001:678:1080:102::9:1/112
               - fe80:34::9:1/64
           ipv4:
             addresses:
               - 10.10.49.33/30
     routing:
-      static:
-        - destination: 192.0.0.1/32
-          type: blackhole
       bgp:
         as: 211184
         router_id: 10.10.48.0
@@ -345,7 +342,6 @@ vrfs:
             - address: 10.48.33.0/24
             - address: 10.10.48.0/24
           v6:
-            - address: 2a12:4946:4002::/48
             - address: 2001:678:1080:2200::/56
         redistribute:
           - connected
@@ -381,19 +377,9 @@ vrfs:
             as: 65000
             description: "DEFRAIFG"
           - neighbor_group: remotesites
-            peer: 10.10.49.2
+            peer: 2001:678:1080:102::1:2
             activate:
               - v4
-            as: 65501
-            description: "BEJBEGIA"
-            route_maps:
-              - direction: in
-                name: rm-REMOTE_SITES-in
-              - direction: out
-                name: rm-BEJBEGIA-out
-          - neighbor_group: remotesites
-            peer: 2a12:4946:4002:34::1:2
-            activate:
               - v6
             as: 65501
             description: "BEJBEGIA"

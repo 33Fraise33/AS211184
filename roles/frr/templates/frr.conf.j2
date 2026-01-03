@@ -4,7 +4,7 @@ log syslog informational
 debug bgp neighbor-events
 debug bgp updates
 
-hostname {{ inventory_hostname }}
+hostname {{ inventory_hostname | lower }}
 domainname {{ domain }}
 service integrated-vtysh-config
 !

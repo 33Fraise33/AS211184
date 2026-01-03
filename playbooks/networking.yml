@@ -1,13 +1,13 @@
 ---
 - name: Run interfaces role
-  hosts: frr
+  hosts: tag_frr
   gather_facts: true
   roles:
     - interfaces
   tags: interfaces
 
 - name: Run frr role
-  hosts: frr
+  hosts: tag_frr
   gather_facts: true
   roles:
     - frr

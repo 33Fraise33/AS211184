@@ -318,7 +318,6 @@ vrfs:
             - address: 2001:678:1080:2100::/56
         networks:
           v6:
-            - 2a12:4946:4000::/44
             - 2001:678:1080::/48
         neighbor_groups:
           - peer: veth-public

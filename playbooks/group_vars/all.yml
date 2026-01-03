@@ -15,34 +15,30 @@ prefix_lists_all:
       - prefix: ::/0
   - name: pl-AS211184-exact
     lists:
-      - prefix: 2a12:4946:4000::/44
       - prefix: 2001:678:1080::/48
   - name: pl-AS211184
     lists:
-      - prefix: 2a12:4946:4000::/44
-        ge: 44
       - prefix: 2001:678:1080::/48
         ge: 48
   - name: pl-AS211184-remotesites
     lists:
-      - prefix: 2a12:4946:4000::/44
-        le: 56
+      - prefix: 2001:678:1080:1000::/52
+        le: 128
+        description: INTERNAL SERVICES
       - prefix: 2001:678:1080::/48
-        le: 56
+        le: 56 
   - name: pl-DEFRAIFG
     lists:
       - prefix: 10.10.35.0/24
       - prefix: 10.48.0.1/32
       - prefix: 10.48.32.0/24
       - prefix: 2001:678:1080:2100::/56
-      - prefix: 2a12:4946:4003::/48
   - name: pl-BEOKPDCO
     lists:
       - prefix: 10.48.0.2/32
       - prefix: 10.10.48.0/24
       - prefix: 10.48.33.0/24
       - prefix: 2001:678:1080:2200::/56
-      - prefix: 2a12:4946:4002::/48
   - name: pl-RFC1918
     lists:
       - prefix: 10.0.0.0/8

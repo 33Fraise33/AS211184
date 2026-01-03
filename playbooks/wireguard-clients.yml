@@ -1,6 +1,6 @@
 ---
 - name: Run wireguard_client role
-  hosts: frr
+  hosts: tag_frr
   gather_facts: false
   roles:
     - wireguard_client
