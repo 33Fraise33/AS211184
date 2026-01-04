@@ -10,11 +10,9 @@ ip prefix-list {{ pl.name }} {{ entry.policy|default('permit') }} {{ entry.prefi
 {%    endfor %}
 {%  endfor %}
 ! COMMUNITIES
-{%  for com in route_filtering.communities|default() %}
-!!!!! {{ com.name }}
-{%    for com_item in com.content %}
-bgp community-list {{ com.type|default('standard') }} {{ com.name }} {{ com_item.policy|default('permit') }} {{ com_item.community }}
-{%    endfor %}
+{%  for com_name, com in bgp_communities.items() %}
+!!!!! {{ com_name }}
+bgp large-community-list {{ com.type|default('standard') }} {{ com_name }} {{ com.policy|default('permit') }} {{ com.community }}
 {%  endfor %}
 !
 ! ROUTE MAPS
@@ -31,14 +29,23 @@ route-map {{ rm.name }} {{ entry.policy|default('permit') }} {{ (loop.index * 10
 {%      if entry.match.community is defined %}
  match community {{ entry.match.community }}
 {%      endif %}
+{%      if entry.match.large_community is defined %}
+ match large-community {{ entry.match.large_community }}
+{%      endif %}
 {%      if entry.action is defined %}
 {%          if entry.action.set is defined %}
 {%              if entry.action.set.next_hop is defined %}
  set ip next-hop {{ entry.action.set.next_hop }}
 {%              endif %}
+{%              for comm in entry.action.set.large_communities|default([]) %}
+ set large-community {{ bgp_communities[comm].community }} additive
+{%              endfor %}
 {%          endif%}
 {%          if entry.action.on_match is defined %}
  on-match {{ entry.action.on_match }}
+{%          endif%}
+{%          if entry.action.call is defined %}
+ call {{ entry.action.call }}
 {%          endif%}
 {%      endif %}
 {%    endfor %}

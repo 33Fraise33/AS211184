@@ -57,3 +57,69 @@ prefix_lists_all:
   - name: pl-NETWORKING
     lists:
       - prefix: 10.10.48.160/27
+
+bgp_communities:
+  # COUNTRIES - https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes#Current_ISO_3166_country_codes
+  COUNTRY_BE-Belgium:
+    community: "211184:10:56"
+  COUNTRY_DE-Germany:
+    community: "211184:10:276"
+  # CITIES
+  CITY_DE-Frankfurt:
+    community: "211184:11:1"
+  CITY_BE-Oostkamp:
+    community: "211184:11:2"
+  # POPS
+  POP_Ifog:
+    community: "211184:12:1"
+  POP_DCO:
+    community: "211184:12:2"
+  # IXP
+  IXP_FogIXP:
+    community: "211184:13:1"
+  IXP_Kleyrex:
+    community: "211184:13:2"
+  IXP_Locix:
+    community: "211184:13:3"
+  # SOURCE
+  TRNS_HE:
+    community: "211184:21:6939"
+  TRNS_IFOG:
+    community: "211184:21:34927"
+  RS_LOCIX:
+    community: "211184:23:202409"
+  RS_KLEYREX:
+    community: "211184:23:31142"
+  RS_FOGIXP:
+    community: "211184:23:47498"
+  # VALIDITY
+  BOGONS_PREFIX-LENGTH:
+    community: "211184:30:1"
+  BOGONS_PREFIX:
+    community: "211184:30:2"
+  BOGONS_AS:
+    community: "211184:30:3"
+  BOGONS_AS-PATH-LENGTH:
+    community: "211184:30:4"
+  BOGONS_FIRST-AS:
+    community: "211184:30:5"
+  BOGONS_NEXT-HOP:
+    community: "211184:30:6"
+  BOGONS_AS-LOOP:
+    community: "211184:30:7"
+  IRR_VALID:
+    community: "211184:31:1"
+  IRR_INVALID:
+    community: "211184:31:3"
+  RPKI_ROA-VALID:
+    community: "211184:32:1"
+  RPKI_ROA-UNKNOWN:
+    community: "211184:32:2"
+  RPKI_ROA-INVALID:
+    community: "211184:32:3"
+  RPKI_ASPA-VALID:
+    community: "211184:33:1"
+  RPKI_ASPA-UNKNOWN:
+    community: "211184:33:2"
+  RPKI_ASPA-INVALID:
+    community: "211184:33:3"

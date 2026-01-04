@@ -389,9 +389,10 @@ vrfs:
               - direction: out
                 name: rm-BEJBEGIA-out
           - neighbor_group: remotesites
-            peer: 10.10.49.18
+            peer: 2001:678:1080:102::5:2
             activate:
               - v4
+              - v6
             as: 65503
             description: "OTGKIT01"
           - neighbor_group: remotesites
@@ -535,7 +536,4 @@ route_filtering:
     - name: rm-deny
       maps:
         - policy: deny
-  communities:
-    - name: bogons
-      content:
-        - community: "64496:0"
+

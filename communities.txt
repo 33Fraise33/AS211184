@@ -1,0 +1,42 @@
+### INFORMATIONAL - 1-100
+
+# COUNTRY - Learned in. Use ISO 3166-1 numeric, do not add 0's in front
+# https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes#Current_ISO_3166_country_codes
+211184:10:56,COUNTRY - BE,Belgium
+211184:10:276,COUNTRY - DE,Germany
+# LOCATION
+211184:11:1,CITY - DE,Frankfurt
+211184:11:2,CITY - BE,Oostkamp
+# POP
+211184:12:1,POP - Ifog
+211184:12:2,POP - DCO
+# IXP
+211184:13:1,IXP - FogIXP
+211184:13:2,IXP - Kleyrex
+211184:13:3,IXP - Locix
+
+# SOURCE - Learned from transit,peer,customer/downstream
+211184:21:nnn,From transit AS$0
+211184:22:nnn,From peer AS$0
+211184:23:nnn,From RS AS$0
+211184:24:nnn,From downstream AS$0
+
+# VALIDITY - BOGONS, RPKI & IRR
+211184:30:1,BOGONS - prefix length invalid
+211184:30:2,BOGONS - bogon prefix
+211184:30:3,BOGONS - bogon as
+211184:30:4,BOGONS - as path length
+211184:30:5,BOGONS - invalid first AS
+211184:30:6,BOGONS - invalid next hop
+211184:30:7,BOGONS - AS path loop
+211184:31:1,IRR - VALID
+211184:31:3,IRR - INVALID
+211184:32:1,RPKI - ROA VALID
+211184:32:2,RPKI - ROA UNKNOWN
+211184:32:3,RPKI - ROA INVALID
+211184:33:1,RPKI - ASPA VALID
+211184:33:2,RPKI - ASPA UNKNOWN
+211184:33:3,RPKI - ASPA INVALID
+
+### ACTIONAL - 101-200 
+# TBD - include prepend, not to peers, no-export,...

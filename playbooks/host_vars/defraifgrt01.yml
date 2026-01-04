@@ -821,7 +821,7 @@ vrfs:
               hold: 60
             route_maps:
               - direction: in
-                name: rm-DEFAULT_ONLY_PUBLIC
+                name: rm-TRNS_HE-in
               - direction: out
                 name: rm-AS211184-exact
           # - peer: peers
@@ -869,6 +869,56 @@ prefix_lists_host:
 route_filtering:
   prefix_lists: "{{ prefix_lists_all + prefix_lists_host }}"
   route_maps:
+    - name: rm-TRNS_HE-in
+      maps:
+        - action:
+            set:
+              large_communities:
+                - TRNS_HE
+            on_match: next
+        - action:
+            call: rm-comm-IFOG
+            on_match: next
+        - action:
+            call: rm-comm-KLEYREX
+            on_match: next
+        - action:
+            call: rm-DEFAULT_ONLY_PUBLIC
+    - name: rm-TRNS_HE-out
+      maps:
+        - action:
+            set:
+              large_communities:
+                - IXP_Kleyrex
+            on_match: next
+        - action:
+            call: rm-comm-IFOG
+        - action:
+            call: rm-AS211184-exact
+    - name: rm-comm-IFOG
+      maps:
+        - action:
+            set:
+              large_communities:
+                - COUNTRY_DE-Germany
+            on_match: next
+        - action:
+            set:
+              large_communities:
+                - CITY_DE-Frankfurt
+            on_match: next
+        - action:
+            set:
+              large_communities:
+                - POP_Ifog
+            on_match: next
+    - name: rm-comm-KLEYREX
+      maps:
+        - action:
+            set:
+              large_communities:
+                - IXP_Kleyrex
+            on_match: next
     - name: rm-DEFAULT_ONLY_PUBLIC
       maps:
         - match:
@@ -950,7 +1000,3 @@ route_filtering:
     - name: rm-deny
       maps:
         - policy: deny
-  communities:
-    - name: bogons
-      content:
-        - community: "64496:0"
