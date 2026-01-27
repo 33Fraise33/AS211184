@@ -22,17 +22,17 @@ prefix_lists_all:
         ge: 48
   - name: pl-AS211184-remotesites
     lists:
-      - prefix: 2001:678:1080:1000::/52
-        le: 128
-        description: INTERNAL SERVICES
       - prefix: 2001:678:1080::/48
-        le: 56 
+        le: 56
   - name: pl-DEFRAIFG
     lists:
       - prefix: 10.10.35.0/24
       - prefix: 10.48.0.1/32
       - prefix: 10.48.32.0/24
       - prefix: 2001:678:1080:2100::/56
+      - prefix: 2001:678:1080:1100::/56
+        le: 128
+        description: UNITIX - Services
   - name: pl-BEOKPDCO
     lists:
       - prefix: 10.48.0.2/32

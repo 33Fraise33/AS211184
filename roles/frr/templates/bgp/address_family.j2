@@ -1,9 +1,9 @@
 {% for rm in bgp_item.route_maps|default() %}
   neighbor {{ bgp_item.peer }} route-map {{ rm.name }} {{ rm.direction }}
 {% endfor %}
-{% if bgp_item.soft_reconfiguration_inbound|default(false) %}
-  neighbor {{ bgp_item.peer }} soft-reconfiguration inbound
+{% if bgp_item.soft_reconfiguration_inbound is defined %}
+  {{ 'no ' if not bgp_item.soft_reconfiguration_inbound }}neighbor {{ bgp_item.peer }} soft-reconfiguration inbound
 {% endif %}
 {%   if bgp_item.local_role is defined and (bgp_item.local_role == "rs-client" or bgp_item.local_role == "customer") %}
-  neighbor {{ bgp_item.peer }} remove-private-AS replace-AS
+  neighbor {{ bgp_item.peer }} remove-private-AS all
 {%   endif %}

@@ -37,6 +37,9 @@ route-map {{ rm.name }} {{ entry.policy|default('permit') }} {{ (loop.index * 10
 {%              if entry.action.set.next_hop is defined %}
  set ip next-hop {{ entry.action.set.next_hop }}
 {%              endif %}
+{%              if entry.action.set.prepend is defined %}
+ set as-path prepend {{ entry.action.set.prepend|join(" ") }}
+{%              endif %}
 {%              for comm in entry.action.set.large_communities|default([]) %}
  set large-community {{ bgp_communities[comm].community }} additive
 {%              endfor %}

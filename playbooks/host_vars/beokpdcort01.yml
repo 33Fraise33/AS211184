@@ -11,8 +11,16 @@ vrfs:
             - 10.48.0.2/32
       physicals:
         - name: "ens17"
-          description: "TEMP - Orange Uplink"
+          description: "TRANSIT - TeleVoip"
           auto: true
+          # ipv4:
+          #   gateway: 185.174.7.49  # creates 0.0.0.0/0
+          #   addresses:
+          #     - 185.174.7.52/29
+          ipv6:
+            # gateway: "2a0b:7900:60::"  # creates ::/0 - to redistribute downstream
+            addresses:
+              - 2a0b:7900:60::1/127
         - name: "ens18"
           description: "Proxmox MGMT Bridge"
           mtu: 1500
@@ -163,10 +171,32 @@ vrfs:
                   3637643032366631390a366538336566333930303534353339633431623031393765363930346166
                   63653832626430316661656332376561656134393534363663643433333737656435636264346263
                   3337636432666236306532626538616366643239616261623437
-                public_key: zOjpUNpdB0SCsBmDKAtsiU+gK5E60ncvFH2axdelXS8=       
+                public_key: zOjpUNpdB0SCsBmDKAtsiU+gK5E60ncvFH2axdelXS8=
           ipv6:
             addresses:
               - 2001:678:1080:101::3:2/112
+              - fe80:34::3:2/64
+        - name: wgGBTEFHYE
+          description: "WG Transit to TEF"
+          mtu: 1420
+          wg:
+            keepalive: 25
+            public_key: /If1/C6nzTbkCGvGbgEGnuQNAoQUIYiP0Vk3jx54M2s=
+            private_key: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              35313433653430333034346132333234633730366439303135336235383361633565643062666561
+              3735393638663635386561636466616332653665306233640a643164653238333938363636353162
+              31343566316562316462653337613363313939613932613466303865303463666166383362663461
+              6461363661393533350a366162336330366437336439333364323166633365653530623934363538
+              31383064343238376364623365343732626639373734316237613162323863663437303035303132
+              3663353264366662373432666266653463316264313136336235
+            peers:
+              - name: GBTEFHYERT01
+                endpoint: "199.47.240.182:51822"
+                public_key: kfPdWYI+5MKL5ipGeBFjbiWIBRNLPZR7npM8Rv0gcyo=
+          ipv6:
+            addresses:
+              - 2001:678:1080:103::3:2/112
               - fe80:34::3:2/64
         - name: wgBELPMDAD
           description: "WG Transit to Dad"
@@ -336,17 +366,34 @@ vrfs:
     routing:
       bgp:
         as: 211184
-        router_id: 10.10.48.0
+        router_id: 185.174.7.52
+        networks:
+          v6:
+            - 2001:678:1080::/48
         aggregates:
           v4:
             - address: 10.48.33.0/24
             - address: 10.10.48.0/24
           v6:
             - address: 2001:678:1080:2200::/56
+            - address: 2001:678:1080:1000::/56
         redistribute:
           - connected
           - kernel
         neighbor_groups:
+          - peer: transit
+            soft_reconfiguration_inbound: true
+            local_role: customer
+            activate:
+              - v6
+            timers:
+              keepalive: 20
+              hold: 60
+            route_maps:
+              - direction: in
+                name: rm-DEFAULT_ONLY_PUBLIC
+              - direction: out
+                name: rm-AS211184-exact-prepend
           - peer: remotesites
             soft_reconfiguration_inbound: true
             timers:
@@ -357,7 +404,7 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-REMOTE_SITES-out
-          - peer: defraifg
+          - peer: dc-mesh
             soft_reconfiguration_inbound: true
             timers:
               keepalive: 20
@@ -368,7 +415,18 @@ vrfs:
               - direction: out
                 name: rm-DC-out
         neighbors:
-          - neighbor_group: defraifg
+          - neighbor_group: transit
+            peer: "2a0b:7900:60::"
+            as: 47630
+            description: "TRNS - TeleVoip"
+            md5: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              34663138343338396335656431303939313134643439663039363736623831303565633837663430
+              3736393562343364663231373966613135656662656263330a663663336365623634396632376238
+              31393065343166653030363535343765333032316536323464326664313135356536653834663435
+              3362643931343165300a346538313930616333656637653937666431326161656362313965333633
+              3564
+          - neighbor_group: dc-mesh
             peer: 2001:678:1080:101::3:1
             activate:
               - v4
@@ -376,6 +434,14 @@ vrfs:
             local_as: 65502
             as: 65000
             description: "DEFRAIFG"
+          - neighbor_group: dc-mesh
+            peer: 2001:678:1080:103::3:1
+            activate:
+              - v4
+              - v6
+            local_as: 65502
+            as: 65010
+            description: "GBTEFHYE"
           - neighbor_group: remotesites
             peer: 2001:678:1080:102::1:2
             activate:
@@ -395,13 +461,6 @@ vrfs:
               - v6
             as: 65503
             description: "OTGKIT01"
-          - neighbor_group: remotesites
-            peer: 10.10.49.10
-            enabled: false
-            activate:
-              - v4
-            as: 65504
-            description: "OTGKIT02"
           - neighbor_group: remotesites
             peer: 10.10.49.6
             activate:
@@ -447,19 +506,15 @@ route_filtering:
         - match:
             v6_prefix_list: pl-default-public
           policy: permit
-    - name: rm-fullbogons-in
+    - name: rm-AS211184-exact-prepend
       maps:
         - match:
-            v6_prefix_list: pl-default-bogons
-          action:
-            on_match: next
-          policy: permit
-        - match:
-            community: bogons
+            v6_prefix_list: pl-AS211184-exact
           action:
             set:
-              next_hop: 192.0.0.1
-          policy: permit
+              prepend:
+                - 211184
+                - 211184
     - name: rm-DEFUALT_TO_REMOTE
       maps:
         - match:

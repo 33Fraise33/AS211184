@@ -7,6 +7,9 @@
 {% if bgp_item.description is defined %}
  neighbor {{ bgp_item.peer }} description {{ bgp_item.description }}
 {% endif %}
+{% if bgp_item.md5 is defined %}
+ neighbor {{ bgp_item.peer }} password {{ bgp_item.md5 }}
+{% endif %}
 {% if not bgp_item.enabled|default(true) %}
  neighbor {{ bgp_item.peer }} shutdown
 {% endif %}
@@ -16,8 +19,11 @@
 {% if bgp_item.timers is defined %}
  neighbor {{ bgp_item.peer }} timers {{ bgp_item.timers.keepalive }} {{ bgp_item.timers.hold }}
 {% endif %}
-{% if bgp_item.multihop|default(false) %}
- neighbor {{ bgp_item.peer }} ebgp-multihop
+{% if bgp_item.source is defined %}
+ neighbor {{ bgp_item.peer }} update-source {{ bgp_item.source }}
+{% endif %}
+{% if bgp_item.multihop is defined %}
+ neighbor {{ bgp_item.peer }} ebgp-multihop {{ bgp_item.multihop }}
 {% endif %}
 {% if bgp_item.passive|default(false) %}
  neighbor {{ bgp_item.peer }} passive
