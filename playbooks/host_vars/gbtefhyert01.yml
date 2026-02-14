@@ -36,28 +36,6 @@ vrfs:
             addresses:
               - 2001:678:1080:103::1:1/112
               - fe80:3:34::1:1/64
-        - name: wgDEFRAIFG
-          description: "WG Transit to IFOG"
-          mtu: 1420
-          wg:
-            port: 51821
-            keepalive: 25
-            private_key: !vault |
-              $ANSIBLE_VAULT;1.1;AES256
-              39623532666362633065383533656135643739633130356432313065653361356664363437356434
-              6233633565373032663537633234323033613237613936620a626631386666373735303861386537
-              61643263663036653539373633303061383033666438666235653130623536303237366366346366
-              6233356662653162350a643639336434356166343764356535363965633631366166643839373661
-              34653439643164336132383065633963326639393935393661626131313137333765643439616662
-              6238646536616239366438623631656337373461636633666336
-            public_key: kfPdWYI+5MKL5ipGeBFjbiWIBRNLPZR7npM8Rv0gcyo=
-            peers:
-              - name: DEFRAIFGRT01
-                public_key: VDFx+wtPoGCf0bSIyPyIkOy4HIBgE02pxy5KdnF7jGA=
-          ipv6:
-            addresses:
-              - 2001:678:1080:103::2:1/112
-              - fe80:34::2:1/64
         - name: wgBEOKPDCO
           description: "WG Transit to DCO"
           mtu: 1420
@@ -208,16 +186,6 @@ vrfs:
                 name: rm-REMOTE_SITES-in
               - direction: out
                 name: rm-REMOTE_SITES-out
-          - peer: defraifg
-            soft_reconfiguration_inbound: true
-            timers:
-              keepalive: 20
-              hold: 60
-            route_maps:
-              - direction: in
-                name: rm-REMOTE_SITES-in
-              - direction: out
-                name: rm-REMOTE_SITES-in
           - peer: beokpdco
             soft_reconfiguration_inbound: true
             timers:
@@ -241,14 +209,8 @@ vrfs:
               - v6
             as: 65502
             description: "BEOKPDCO"
-          - neighbor_group: defraifg
-            peer: 2001:678:1080:103::2:2
-            activate:
-              - v4
-              - v6
-            as: 65000
-            description: "DEFRAIFGRT01"
           - neighbor_group: remotesites
+            enabled: false
             peer: 2001:678:1080:103::1:2
             activate:
               - v4
@@ -452,8 +414,8 @@ route_filtering:
             v6_prefix_list: pl-default
     - name: rm-BEJBEGIA-out
       maps:
-        - match:
-            v4_prefix_list: pl-DEFRAIFG
+        # - match:
+        #     v4_prefix_list: pl-GBTEFHYE
         - match:
             v6_prefix_list: pl-AS211184-remotesites
         - match:
